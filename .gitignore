@@ -1,0 +1,15 @@
+# MATLAB / Simulink Cache and Temporary Files
+slprj/
+*.slxc
+*.asv
+*.autosave
+*.tmp
+*.bak
+*.log
+*.mat
+!comparative_sweep_results.mat
+
+# OS generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
