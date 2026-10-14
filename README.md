@@ -31,16 +31,17 @@ This project extends the baseline LQR-controlled Quanser Active Suspension exper
 
 | File / Folder | Purpose & Description |
 | :--- | :--- |
-| `setup_as.m` | **Master Setup Script**: Populates workspace with plant matrices $A, B, C, D$, Quanser parameters, LQR gains (Classical, ACO, HS), STSMC parameters, and RSI road settings. |
-| `Master_Active_Suspension_Simulation.slx` | **Simulink Model**: Complete improved simulation model with selectable multi-controller loops (Passive, LQR, STSMC), 4 RSI road profiles, and $\pm 39.2\text{ N}$ saturation. |
-| `stsmc_block.m` | **Core STSMC Control Law**: Continuous-time super-twisting algorithm with boundary-layer smoothing ($\epsilon_{bl}=10^{-3}$) to prevent chattering and solver stalls. |
-| `stsmc_rsi_scheduler.m` | **RSI Gain Scheduler**: Maps Road Severity Index ($0.10, 0.35, 0.65, 0.95$) to controller gains ($k_1, k_2, \lambda$). Supports both Grant table and plant-scaled modes. |
+| `setup_as.m` | **Master Setup Script**: Populates workspace with plant matrices $A, B, C, D$, Quanser parameters, LQR gains (Classical, ACO-Opt, HS-Opt), STSMC parameters, and RSI road settings. |
+| `Master_Active_Suspension_Simulation.slx` | **Simulink Model**: Complete comparative model featuring selectable controllers (Passive, LQR, STSMC), native continuous RMS calculation subsystems, and live canvas digital Displays. |
+| `build_comparative_models.m` | **Simulink Model Builder**: Programmatically constructs the native Simulink model with continuous RMS calculation blocks and digital Displays inspired by Dinesh's benchmark architecture. |
+| `stsmc_block.m` | **Core STSMC Control Law**: Continuous-time super-twisting algorithm with boundary-layer smoothing ($\epsilon_{bl}=10^{-2}$) to prevent chattering and solver stalls. |
+| `stsmc_rsi_scheduler.m` | **RSI Gain Scheduler**: Maps Road Severity Index ($0.10, 0.35, 0.65, 0.95$) to controller gains ($k_1, k_2, c_1$). |
 | `design_stsmc.m` | **Interactive Controller Designer**: Configures STSMC gain modes (`conservative`, `moderate`, `aggressive`, `grant_normal`, `rsi_adaptive`). |
 | `validate_baseline.m` | **Phase 0 Baseline Verification**: Analyzes controllability, modal eigenvalues, validates LQR gains, and checks hardware physical travel limits. |
 | `quanser_specs.m` | **Hardware Specifications**: Confirms mechanical suspension travel limit ($38\text{ mm}$), motor torque constant, and sensor sensitivities from Quanser User Manual. |
 | `run_comparative_sweep.m` | **Automated Comparative Sweep**: Simulates all 24 combinations ($4\text{ roads} \times 6\text{ controllers}$), computes RMS/peak performance, and prints summary tables. |
 | `comparative_sweep_results.csv` | **Numerical Benchmark Dataset**: Full exported metrics (RMS/Peak acceleration, travel, tire deflection, force, execution time). |
-| `figures/` | **High-Resolution Figures**: Publication-quality comparison plots matching IEEE Access paper format. |
+| `figures/` | **High-Resolution Figures**: Publication-quality comparison plots (Figures 1–6) matching IEEE Access / Mechatronics paper format. |
 
 ---
 
