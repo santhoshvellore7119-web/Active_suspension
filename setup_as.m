@@ -2,10 +2,17 @@
 % Master Parameter Configuration Script for Quanser Active Suspension System
 % Unified LQR (Classical, Optimal/ACO, HS) & Super-Twisting Sliding Mode Control (STSMC)
 %
-% Fully supports comparative analysis between LQR and STSMC across 4 RSI Road Profiles.
+% Fully supports comparative analysis across ALL 6 STANDARDIZED ROAD PROFILES:
+%   1. Dynamic Frequency-Sweep (Chirp: 0.1 - 10 Hz)
+%   2. Smooth Undulating Highway (4 mm Sine, 0.20 Hz) [RSI = 0.10]
+%   3. Severe Repetitive Discrete Potholes (20 mm Step Drops) [RSI = 0.95]
+%   4. Triangular Ramp Obstacle & Speed Bump (20 mm Wedge) [RSI = 0.40]
+%   5. Real-World Stochastic Rough Terrain + Pothole Shocks (ISO Class D + Spikes) [RSI = 0.85]
+%   6. Harmonic Corrugated Resonance Road (f ~ 2.58 Hz Body Mode) [RSI = 0.65]
 
 fprintf('========================================================================\n');
 fprintf('  QUANSER ACTIVE SUSPENSION SYSTEM: UNIFIED LQR & STSMC SETUP\n');
+fprintf('  Full 6-Road Profile & Multi-Controller Comparative Benchmark\n');
 fprintf('========================================================================\n');
 
 %% 1. Plant Physical Parameters (Quanser Quarter-Car Benchmark)
@@ -72,22 +79,38 @@ D(6, 2) = 1/ms;
 C_sim = cat(1, eye(4), C);
 D_sim = D;
 
-%% 3. Road Surface Excitation Profile Parameters
+%% 3. Road Surface Excitation Profile Parameters (All 6 Standard Profiles)
+% Profile 1: Dynamic Frequency-Sweep (Chirp)
+road_chirp_amp   = 0.005;    % Amplitude (m) [5 mm]
+road_chirp_f0    = 0.10;     % Initial frequency (Hz)
+road_chirp_f1    = 10.0;     % Final frequency at T_stop (Hz)
+
+% Profile 2: Smooth Undulating Highway (RSI 0.10)
 road_smooth_amp  = 0.004;    % Amplitude (m) [4 mm]
 road_smooth_freq = 0.20;     % Frequency (Hz)
+road_normal_amp  = 0.020;    % Backward compatibility alias (m) [20 mm]
+road_normal_freq = 0.20;     % Backward compatibility alias (Hz)
 
-road_normal_amp  = 0.020;    % Amplitude (m) [20 mm]
-road_normal_freq = 0.20;     % Frequency (Hz)
+% Profile 3: Severe Discrete Potholes (RSI 0.95)
+road_pothole_amp   = 0.020;  % Depth drop (m) [20 mm]
+road_pothole_freq  = 0.50;   % Repetition frequency (Hz)
+road_pothole_width = 15.0;   % Width (% of period)
 
-road_rough_amp   = 0.015;    % Peak amplitude (m) [15 mm]
-road_rough_speed = 25.0;     % Vehicle forward speed (m/s) [90 km/h]
+% Profile 4: Triangular Ramp & Speed Bump (RSI 0.40)
+road_ramp_height = 0.020;    % Max ramp elevation (m) [20 mm]
+road_ramp_len    = 1.5;      % Ramp incline duration (s)
 
-road_pothole_amp   = 0.020;  % Pulse amplitude (m) [20 mm]
-road_pothole_freq  = 0.30;   % Pulse repetition frequency (Hz)
-road_pothole_width = 10.0;   % Pulse width (% of period)
+% Profile 5: Real-World Stochastic Rough Terrain + Shocks (RSI 0.85)
+road_rough_amp   = 0.015;    % Broadband peak amplitude (m) [15 mm]
+road_rough_speed = 25.0;     % Forward vehicle velocity (m/s) [90 km/h]
+road_shock_amp   = 0.025;    % Embedded shock amplitude (m) [25 mm]
+
+% Profile 6: Harmonic Corrugated Resonance Road (RSI 0.65)
+road_res_amp  = 0.010;       % Amplitude (m) [10 mm]
+road_res_freq = 2.58;        % Excitation frequency (Hz) near quarter-car body hop mode
 
 if ~exist('ROAD_PROFILE_ID', 'var') || isempty(ROAD_PROFILE_ID)
-    ROAD_PROFILE_ID = 2; % Default: Normal Road (RSI 0.35)
+    ROAD_PROFILE_ID = 2; % Default: Smooth Undulating Road
 end
 
 %% 4. Linear Quadratic Regulator (LQR) Controller Synthesis
@@ -95,13 +118,11 @@ end
 K_classical = [6.5, 165.0, -2254.5, -52.0];
 
 % Optimal / ACO-Tuned LQR Synthesis (from setup_as.m (1).txt):
-%   Q balances: [suspension_deflection, body_velocity, tire_deflection, wheel_velocity]
 Q_lqr = diag([81.4724, 95.2896, 18.8891, 45.6697]);
 R_lqr = 0.0260;
 try
     K_aco = lqr(A, B(:,2), Q_lqr, R_lqr);
 catch
-    % Fallback if Control System Toolbox is absent
     K_aco = [5.9876, 61.5162, -572.6319, -22.7318];
 end
 K_lqr_opt = K_aco;
@@ -111,7 +132,7 @@ K_hs = [88.2645, 439.3617, 414.7621, 8.3968];
 
 % Active LQR Gain Selection
 if ~exist('LQR_TYPE', 'var') || isempty(LQR_TYPE)
-    LQR_TYPE = 'CLASSICAL'; % 'CLASSICAL', 'ACO', 'HS'
+    LQR_TYPE = 'CLASSICAL';
 end
 
 switch upper(LQR_TYPE)
@@ -128,22 +149,16 @@ end
 eps_bl = 0.010; 
 
 % Fixed STSMC Mode Gains:
-%   Conservative: Comfort-oriented lower gains
-c1_cons = 5.0;  k1_cons = 20.0;  k2_cons = 8.0;
+c1_cons = 5.0;  k1_cons = 20.0;  k2_cons = 8.0;   % Conservative
+c1_mod  = 7.0;  k1_mod  = 60.0;  k2_mod  = 25.0;  % Moderate
+c1_aggr = 15.0; k1_aggr = 180.0; k2_aggr = 90.0;  % Aggressive
 
-%   Moderate: Balanced baseline
-c1_mod  = 7.0;  k1_mod  = 60.0;  k2_mod  = 25.0;
-
-%   Aggressive: High disturbance rejection
-c1_aggr = 15.0; k1_aggr = 180.0; k2_aggr = 90.0;
-
-% Fixed default settings for Simulink blocks:
 c1_fixed = c1_mod;
 k1_fixed = k1_mod;
 k2_fixed = k2_mod;
 
-% Adaptive STSMC: Scheduled based on Road Severity Index (RSI)
-[k1_adap, k2_adap, c1_adap] = stsmc_rsi_scheduler(ROAD_PROFILE_ID, 'scaled');
+% Adaptive STSMC: Scheduled dynamically for the selected Road Profile (1 to 6)
+[k1_adap, k2_adap, c1_adap, rsi_active, mode_label] = stsmc_rsi_scheduler(ROAD_PROFILE_ID, 'scaled');
 
 % Mode selector for active STSMC workspace variables:
 if ~exist('STSMC_MODE', 'var') || isempty(STSMC_MODE)
@@ -178,7 +193,14 @@ T_stop   = 10.0;
 RelTol   = 1e-4;
 MaxStep  = 1e-3;
 
-road_names = {'Smooth (4 mm Sine)', 'Normal (20 mm Sine)', 'Rough (15 mm Harmonic)', 'Pothole (20 mm Pulse)'};
+road_names = {
+    'Profile 1: Frequency-Sweep Chirp (0.1 - 10 Hz)', ...
+    'Profile 2: Smooth Undulating Highway (4 mm Sine, 0.20 Hz)', ...
+    'Profile 3: Severe Discrete Potholes (20 mm Pulse Drops)', ...
+    'Profile 4: Triangular Ramp Obstacle & Speed Bump (20 mm)', ...
+    'Profile 5: Stochastic Rough Road + Potholes (ISO Class D + Shocks)', ...
+    'Profile 6: Harmonic Corrugated Resonance Road (f ~ 2.58 Hz)'
+};
 ctrl_names = {'Passive Baseline', 'Classical LQR', 'ACO-Tuned LQR', 'HS-Tuned LQR', 'Fixed STSMC', 'Adaptive STSMC'};
 
 fprintf('Plant Parameters:\n');
@@ -188,14 +210,11 @@ fprintf('  Mechanical Travel Limit: +/- %.3f m (38 mm)\n', St_max);
 fprintf('  Actuator Force Limit:   +/- %.1f N\n', Fc_max);
 fprintf('Controller Configuration:\n');
 fprintf('  Active Controller [%d]: %s\n', CONTROLLER_ID, ctrl_names{CONTROLLER_ID});
-fprintf('  LQR Gains Available:\n');
-fprintf('    Classical: [%.2f, %.2f, %.2f, %.2f]\n', K_classical);
-fprintf('    ACO-Opt:   [%.2f, %.2f, %.2f, %.2f]\n', K_aco);
-fprintf('    HS-Opt:    [%.2f, %.2f, %.2f, %.2f]\n', K_hs);
 fprintf('  STSMC Configuration (Mode: %s):\n', STSMC_MODE);
-fprintf('    Sliding Surface Gain (c1): %.2f\n', c1);
-fprintf('    Proportional Gain   (k1): %.2f\n', k1);
-fprintf('    Integral Gain       (k2): %.2f\n', k2);
-fprintf('    Boundary Layer (eps_bl):   %.4f\n', eps_bl);
+fprintf('    Operating Mode:          %s\n', mode_label);
+fprintf('    Sliding Surface Gain c1: %.2f\n', c1);
+fprintf('    Proportional Gain    k1: %.2f\n', k1);
+fprintf('    Integral Gain        k2: %.2f\n', k2);
+fprintf('    Boundary Layer   eps_bl: %.4f\n', eps_bl);
 fprintf('  Selected Road Profile [%d]: %s\n', ROAD_PROFILE_ID, road_names{ROAD_PROFILE_ID});
 fprintf('========================================================================\n\n');

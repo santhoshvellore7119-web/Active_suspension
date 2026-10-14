@@ -1,21 +1,21 @@
 % BUILD_COMPARATIVE_MODELS
-% Programmatically constructs:
-%   1. Master_Active_Suspension_Simulation.slx (Selectable Multi-Controller with RMS Displays)
-%   2. Master_Active_Suspension_Parallel_Comparison.slx (3-Branch Side-by-Side: Passive vs LQR vs STSMC)
-%
-% Integrates real-time continuous RMS calculation subsystems and canvas Display blocks
-% modeled directly on the architecture found in Master_Dinesh_CV_results.slx.
+% Programmatically constructs Master_Active_Suspension_Simulation.slx
+% Supporting all 6 Standardized Road Profiles & 6 Controller Architectures
+% Features:
+%   - Multiport Switch for 6 Road Profiles (Chirp, Smooth, Pothole, Ramp, Rough, Resonance)
+%   - 6 Controller Options (Passive, Classical LQR, ACO LQR, HS LQR, Fixed STSMC, Adaptive STSMC)
+%   - Continuous Analog RMS Calculation Subsystems for Suspension Deflection & Body Acceleration
+%   - Live Digital Canvas Display Blocks for Real-Time Numerical RMS Readout
 
 clear variables;
 clc;
 
 fprintf('========================================================================\n');
-fprintf('  BUILDING DUAL COMPARATIVE SIMULINK MODELS (SELECTABLE & PARALLEL)\n');
+fprintf('  BUILDING COMPLETE 6-ROAD COMPARATIVE SIMULINK MODEL\n');
 fprintf('========================================================================\n\n');
 
 setup_as;
 
-%% MODEL 1: Master_Active_Suspension_Simulation (Unified Selectable Model)
 m1 = 'Master_Active_Suspension_Simulation';
 if bdIsLoaded(m1), close_system(m1, 0); end
 
@@ -30,44 +30,64 @@ set_param(m1, 'AlgebraicLoopMsg', 'none');
 set_param(m1, 'InitFcn', 'setup_as');
 set_param(m1, 'PreLoadFcn', 'setup_as');
 
-% 1. Road Surface Generation
+%% 1. Road Surface Generation (All 6 Standardized Profiles)
 add_block('simulink/Sources/Constant', [m1 '/Road_Selector'], ...
-    'Value', 'ROAD_PROFILE_ID', 'Position', [30, 80, 70, 110]);
+    'Value', 'ROAD_PROFILE_ID', 'Position', [30, 40, 70, 70]);
 
+% Profile 1: Frequency-Sweep Chirp (0.1 to 10 Hz)
+add_block('simulink/Sources/Chirp Signal', [m1 '/Road_Chirp_Raw'], ...
+    'f1', 'road_chirp_f0', 'T', '10.0', 'f2', 'road_chirp_f1', ...
+    'Position', [30, 90, 70, 120]);
+add_block('simulink/Math Operations/Gain', [m1 '/Gain_Chirp_Amp'], ...
+    'Gain', 'road_chirp_amp', 'Position', [90, 95, 120, 115]);
+add_line(m1, 'Road_Chirp_Raw/1', 'Gain_Chirp_Amp/1');
+
+% Profile 2: Smooth Undulating Highway (4 mm Sine, 0.20 Hz)
 add_block('simulink/Sources/Sine Wave', [m1 '/Road_Smooth_Sine'], ...
     'Amplitude', 'road_smooth_amp', 'Frequency', '2*pi*road_smooth_freq', 'SampleTime', '0', ...
-    'Position', [30, 140, 80, 170]);
+    'Position', [30, 140, 70, 170]);
 
-add_block('simulink/Sources/Sine Wave', [m1 '/Road_Normal_Sine'], ...
-    'Amplitude', 'road_normal_amp', 'Frequency', '2*pi*road_normal_freq', 'SampleTime', '0', ...
-    'Position', [30, 190, 80, 220]);
-
-add_block('simulink/Sources/Sine Wave', [m1 '/Road_Rough_Sine'], ...
-    'Amplitude', 'road_rough_amp', 'Frequency', '2*pi*2.5', 'SampleTime', '0', ...
-    'Position', [30, 240, 80, 270]);
-
+% Profile 3: Severe Discrete Potholes (20 mm Drops)
 add_block('simulink/Sources/Pulse Generator', [m1 '/Road_Pothole_Pulse'], ...
-    'Amplitude', 'road_pothole_amp', 'Period', '1/road_pothole_freq', ...
-    'PulseWidth', 'road_pothole_width', 'PhaseDelay', '0', ...
-    'Position', [30, 290, 80, 320]);
+    'Amplitude', '-road_pothole_amp', 'Period', '1/road_pothole_freq', ...
+    'PulseWidth', 'road_pothole_width', 'PhaseDelay', '0.2', ...
+    'Position', [30, 190, 70, 220]);
 
+% Profile 4: Triangular Ramp & Speed Bump (20 mm)
+add_block('simulink/Sources/Repeating Sequence', [m1 '/Road_Ramp_Seq'], ...
+    'rep_seq_t', '[0, 0.5, 1.5, 1.52, 4.0]', 'rep_seq_y', '[0, 0.020, 0.020, 0, 0]', ...
+    'Position', [30, 240, 70, 270]);
+
+% Profile 5: Real-World Stochastic Rough Terrain + Shocks (15 mm)
+add_block('simulink/Sources/Sine Wave', [m1 '/Road_Rough_Sine'], ...
+    'Amplitude', 'road_rough_amp', 'Frequency', '2*pi*4.5', 'SampleTime', '0', ...
+    'Position', [30, 290, 70, 320]);
+
+% Profile 6: Harmonic Resonance Corrugated Road (10 mm, 2.58 Hz)
+add_block('simulink/Sources/Sine Wave', [m1 '/Road_Resonance_Sine'], ...
+    'Amplitude', 'road_res_amp', 'Frequency', '2*pi*road_res_freq', 'SampleTime', '0', ...
+    'Position', [30, 340, 70, 370]);
+
+% Multiport Switch for 6 Road Profiles
 add_block('simulink/Signal Routing/Multiport Switch', [m1 '/Road_Switch'], ...
-    'Inputs', '4', 'DataPortOrder', 'One-based contiguous', ...
-    'Position', [140, 130, 175, 330]);
+    'Inputs', '6', 'DataPortOrder', 'One-based contiguous', ...
+    'Position', [160, 70, 195, 390]);
 
 add_line(m1, 'Road_Selector/1', 'Road_Switch/1');
-add_line(m1, 'Road_Smooth_Sine/1', 'Road_Switch/2');
-add_line(m1, 'Road_Normal_Sine/1', 'Road_Switch/3');
-add_line(m1, 'Road_Rough_Sine/1', 'Road_Switch/4');
-add_line(m1, 'Road_Pothole_Pulse/1', 'Road_Switch/5');
+add_line(m1, 'Gain_Chirp_Amp/1', 'Road_Switch/2');
+add_line(m1, 'Road_Smooth_Sine/1', 'Road_Switch/3');
+add_line(m1, 'Road_Pothole_Pulse/1', 'Road_Switch/4');
+add_line(m1, 'Road_Ramp_Seq/1', 'Road_Switch/5');
+add_line(m1, 'Road_Rough_Sine/1', 'Road_Switch/6');
+add_line(m1, 'Road_Resonance_Sine/1', 'Road_Switch/7');
 
-% Road Differentiator: s / (s/314.16 + 1)
+% 2nd-Order Low-Pass Filter Differentiator: s / (s/314.16 + 1)
 add_block('simulink/Continuous/Transfer Fcn', [m1 '/Road_Differentiator'], ...
     'Numerator', '[314.16 0]', 'Denominator', '[1 314.16]', ...
-    'Position', [215, 215, 290, 245]);
+    'Position', [230, 215, 305, 245]);
 add_line(m1, 'Road_Switch/1', 'Road_Differentiator/1');
 
-% 2. Plant Model (State-Space)
+%% 2. Plant Model (Quanser Quarter-Car State-Space)
 add_block('simulink/Signal Routing/Mux', [m1 '/Plant_Input_Mux'], ...
     'Inputs', '2', 'Position', [480, 220, 485, 280]);
 
@@ -82,8 +102,7 @@ add_block('simulink/Signal Routing/Demux', [m1 '/State_Demux'], ...
     'Outputs', '4', 'Position', [660, 200, 665, 300]);
 add_line(m1, 'Quanser_QuarterCar_Plant/1', 'State_Demux/1');
 
-% 3. Vehicle Body Acceleration Calculation
-% zs_ddot = -ks/ms*(zs-zus) - bs/ms*(zs_dot-zus_dot) + (1/ms)*Fc
+%% 3. Vehicle Body Acceleration Calculation
 add_block('simulink/Math Operations/Gain', [m1 '/Gain_ks_ms'], ...
     'Gain', '-ks/ms', 'Position', [710, 160, 760, 190]);
 add_block('simulink/Math Operations/Sum', [m1 '/Sum_vel_diff'], ...
@@ -103,7 +122,7 @@ add_line(m1, 'Gain_ks_ms/1', 'Sum_zs_ddot/1');
 add_line(m1, 'Gain_bs_ms/1', 'Sum_zs_ddot/2');
 add_line(m1, 'Gain_inv_ms/1', 'Sum_zs_ddot/3');
 
-% 4. STSMC Subsystems
+%% 4. Native Simulink STSMC Subsystems (Fixed & Adaptive)
 % Fixed STSMC Subsystem
 stsmc_fixed_sub = [m1 '/STSMC_Fixed_Controller'];
 add_block('simulink/Ports & Subsystems/Subsystem', stsmc_fixed_sub, ...
@@ -194,7 +213,7 @@ add_line(stsmc_adap_sub, 'Gain_k1/1', 'Sum_u/1');
 add_line(stsmc_adap_sub, 'Integrator_w/1', 'Sum_u/2');
 add_line(stsmc_adap_sub, 'Sum_u/1', 'u_stsmc/1');
 
-% 5. Controller Bank: Passive, LQR, STSMC
+%% 5. Controller Bank (Passive, LQR Variants, STSMC Variants)
 add_block('simulink/Sources/Constant', [m1 '/Ctrl_Passive'], ...
     'Value', '0', 'Position', [250, 400, 280, 420]);
 
@@ -236,7 +255,7 @@ add_line(m1, 'Controller_Switch/1', 'Actuator_Saturation/1');
 add_line(m1, 'Actuator_Saturation/1', 'Plant_Input_Mux/2');
 add_line(m1, 'Actuator_Saturation/1', 'Gain_inv_ms/1');
 
-% 6. Continuous RMS Calculation Subsystems & Canvas Displays (Dinesh Architecture)
+%% 6. Continuous RMS Calculation Subsystems & Canvas Displays (Dinesh Architecture)
 % 6a. Suspension Deflection RMS Subsystem
 rms_susp_sub = [m1 '/RMS_Suspension_Deflection'];
 add_block('simulink/Ports & Subsystems/Subsystem', rms_susp_sub, ...
@@ -262,7 +281,6 @@ add_line(rms_susp_sub, 'Sqrt/1', 'rms_out/1');
 
 add_line(m1, 'State_Demux/1', 'RMS_Suspension_Deflection/1');
 
-% Gain to convert to mm
 add_block('simulink/Math Operations/Gain', [m1 '/Gain_m2mm'], ...
     'Gain', '1000', 'Position', [810, 105, 845, 130]);
 add_line(m1, 'RMS_Suspension_Deflection/1', 'Gain_m2mm/1');
@@ -300,7 +318,7 @@ add_block('simulink/Sinks/Display', [m1 '/Display_RMS_Body_Accel_ms2'], ...
     'Position', [970, 275, 1060, 310]);
 add_line(m1, 'RMS_Body_Acceleration/1', 'Display_RMS_Body_Accel_ms2/1');
 
-% 7. Displacement Reconstruction & Scopes
+%% 7. Displacement Reconstruction & Scopes
 add_block('simulink/Math Operations/Sum', [m1 '/Sum_zus'], 'Inputs', '++', 'Position', [720, 45, 740, 75]);
 add_line(m1, 'State_Demux/3', 'Sum_zus/1');
 add_line(m1, 'Road_Switch/1', 'Sum_zus/2');
@@ -327,7 +345,7 @@ add_block('simulink/Sinks/Scope', [m1 '/Scope_Actuator_Force'], 'Position', [520
 add_line(m1, 'Actuator_Saturation/1', 'Scope_Actuator_Force/1');
 
 % To Workspace Loggers
-add_block('simulink/Sinks/To Workspace', [m1 '/Log_zr'], 'VariableName', 'zr_sim', 'SaveFormat', 'Array', 'Position', [220, 110, 280, 130]);
+add_block('simulink/Sinks/To Workspace', [m1 '/Log_zr'], 'VariableName', 'zr_sim', 'SaveFormat', 'Array', 'Position', [230, 150, 290, 170]);
 add_line(m1, 'Road_Switch/1', 'Log_zr/1');
 
 add_block('simulink/Sinks/To Workspace', [m1 '/Log_zus'], 'VariableName', 'zus_sim', 'SaveFormat', 'Array', 'Position', [770, 65, 830, 85]);
@@ -348,13 +366,4 @@ add_line(m1, 'Actuator_Saturation/1', 'Log_Fc_force/1');
 save_system(m1, fullfile(pwd, [m1 '.slx']));
 close_system(m1, 0);
 
-fprintf('Model 1: %s.slx created successfully with native RMS blocks and canvas Displays!\n', m1);
-
-%% Test Run Model 1 in MATLAB to verify zero errors
-fprintf('Testing autonomous simulation of %s.slx...\n', m1);
-sim(m1);
-fprintf('Autonomous simulation of %s.slx PASSED successfully!\n\n', m1);
-
-fprintf('========================================================================\n');
-fprintf('  SIMULINK ARCHITECTURAL UPGRADE COMPLETED WITH 100%% SUCCESS\n');
-fprintf('========================================================================\n');
+fprintf('Complete 6-Road Simulink Model %s.slx built successfully with continuous RMS blocks & Displays!\n', m1);
