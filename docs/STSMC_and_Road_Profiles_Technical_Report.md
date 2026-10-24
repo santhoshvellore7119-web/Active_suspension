@@ -12,6 +12,16 @@ Automotive suspension design has always been governed by an unyielding mechanica
 
 On a passive suspension, a fixed spring $k_s$ and damper $b_s$ represent an immutable compromise. If the vehicle hits a deep pothole, a soft passive damper bottoms out against the mechanical travel stops ($\pm 38.0\text{ mm}$ on the Quanser platform), transferring harsh impact forces directly into the chassis. Conversely, on high-frequency washboard roads, a stiff damper transmits severe vibrations to the passenger compartment.
 
+To resolve this conflict without compromise, we developed a complete, real-time capable active suspension system featuring:
+1. **A Standardized 6-Road Profile Generator:** Encompassing dynamic speed chirps, gentle highway undulations, discrete pothole drops, speed bump wedges, stochastic ISO Class D terrain, and destructive body-resonance corrugations.
+2. **A Second-Order Super-Twisting Sliding Mode Controller (STSMC):** Providing robust, finite-time disturbance rejection with a smooth, continuous control signal that completely eliminates actuator-damaging chattering.
+3. **Road Surface Index (RSI) Gain Adaptation:** Intelligently scaling control stiffness from plush comfort on smooth asphalt to aggressive energy dissipation over sudden pothole drops.
+
+### Top-Level Simulink System Architecture
+The top-level model preserves the modular Quanser layout, encapsulating the road generation, sensor differentiation, 2-DOF quarter-car plant, STSMC controller, actuator saturation limits, and multi-trace visualization scopes:
+
+![Top-Level Simulink Model Architecture](../figures/Simulink_Root_Model.png)
+
 ```mermaid
 flowchart TD
     subgraph Road_Perception ["1. Road Disturbance Profile Suite (6 Profiles)"]
@@ -51,11 +61,6 @@ flowchart TD
     SAT -->|"Active Force Fc"| QPLANT
     SENSORS -->|"State Feedback x = [x1, x2, x3, x4]"| S_SURF
 ```
-
-To resolve this conflict without compromise, we developed a complete, real-time capable active suspension system featuring:
-1. **A Standardized 6-Road Profile Generator:** Encompassing dynamic speed chirps, gentle highway undulations, discrete pothole drops, speed bump wedges, stochastic ISO Class D terrain, and destructive body-resonance corrugations.
-2. **A Second-Order Super-Twisting Sliding Mode Controller (STSMC):** Providing robust, finite-time disturbance rejection with a smooth, continuous control signal that completely eliminates actuator-damaging chattering.
-3. **Road Surface Index (RSI) Gain Adaptation:** Intelligently scaling control stiffness from plush comfort on smooth asphalt to aggressive energy dissipation over sudden pothole drops.
 
 ---
 
@@ -112,36 +117,38 @@ All parameters directly match the laboratory Quanser active suspension apparatus
 
 ---
 
-## 3. The 6 Standardized Road Profiles: Physics & Formulation
+## 3. The 6 Standardized Road Profiles: Physics, Formulation & Visual Modeling
 
 A control system is only as good as the conditions under which it is proven. Real roads are never purely sinusoidal, nor are they purely random. To thoroughly evaluate the suspension's dynamics across transient, steady-state, broadband, and resonance regimes, we engineered **6 distinct standardized road profiles**.
 
-```mermaid
-flowchart LR
-    SEL["Road Number Selector\nEnter 1 to 6\n(Constant Block)"] --> MUX["Multiport Switch (Mux)"]
-    
-    P1["1: Chirp Generator\n0.1 to 10 Hz\nBandwidth Sweep"] -->|Port 2| MUX
-    P2["2: Smooth Highway Sine\n4 mm, 0.20 Hz\nSteady Comfort"] -->|Port 3| MUX
-    P3["3: Severe Potholes\n-20 mm Step Drops\nTransient Rejection"] -->|Port 4| MUX
-    P4["4: Triangular Ramp\n+20 mm Wedge\nObstacle Stroke"] -->|Port 5| MUX
-    P5["5: Stochastic Rough Terrain\nISO Class D + Spikes\nBroadband Noise"] -->|Port 6| MUX
-    P6["6: Harmonic Resonance\n10 mm, 2.58 Hz\nBody Hop Excitation"] -->|Port 7| MUX
-    
-    MUX --> OUT["zr(t) Outport\n(Road Elevation)"]
-    OUT --> DIFF["2nd-Order Filtered Differentiator\ns / (tau*s + 1)"]
-    DIFF --> ZRDOT["zr_dot(t)\n(Velocity Disturbance)"]
+### Road Surface Generator Subsystem in Simulink
+All 6 road excitation profiles are neatly housed inside the `Road Surface Generator` subsystem and routed through a **6-input Multiport Switch (Mux)** controlled by the **`Enter Road Number (1 to 6)`** constant block:
+
+![Road Surface Generator Subsystem with 6-Profile Multiport Switch](../figures/Simulink_Road_Surface_Generator.png)
+
+```
+[Enter Road Number (1 to 6)] ──> Port 1 (Control Port)
+                                 │
+[Harmonics Generator (Original)] ──> Port 2 (Road 1: Chirp 0.1-10 Hz) ──┐
+[Smooth Undulating Highway Sine] ──> Port 3 (Road 2: Smooth 4 mm Sine)  ──┤
+[Severe Discrete Pothole Drops ] ──> Port 4 (Road 3: Pothole -20 mm)    ──┼──> [Outport: zr]
+[Triangular Ramp & Speed Bump  ] ──> Port 5 (Road 4: Ramp +20 mm)       ──┤
+[Stochastic Rough + Shocks     ] ──> Port 6 (Road 5: ISO Class D Rough) ──┤
+[Harmonic Resonance Corrugation] ──> Port 7 (Road 6: Resonance 2.58 Hz) ──┘
 ```
 
 ---
 
 ### Profile 1: Dynamic Frequency-Sweep Chirp ($0.1 - 10.0\text{ Hz}$)
-* **The Engineering Scenario:** A vehicle accelerating steadily away from a toll plaza over a undulating surface, sweeping from low crawl speeds up to highway speeds.
+* **The Engineering Scenario:** A vehicle accelerating steadily away from a toll plaza over an undulating surface, sweeping from low crawl speeds up to highway speeds.
 * **Why It Matters:** The chirp excites the entire frequency spectrum of the vehicle suspension. As the excitation frequency sweeps linearly through $2.58\text{ Hz}$ (body hop) and approaches $10\text{ Hz}$ (wheel hop), it unmasks any hidden closed-loop phase lags or resonance tendencies in the controller.
 * **Mathematical Formulation:**
   The instantaneous frequency sweeps from $f_0 = 0.1\text{ Hz}$ to $f_1 = 10.0\text{ Hz}$ over the duration $T = 10.0\text{ s}$ with chirp rate $k_{\text{chirp}} = \frac{f_1 - f_0}{T} = 0.99\text{ Hz/s}$:
   $$z_r(t) = A_{\text{chirp}} \sin\left(2\pi\left(f_0 t + \frac{1}{2} k_{\text{chirp}} t^2\right)\right), \quad A_{\text{chirp}} = 0.005\text{ m}\;(5.0\text{ mm})$$
   Disturbance velocity:
   $$\dot{z}_r(t) = A_{\text{chirp}} \cdot 2\pi(f_0 + k_{\text{chirp}} t) \cdot \cos\left(2\pi\left(f_0 t + \frac{1}{2} k_{\text{chirp}} t^2\right)\right)$$
+
+![Profile 1: Frequency Chirp Dynamic Response](../figures/Figure1_Chirp_Comparison.png)
 
 ---
 
@@ -152,6 +159,8 @@ flowchart LR
   $$z_r(t) = A_{\text{smooth}} \sin(2\pi f_{\text{smooth}} t)$$
   $$\text{Parameters: } A_{\text{smooth}} = 0.004\text{ m}\;(4.0\text{ mm}), \quad f_{\text{smooth}} = 0.20\text{ Hz}$$
   $$\dot{z}_r(t) = A_{\text{smooth}} \cdot 2\pi f_{\text{smooth}} \cdot \cos(2\pi f_{\text{smooth}} t)$$
+
+![Profile 2: Smooth Highway Dynamic Response](../figures/Figure2_Smooth_Comparison.png)
 
 ---
 
@@ -164,6 +173,8 @@ flowchart LR
   where $A_{\text{pothole}} = 0.020\text{ m}\;(20.0\text{ mm})$ and period $T_p = 2.0\text{ s}$.
   
   To avoid unphysical infinite acceleration $\dot{z}_r \to \infty$ that violates real tire deformation physics, the derivative $\dot{z}_r(t)$ is passed through a realistic pneumatic compliance rate limiter ($|\dot{z}_r| \le 1.20\text{ m/s}$).
+
+![Profile 3: Severe Potholes Dynamic Response](../figures/Figure3_Pothole_Comparison.png)
 
 ---
 
@@ -179,6 +190,8 @@ flowchart LR
   \end{cases}$$
   $$\text{Parameters: } A_{\text{ramp}} = 0.020\text{ m}\;(20.0\text{ mm}), \quad t_{\text{start}} = 0.5\text{ s}, \quad t_{\text{peak}} = 1.5\text{ s}, \quad t_{\text{drop}} = 0.020\text{ s}$$
 
+![Profile 4: Triangular Ramp & Speed Bump Dynamic Response](../figures/Figure4_Ramp_Comparison.png)
+
 ---
 
 ### Profile 5: Stochastic Rough Terrain + Embedded Shock Spikes (ISO Class D)
@@ -193,6 +206,8 @@ flowchart LR
   $$z_r(t) = \sum_{i=1}^{M} A_i \sin(\omega_i t + \phi_i) + \sum_{j=1}^{N} A_{\text{shock}} \cdot e^{-\frac{(t - t_j)^2}{2\sigma^2}}$$
   $$\text{Parameters: } A_{\text{rough, broadband}} = 15.0\text{ mm peak}, \quad A_{\text{shock}} = 25.0\text{ mm transient spikes at } t \in \{2.5, 6.8\}\text{ s}$$
 
+![Profile 5: Stochastic Rough Terrain + Shocks Dynamic Response](../figures/Figure5_Rough+Shock_Comparison.png)
+
 ---
 
 ### Profile 6: Harmonic Corrugated Resonance Road ($2.58\text{ Hz}$ Body Hop Mode)
@@ -204,6 +219,8 @@ flowchart LR
   $$z_r(t) = A_{\text{res}} \sin(2\pi f_{\text{res}} t)$$
   $$\text{Parameters: } A_{\text{res}} = 0.010\text{ m}\;(10.0\text{ mm}), \quad f_{\text{res}} = 2.58\text{ Hz}$$
   $$\dot{z}_r(t) = A_{\text{res}} \cdot 2\pi f_{\text{res}} \cdot \cos(2\pi f_{\text{res}} t)$$
+
+![Profile 6: Harmonic Corrugated Resonance Road Dynamic Response](../figures/Figure6_Resonance_Comparison.png)
 
 ---
 
@@ -220,6 +237,11 @@ While robust against parameter variations and external disturbances, this discon
 
 ### 4.2 Levant's Super-Twisting Algorithm: Chattering-Free 2nd-Order SMC
 The Super-Twisting algorithm (introduced by Arie Levant) is a **second-order sliding mode** technique designed for systems of relative degree one. It drives both the sliding variable $s(t)$ and its derivative $\dot{s}(t)$ to zero **in finite time**, while generating an inherently **continuous** control signal $u(t)$.
+
+### Internal Simulink Architecture of the STSMC Controller Subsystem
+The internal block implementation in Simulink demonstrates the clean separation into state demultiplexing, sliding surface generation, the non-linear proportional square-root branch, the continuous integrator branch, and the saturation protection:
+
+![Internal Architecture of the STSMC Controller Subsystem](../figures/Simulink_STSMC_Controller.png)
 
 ```mermaid
 flowchart TD
