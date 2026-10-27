@@ -8,6 +8,7 @@ slprj/
 *.log
 *.mat
 !comparative_sweep_results.mat
+!results/*.mat
 
 # OS generated files
 .DS_Store
