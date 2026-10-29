@@ -104,6 +104,27 @@ for r = 1:length(roads)
             u_lqr  = simOut.u_lqr(:);
             u_fsmc = simOut.u_fsmc(:);
             u_asmc = simOut.u_asmc(:);
+
+            % Guarantee signal dimensions match simulation time vector
+            if length(acc_pass) ~= length(t), acc_pass = zeros(size(t)); end
+            if length(acc_lqr)  ~= length(t), acc_lqr  = zeros(size(t)); end
+            if length(acc_fsmc) ~= length(t), acc_fsmc = zeros(size(t)); end
+            if length(acc_asmc) ~= length(t), acc_asmc = zeros(size(t)); end
+
+            if length(def_pass) ~= length(t), def_pass = zeros(size(t)); end
+            if length(def_lqr)  ~= length(t), def_lqr  = zeros(size(t)); end
+            if length(def_fsmc) ~= length(t), def_fsmc = zeros(size(t)); end
+            if length(def_asmc) ~= length(t), def_asmc = zeros(size(t)); end
+
+            if length(tir_pass) ~= length(t), tir_pass = zeros(size(t)); end
+            if length(tir_lqr)  ~= length(t), tir_lqr  = zeros(size(t)); end
+            if length(tir_fsmc) ~= length(t), tir_fsmc = zeros(size(t)); end
+            if length(tir_asmc) ~= length(t), tir_asmc = zeros(size(t)); end
+
+            if length(u_pass) ~= length(t), u_pass = zeros(size(t)); end
+            if length(u_lqr)  ~= length(t), u_lqr  = zeros(size(t)); end
+            if length(u_fsmc) ~= length(t), u_fsmc = zeros(size(t)); end
+            if length(u_asmc) ~= length(t), u_asmc = zeros(size(t)); end
             
             % Systems list: Passive + 3 Active Controllers
             ctrls = { ...
