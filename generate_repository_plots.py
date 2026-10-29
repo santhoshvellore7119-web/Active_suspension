@@ -217,31 +217,37 @@ for r_idx in range(N_roads):
     plt.tight_layout(rect=[0, 0.02, 1, 0.96])
 
     # Save figure with standard repository names
-    sh_name = road_short[r_idx]
-    primary_fname = f"Figure{r_idx+1}_{sh_name}_Comparison.png"
+    sh_name = str(road_short[r_idx])
+    clean_name = sh_name.replace(' ', '_')
+    primary_fname = f"Figure{r_idx+1}_{clean_name}_Comparison.png"
     primary_path = os.path.join(fig_dir, primary_fname)
     plt.savefig(primary_path, dpi=300, facecolor='white', edgecolor='none')
     print(f"  [SAVED] {primary_fname}")
 
     # Backward-compatible aliases for report and artifact linking
-    aliases = []
-    if sh_name in ['Harmonics', 'Chirp']:
-        aliases = ['Figure1_Harmonics_Comparison.png', 'fig5_resonance.png']
-    elif sh_name in ['Pulse', 'Bump']:
-        aliases = ['Figure2_Pulse_Comparison.png']
-    elif sh_name in ['SignalGen_Sine', 'Rough']:
-        aliases = ['Figure3_SignalGen_Sine_Comparison.png', 'fig3_rough.png']
-    elif sh_name in ['Smooth']:
-        aliases = ['Figure4_Smooth_Comparison.png', 'Figure1_Smooth_Comparison.png', 'fig1_smooth.png']
-    elif sh_name in ['Normal']:
-        aliases = ['Figure5_Normal_Comparison.png', 'Figure2_Normal_Comparison.png', 'fig2_normal.png']
-    elif sh_name in ['Pothole']:
-        aliases = ['Figure6_Pothole_Comparison.png', 'Figure4_Pothole_Comparison.png', 'fig4_pothole.png']
+    aliases = [
+        f"Figure{r_idx+1}_{clean_name}_Comparison.png"
+    ]
+    if 'smooth' in sh_name.lower():
+        aliases += ['Figure1_Smooth_Road_Comparison.png', 'Figure1_Smooth_road_Comparison.png', 'Figure4_Smooth_Road_Comparison.png', 'Figure1_Smooth_Comparison.png', 'fig1_smooth.png']
+    elif 'normal' in sh_name.lower():
+        aliases += ['Figure2_Normal_Road_Comparison.png', 'Figure2_Normal_road_Comparison.png', 'Figure5_Normal_Road_Comparison.png', 'Figure2_Normal_Comparison.png', 'fig2_normal.png']
+    elif 'rough' in sh_name.lower():
+        aliases += ['Figure3_Rough_Road_Comparison.png', 'Figure3_Rough_road_Comparison.png', 'fig3_rough.png']
+    elif 'bumpy' in sh_name.lower():
+        aliases += ['Figure4_Bumpy_Road_Comparison.png', 'Figure4_Bumpy_road_Comparison.png', 'Figure7_Bumpy_Road_Comparison.png']
+    elif 'pulse' in sh_name.lower():
+        aliases += ['Figure5_Pulse_Road_Comparison.png', 'Figure5_Pulse_road_Comparison.png', 'Figure8_Pulse_Road_Comparison.png', 'Figure2_Pulse_Comparison.png']
+    elif 'pothole' in sh_name.lower():
+        aliases += ['Figure6_Potholes_Road_Comparison.png', 'Figure6_Potholes_road_Comparison.png', 'Figure6_Pothole_Comparison.png', 'Figure4_Pothole_Comparison.png', 'fig4_pothole.png']
 
-    for al in aliases:
+    for al in set(aliases):
         al_path = os.path.join(fig_dir, al)
-        if al_path != primary_path:
-            shutil.copyfile(primary_path, al_path)
+        if os.path.normcase(al_path) != os.path.normcase(primary_path):
+            try:
+                shutil.copyfile(primary_path, al_path)
+            except shutil.SameFileError:
+                pass
 
     plt.close(fig)
 

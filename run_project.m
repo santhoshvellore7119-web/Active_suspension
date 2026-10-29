@@ -61,8 +61,23 @@ else
     fprintf('    [Notice] Python PDF output: %s\n', strtrim(out_pdf));
 end
 
-% 7. Display Interactive Dynamic Benchmark
-fprintf('Displaying Interactive Dynamic Response for Profile 4 (Smooth Road, Class A)...\n');
+% 7. Open Simulink Model Architecture & Display Interactive Dynamic Benchmark
+fprintf('>>> STEP 7/7: Opening Simulink Model Canvas & Displaying Dynamic Benchmark Plot...\n');
+if exist('Master_Active_Suspension_Clean.slx', 'file')
+    try
+        copyfile('Master_Active_Suspension_Clean.slx', 'Master_Active_Suspension.slx');
+        model_name = 'Master_Active_Suspension';
+    catch
+        model_name = 'Master_Active_Suspension_Clean';
+    end
+else
+    model_name = 'Master_Active_Suspension';
+end
+
+if usejava('desktop')
+    open_system(model_name);
+    fprintf('    [OK] Simulink model canvas opened in editor: %s.slx\n', model_name);
+end
 simulate_case(4, true);
 
 fprintf('========================================================================================\n');

@@ -67,42 +67,49 @@ fprintf('  - Shared input disturbance z_r is identical across all 4 parallel rig
 fprintf('>>> STEP 3 PASSED: 4-rig symmetry and baseline verified.\n\n');
 
 %% Verification Step 4 & 5: Multi-Controller Benchmark Execution
-fprintf('>>> STEP 4 & 5: Executing Multi-Road Benchmark Verification across 6 Profiles...\n');
+fprintf('>>> STEP 4 & 5: Executing Multi-Road Benchmark Verification across all 6 Professor Profiles...\n');
 
-fprintf('--- Test Case A: Harmonics Chirp Excitation (Road 1: 1-8 Hz) ---\n');
+fprintf('--- Test Case 1: Smooth road (Profile 1: 4 mm, 0.2 Hz) ---\n');
 res1 = simulate_case(1, false);
 assert(res1.lqr.pk_def <= 38.0 && res1.fsmc.pk_def <= 38.0 && res1.asmc.pk_def <= 38.0, ...
-    'ERROR: Rail limit exceeded on Road 1!');
+    'ERROR: Rail limit exceeded on Profile 1 (Smooth road)!');
 assert(res1.lqr.pk_u <= 39.201 && res1.fsmc.pk_u <= 39.201 && res1.asmc.pk_u <= 39.201, ...
-    'ERROR: Actuator saturated on Road 1!');
+    'ERROR: Actuator saturated on Profile 1 (Smooth road)!');
 
-fprintf('--- Test Case B: Discrete Pulse Drop (Road 2: 20 mm) ---\n');
+fprintf('--- Test Case 2: Normal road (Profile 2: Resonance 2.58 Hz) ---\n');
 res2 = simulate_case(2, false);
 assert(res2.lqr.pk_def <= 38.0 && res2.fsmc.pk_def <= 38.0 && res2.asmc.pk_def <= 38.0, ...
-    'ERROR: Rail limit exceeded on Road 2!');
+    'ERROR: Rail limit exceeded on Profile 2 (Normal road)!');
 assert(res2.lqr.pk_u <= 39.201 && res2.fsmc.pk_u <= 39.201 && res2.asmc.pk_u <= 39.201, ...
-    'ERROR: Actuator saturated on Road 2!');
+    'ERROR: Actuator saturated on Profile 2 (Normal road)!');
 
-fprintf('--- Test Case C: Smooth Highway (Road 4: ISO Class A, 5 mm) ---\n');
+fprintf('--- Test Case 3: Rough road (Profile 3: 0.1-15 Hz Chirp) ---\n');
+res3 = simulate_case(3, false);
+assert(res3.lqr.pk_def <= 38.0 && res3.fsmc.pk_def <= 38.0 && res3.asmc.pk_def <= 38.0, ...
+    'ERROR: Rail limit exceeded on Profile 3 (Rough road)!');
+assert(res3.lqr.pk_u <= 39.201 && res3.fsmc.pk_u <= 39.201 && res3.asmc.pk_u <= 39.201, ...
+    'ERROR: Actuator saturated on Profile 3 (Rough road)!');
+
+fprintf('--- Test Case 4: Bumpy road (Profile 4: Triangular Ramp) ---\n');
 res4 = simulate_case(4, false);
 assert(res4.lqr.pk_def <= 38.0 && res4.fsmc.pk_def <= 38.0 && res4.asmc.pk_def <= 38.0, ...
-    'ERROR: Rail limit exceeded on Road 4!');
+    'ERROR: Rail limit exceeded on Profile 4 (Bumpy road)!');
 assert(res4.lqr.pk_u <= 39.201 && res4.fsmc.pk_u <= 39.201 && res4.asmc.pk_u <= 39.201, ...
-    'ERROR: Actuator saturated on Road 4!');
+    'ERROR: Actuator saturated on Profile 4 (Bumpy road)!');
 
-fprintf('--- Test Case D: Normal Undulating Road (Road 5: ISO Class B/C) ---\n');
+fprintf('--- Test Case 5: Pulse road (Profile 5: 20 mm Step Drops) ---\n');
 res5 = simulate_case(5, false);
 assert(res5.lqr.pk_def <= 38.0 && res5.fsmc.pk_def <= 38.0 && res5.asmc.pk_def <= 38.0, ...
-    'ERROR: Rail limit exceeded on Road 5!');
+    'ERROR: Rail limit exceeded on Profile 5 (Pulse road)!');
 assert(res5.lqr.pk_u <= 39.201 && res5.fsmc.pk_u <= 39.201 && res5.asmc.pk_u <= 39.201, ...
-    'ERROR: Actuator saturated on Road 5!');
+    'ERROR: Actuator saturated on Profile 5 (Pulse road)!');
 
-fprintf('--- Test Case E: Pothole Road Severe Dips (Road 6) ---\n');
+fprintf('--- Test Case 6: Potholes road (Profile 6: Broadband ISO Class D + Deep Dips) ---\n');
 res6 = simulate_case(6, false);
 assert(res6.lqr.pk_def <= 38.0 && res6.fsmc.pk_def <= 38.0 && res6.asmc.pk_def <= 38.0, ...
-    'ERROR: Rail limit exceeded on Road 6!');
+    'ERROR: Rail limit exceeded on Profile 6 (Potholes road)!');
 assert(res6.lqr.pk_u <= 39.201 && res6.fsmc.pk_u <= 39.201 && res6.asmc.pk_u <= 39.201, ...
-    'ERROR: Actuator saturated on Road 6!');
+    'ERROR: Actuator saturated on Profile 6 (Potholes road)!');
 
 fprintf('========================================================================================\n');
 fprintf('  ALL 5 MASTER VERIFICATION STEPS PASSED SUCCESSFULLY!\n');

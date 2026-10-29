@@ -1,14 +1,14 @@
 % EXPORT_SIM_DATA
-% Runs Master_Active_Suspension.slx across all 6 exact repository road profiles
+% Runs Master_Active_Suspension.slx across all 6 exact professor road profiles
 % and saves time-domain trajectories and summary metrics to results/simulation_trajectories.mat
 %
-% 6 Standard Road Profiles from ananthu0987/Roadprofile_CSelec:
-%   1. Harmonics Generator (Chirp 1-8 Hz, Resonant)
-%   2. Pulse Generator (20 mm Discrete Bump)
-%   3. Signal Generator (20 mm Rectified Sine Bump)
-%   4. Smooth Road (5 mm Sine, Class A)
-%   5. Normal Road (Dual Sine, Class B/C)
-%   6. Pothole Road (Random Texture + Severe Localized Dips)
+% 6 Standard Road Profiles from Professor Specifications:
+%   1. Smooth road   (4 mm, 0.20 Hz Sine Wave)
+%   2. Normal road   (Harmonic Near Body Resonance 2.58 Hz)
+%   3. Rough road    (0.1 - 15.0 Hz Frequency Chirp Sweep)
+%   4. Bumpy road    (Triangular Ramp Obstacle)
+%   5. Pulse road    (20 mm Step Pulse Drops)
+%   6. Potholes road (Broadband ISO Class D + Deep Potholes)
 
 clear variables;
 clc;
@@ -18,15 +18,15 @@ fprintf('  RUNNING FULL SIMULINK SIMULATION SUITE FOR ALL 6 ROAD PROFILES\n');
 fprintf('========================================================================\n\n');
 
 road_names = { ...
-    'Harmonics Generator (Chirp 1-8 Hz, Resonant)', ...
-    'Pulse Generator (20 mm Discrete Bump)', ...
-    'Signal Generator (20 mm Rectified Sine)', ...
-    'Smooth Road (5 mm Sine, Class A)', ...
-    'Normal Road (Dual Sine, Class B/C)', ...
-    'Pothole Road (Random Texture + Dips)' ...
+    'Smooth road', ...
+    'Normal road', ...
+    'Rough road', ...
+    'Bumpy road', ...
+    'Pulse road', ...
+    'Potholes road' ...
 };
-road_short = {'Harmonics', 'Pulse', 'SignalGen_Sine', 'Smooth', 'Normal', 'Pothole'};
-rsi_labels = {'Chirp 1-8 Hz (RSI 0.70)', 'Bump 20mm (RSI 0.85)', 'Sine Bump 20mm (RSI 0.40)', 'Class A (RSI 0.10)', 'Class B/C (RSI 0.35)', 'Potholes (RSI 0.95)'};
+road_short = {'Smooth road', 'Normal road', 'Rough road', 'Bumpy road', 'Pulse road', 'Potholes road'};
+rsi_labels = {'4mm Sine (RSI 0.10)', 'Resonance 2.58Hz (RSI 0.65)', '0.1-15Hz Chirp (RSI 0.75)', 'Triangular Ramp (RSI 0.40)', '20mm Pulse (RSI 0.85)', 'Deep Potholes (RSI 0.95)'};
 
 N_roads = length(road_names);
 sim_data = cell(N_roads, 1);

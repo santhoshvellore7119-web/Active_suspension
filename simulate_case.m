@@ -3,25 +3,25 @@ function results = simulate_case(road_num, show_plot)
 % Compares LQR, Fixed Super-Twisting SMC, and Adaptive Super-Twisting SMC
 % simultaneously on the exact same plant with identical disturbance input.
 %
-% 6 Standard Road Profiles from Reference Repository (ananthu0987/Roadprofile_CSelec):
-%   1 : Harmonics Generator (Chirp / Multi-frequency Resonance, 1-8 Hz)
-%   2 : Discrete Pulse Generator (Periodic Bump/Step Drop, 20 mm, 0.25 Hz)
-%   3 : Continuous Signal Generator (Sinusoidal Road Bump, 20 mm Sine at 0.20 Hz)
-%   4 : Smooth Road (ISO Class A Elevation Variations, 5 mm Sine at 0.50 Hz)
-%   5 : Normal Road (ISO Class B/C Rolling Undulations, Dual Sine 1.2 Hz & 2.8 Hz)
-%   6 : Pothole Road (Random Surface Roughness + Severe Localized Negative Dips)
+% 6 Standard Road Profiles from Professor Specifications:
+%   1 : Smooth road   (4 mm, 0.20 Hz Sine Wave)
+%   2 : Normal road   (Harmonic Near Body Resonance 2.58 Hz)
+%   3 : Rough road    (0.1 - 15.0 Hz Frequency Chirp Sweep)
+%   4 : Bumpy road    (Triangular Ramp Obstacle)
+%   5 : Pulse road    (20 mm Step Pulse Drops)
+%   6 : Potholes road (Broadband ISO Class D + Deep Potholes)
 %
 % Usage:
-%   simulate_case()         % Runs Road 4: Smooth Road (ISO Class A)
-%   simulate_case(1)        % Runs Road 1: Harmonics Generator
-%   simulate_case(2)        % Runs Road 2: Pulse Generator
-%   simulate_case(3)        % Runs Road 3: Signal Generator Sine
-%   simulate_case(4)        % Runs Road 4: Smooth Road
-%   simulate_case(5)        % Runs Road 5: Normal Road
-%   simulate_case(6)        % Runs Road 6: Pothole Road
+%   simulate_case()         % Runs Road 1: Smooth road
+%   simulate_case(1)        % Runs Road 1: Smooth road
+%   simulate_case(2)        % Runs Road 2: Normal road
+%   simulate_case(3)        % Runs Road 3: Rough road
+%   simulate_case(4)        % Runs Road 4: Bumpy road
+%   simulate_case(5)        % Runs Road 5: Pulse road
+%   simulate_case(6)        % Runs Road 6: Potholes road
 
     if nargin < 1 || isempty(road_num)
-        road_num = 4; % Default: Smooth Road
+        road_num = 1; % Default: Smooth road
     end
     if nargin < 2 || isempty(show_plot)
         show_plot = true;
@@ -32,12 +32,12 @@ function results = simulate_case(road_num, show_plot)
     end
 
     road_names = { ...
-        'Harmonics Generator (Chirp 1-8 Hz, Resonant)', ...
-        'Pulse Generator (20 mm Discrete Bump)', ...
-        'Signal Generator (20 mm Rectified Sine)', ...
-        'Smooth Road (5 mm Sine, Class A)', ...
-        'Normal Road (Dual Sine, Class B/C)', ...
-        'Pothole Road (Random Texture + Dips)' ...
+        'Smooth road', ...
+        'Normal road', ...
+        'Rough road', ...
+        'Bumpy road', ...
+        'Pulse road', ...
+        'Potholes road' ...
     };
 
     fprintf('\n========================================================================================\n');
@@ -66,7 +66,7 @@ function results = simulate_case(road_num, show_plot)
     % Run simulation
     simOut = sim(model_name);
 
-    % Extract time and disturbance (guarantee consistent column vectors)
+    % Extract time and disturbance
     t  = simOut.tout(:);
     zr = simOut.zr_sim(:);
 
@@ -91,7 +91,7 @@ function results = simulate_case(road_num, show_plot)
     u_fsmc   = simOut.u_fsmc(:);
     u_asmc   = simOut.u_asmc(:);
 
-    % Ensure consistent lengths for signals that may have come from constant blocks
+    % Ensure consistent lengths
     if length(u_pass) ~= length(t),   u_pass = zeros(size(t)); end
     if length(u_lqr) ~= length(t),    u_lqr = zeros(size(t)); end
     if length(u_fsmc) ~= length(t),   u_fsmc = zeros(size(t)); end
@@ -112,76 +112,77 @@ function results = simulate_case(road_num, show_plot)
     if length(tir_fsmc) ~= length(t), tir_fsmc = zeros(size(t)); end
     if length(tir_asmc) ~= length(t), tir_asmc = zeros(size(t)); end
 
-    % Compute steady-state metrics (after t_settle)
-    t_end = t(end);
-    t_settle = t_end * 0.50;
+    % Performance evaluation window: Steady-state window (t >= 50% duration)
+    t_settle = t(end) * 0.50;
     idx_ss = (t >= t_settle);
 
-    calc_rms = @(x) sqrt(mean(x.^2));
-    calc_pk  = @(x) max(abs(x));
+    calc_metrics = @(acc, defl, tir, u) struct( ...
+        'rms_acc_tot', sqrt(mean(acc.^2)), ...
+        'rms_acc_ss',  sqrt(mean(acc(idx_ss).^2)), ...
+        'pk_acc',      max(abs(acc)), ...
+        'rms_def_tot', sqrt(mean(defl.^2)), ...
+        'rms_def_ss',  sqrt(mean(defl(idx_ss).^2)), ...
+        'pk_def',      max(abs(defl)), ...
+        'rms_tir_tot', sqrt(mean(tir.^2)), ...
+        'rms_tir_ss',  sqrt(mean(tir(idx_ss).^2)), ...
+        'pk_tir',      max(abs(tir)), ...
+        'pk_u',        max(abs(u)), ...
+        'rms_u_tot',   sqrt(mean(u.^2)), ...
+        'rms_u_ss',    sqrt(mean(u(idx_ss).^2)), ...
+        'acc',         acc, ...
+        'def',         defl, ...
+        'tire',        tir, ...
+        'u',           u ...
+    );
 
-    rms_acc_tot = [calc_rms(acc_pass),          calc_rms(acc_lqr),          calc_rms(acc_fsmc),          calc_rms(acc_asmc)];
-    rms_acc_ss  = [calc_rms(acc_pass(idx_ss)), calc_rms(acc_lqr(idx_ss)), calc_rms(acc_fsmc(idx_ss)), calc_rms(acc_asmc(idx_ss))];
-    pk_acc      = [calc_pk(acc_pass),          calc_pk(acc_lqr),          calc_pk(acc_fsmc),          calc_pk(acc_asmc)];
+    results = struct();
+    results.time     = t;
+    results.zr       = zr;
+    results.t_settle = t_settle;
+    results.road_id  = road_num;
+    results.road_name= road_names{road_num};
+    results.pass     = calc_metrics(acc_pass, def_pass, tir_pass, u_pass);
+    results.lqr      = calc_metrics(acc_lqr,  def_lqr,  tir_lqr,  u_lqr);
+    results.fsmc     = calc_metrics(acc_fsmc, def_fsmc, tir_fsmc, u_fsmc);
+    results.asmc     = calc_metrics(acc_asmc, def_asmc, tir_asmc, u_asmc);
 
-    rms_def_ss  = [calc_rms(def_pass(idx_ss)), calc_rms(def_lqr(idx_ss)), calc_rms(def_fsmc(idx_ss)), calc_rms(def_asmc(idx_ss))];
-    pk_def      = [calc_pk(def_pass),          calc_pk(def_lqr),          calc_pk(def_fsmc),          calc_pk(def_asmc)];
-
-    rms_tir_ss  = [calc_rms(tir_pass(idx_ss)), calc_rms(tir_lqr(idx_ss)), calc_rms(tir_fsmc(idx_ss)), calc_rms(tir_asmc(idx_ss))];
-    pk_tir      = [calc_pk(tir_pass),          calc_pk(tir_lqr),          calc_pk(tir_fsmc),          calc_pk(tir_asmc)];
-
-    rms_u_ss    = [calc_rms(u_pass(idx_ss)),   calc_rms(u_lqr(idx_ss)),   calc_rms(u_fsmc(idx_ss)),   calc_rms(u_asmc(idx_ss))];
-    pk_u        = [calc_pk(u_pass),            calc_pk(u_lqr),            calc_pk(u_fsmc),            calc_pk(u_asmc)];
-
-    ctrl_labels = {'0. Open-Loop Passive', '1. Optimal LQR', '2. Fixed STSMC', '3. Adaptive STSMC'};
-
+    % Print formatted table
     fprintf('------------------------------------------------------------------------------------------------------------------------\n');
-    fprintf('Controller           | SS RMS Acc | Tot RMS Acc | Peak Acc  | SS Stroke  | Peak Stroke | Peak Force | Limit Compliance\n');
-    fprintf('                     |   (m/s^2)  |   (m/s^2)   |  (m/s^2)  |    (mm)    |     (mm)    |    (N)     |  [Stroke & Force]\n');
+    fprintf('%-20s | %-10s | %-11s | %-9s | %-10s | %-11s | %-10s | %-17s\n', ...
+        'Controller', 'SS RMS Acc', 'Tot RMS Acc', 'Peak Acc', 'SS Stroke', 'Peak Stroke', 'Peak Force', 'Limit Compliance');
+    fprintf('%-20s | %-10s | %-11s | %-9s | %-10s | %-11s | %-10s | %-17s\n', ...
+        '', '(m/s^2)', '(m/s^2)', '(m/s^2)', '(mm)', '(mm)', '(N)', '[Stroke & Force]');
     fprintf('---------------------+------------+-------------+-----------+------------+-------------+------------+--------------------\n');
-    for c = 2:4
-        fprintf('%-20s | %10.4f | %11.4f | %9.4f | %10.3f | %11.3f | %10.2f |    [PASS SAFE]\n', ...
-            ctrl_labels{c}, rms_acc_ss(c), rms_acc_tot(c), pk_acc(c), rms_def_ss(c), pk_def(c), pk_u(c));
+
+    ctrl_list = {'Optimal LQR', 'Fixed STSMC', 'Adaptive STSMC'};
+    res_list  = {results.lqr, results.fsmc, results.asmc};
+
+    for i = 1:length(ctrl_list)
+        c = res_list{i};
+        pass_str = '[PASS SAFE]';
+        if c.pk_def > 38.0 || c.pk_u > 39.201
+            pass_str = '[VIOLATION]';
+        end
+        fprintf('%d. %-17s | %10.4f | %11.4f | %9.4f | %10.3f | %11.3f | %10.2f |    %-17s\n', ...
+            i, ctrl_list{i}, c.rms_acc_ss, c.rms_acc_tot, c.pk_acc, c.rms_def_ss, c.pk_def, c.pk_u, pass_str);
     end
     fprintf('------------------------------------------------------------------------------------------------------------------------\n');
     fprintf('Hardware Limit Compliance:\n');
     fprintf('  - Rail Travel Limit (+/- 38.0 mm): LQR [%s] | Fixed SMC [%s] | Adaptive SMC [%s]\n', ...
-        check_pass(pk_def(2) <= 38.0), check_pass(pk_def(3) <= 38.0), check_pass(pk_def(4) <= 38.0));
+        check_lim(results.lqr.pk_def, 38.0), check_lim(results.fsmc.pk_def, 38.0), check_lim(results.asmc.pk_def, 38.0));
     fprintf('  - Motor Force Limit (+/- 39.2 N) : LQR [%s] | Fixed SMC [%s] | Adaptive SMC [%s]\n', ...
-        check_pass(pk_u(2) <= 39.201), check_pass(pk_u(3) <= 39.201), check_pass(pk_u(4) <= 39.201));
+        check_lim(results.lqr.pk_u, 39.2), check_lim(results.fsmc.pk_u, 39.2), check_lim(results.asmc.pk_u, 39.2));
     fprintf('========================================================================================================================\n\n');
 
-    % Pack results struct
-    results.time     = t;
-    results.t_settle = t_settle;
-    results.zr       = zr;
-    results.pass     = struct('acc', acc_pass, 'def', def_pass, 'tire', tir_pass, 'u', u_pass, ...
-                              'rms_acc_ss', rms_acc_ss(1), 'rms_acc_tot', rms_acc_tot(1), 'pk_acc', pk_acc(1), ...
-                              'rms_def_ss', rms_def_ss(1), 'pk_def', pk_def(1), 'pk_u', pk_u(1), 'rms_u_ss', rms_u_ss(1));
-    results.lqr      = struct('acc', acc_lqr,  'def', def_lqr,  'tire', tir_lqr,  'u', u_lqr,  ...
-                              'rms_acc_ss', rms_acc_ss(2), 'rms_acc_tot', rms_acc_tot(2), 'pk_acc', pk_acc(2), ...
-                              'rms_def_ss', rms_def_ss(2), 'pk_def', pk_def(2), 'pk_u', pk_u(2), 'rms_u_ss', rms_u_ss(2));
-    results.fsmc     = struct('acc', acc_fsmc, 'def', def_fsmc, 'tire', tir_fsmc, 'u', u_fsmc, ...
-                              'rms_acc_ss', rms_acc_ss(3), 'rms_acc_tot', rms_acc_tot(3), 'pk_acc', pk_acc(3), ...
-                              'rms_def_ss', rms_def_ss(3), 'pk_def', pk_def(3), 'pk_u', pk_u(3), 'rms_u_ss', rms_u_ss(3));
-    results.asmc     = struct('acc', acc_asmc, 'def', def_asmc, 'tire', tir_asmc, 'u', u_asmc, ...
-                              'rms_acc_ss', rms_acc_ss(4), 'rms_acc_tot', rms_acc_tot(4), 'pk_acc', pk_acc(4), ...
-                              'rms_def_ss', rms_def_ss(4), 'pk_def', pk_def(4), 'pk_u', pk_u(4), 'rms_u_ss', rms_u_ss(4));
-
-    % Plotting if requested
     if show_plot
-        try
-            plot_comparisons(results, road_names{road_num});
-        catch ME
-            fprintf('Plot notice: %s\n', ME.message);
-        end
+        plot_comparisons(results, road_names{road_num});
     end
 end
 
-function str = check_pass(cond)
-    if cond
+function str = check_lim(val, lim)
+    if val <= lim + 0.001
         str = 'PASS [SAFE]';
     else
-        str = 'FAIL [EXCEEDED]';
+        str = 'EXCEEDED';
     end
 end

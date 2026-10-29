@@ -34,7 +34,7 @@ if ~bdIsLoaded(model_name), load_system(model_name); end
 
 % Define parameter variations
 roads = [1, 2, 3, 4, 5, 6];
-road_labels = {'Harmonics_Chirp', 'Pulse_Bump', 'SignalGen_Sine', 'Smooth_ClassA', 'Normal_ClassBC', 'Pothole_Dips'};
+road_labels = {'Smooth_road', 'Normal_road', 'Rough_road', 'Bumpy_road', 'Pulse_road', 'Potholes_road'};
 
 mass_variations = [2.45, 3.20, 1.95];
 mass_labels     = {'Nominal_2.45kg', 'Loaded_3.20kg', 'Light_1.95kg'};
