@@ -220,4 +220,5 @@ The complete, rigorous IEEE Access format research paper is included in `docs/`:
 - **Santhosh G** — `25BEL0016`
 - **Ananthakrishnan R** — `25BEL0005`
 
-*B.Tech Electrical and Computer Science*
+**Subject:** Control Systems  
+**Program:** B.Tech Electrical and Computer Science
