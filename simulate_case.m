@@ -20,6 +20,13 @@ function results = simulate_case(road_num, show_plot)
 %   simulate_case(5)        % Runs Road 5: Pulse road
 %   simulate_case(6)        % Runs Road 6: Potholes road
 
+    % Ensure current directory is the project directory
+    proj_dir = fileparts(mfilename('fullpath'));
+    if ~isempty(proj_dir) && ~strcmp(pwd, proj_dir)
+        cd(proj_dir);
+        addpath(genpath(proj_dir));
+    end
+
     if nargin < 1 || isempty(road_num)
         road_num = 1; % Default: Smooth road
     end

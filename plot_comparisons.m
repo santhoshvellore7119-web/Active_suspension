@@ -167,6 +167,15 @@ function fig = plot_comparisons(res, road_title, fig_num)
 
     linkaxes([ax1, ax2, ax3], 'x');
 
-    if ~exist('results', 'dir'), mkdir('results'); end
-    saveas(fig, fullfile('results', 'last_simulation_response.png'));
+    % Save copy to results directory safely without interrupting plot display
+    try
+        proj_dir = fileparts(mfilename('fullpath'));
+        if isempty(proj_dir), proj_dir = pwd; end
+        res_dir = fullfile(proj_dir, 'results');
+        if ~exist(res_dir, 'dir'), mkdir(res_dir); end
+        saveas(fig, fullfile(res_dir, sprintf('Figure%d_Simulation_Response.png', fig_num)));
+        saveas(fig, fullfile(res_dir, 'last_simulation_response.png'));
+    catch
+        % Non-critical background disk write failure should never stop the figure display
+    end
 end

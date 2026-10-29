@@ -25,6 +25,13 @@ function run_simulink_and_plots(road_id)
 %   run_simulink_and_plots(5)       % Opens Simulink model and plots Road 5: Pulse road (Figure 5)
 %   run_simulink_and_plots(6)       % Opens Simulink model and plots Road 6: Potholes road (Figure 6)
 
+    % Auto-align MATLAB directory to project folder
+    proj_dir = fileparts(mfilename('fullpath'));
+    if ~isempty(proj_dir) && ~strcmp(pwd, proj_dir)
+        cd(proj_dir);
+        addpath(genpath(proj_dir));
+    end
+
     if nargin < 1 || isempty(road_id) || (ischar(road_id) && strcmpi(road_id, 'all'))
         run_roads = 1:6;
     elseif ischar(road_id)
