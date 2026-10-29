@@ -13,7 +13,6 @@ mu   = 1.00;     % Unsprung mass / Tire & wheel mass (kg)
 mus  = mu;       % Alias for compatibility with original Quanser models
 bs   = 7.5;      % Suspension inherent damping coefficient (N-s/m)
 bus  = 5.0;      % Tire inherent damping coefficient (N-s/m)
-
 if ~exist('SPRING_CONFIG', 'var')
     SPRING_CONFIG = 1;
 end

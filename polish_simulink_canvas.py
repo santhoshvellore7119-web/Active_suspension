@@ -139,9 +139,10 @@ with zipfile.ZipFile(slx_file, 'w', compression=zipfile.ZIP_DEFLATED) as z_out:
             arcname = os.path.relpath(filepath, temp_dir)
             z_out.write(filepath, arcname)
 
-# Also update Master_Active_Suspension_Simulation.slx
+# Also update Master_Active_Suspension_Simulation.slx and Master_Active_Suspension.slx
 shutil.copyfile(slx_file, 'Master_Active_Suspension_Simulation.slx')
-print("Polished Master_Active_Suspension_Clean.slx & Master_Active_Suspension_Simulation.slx created successfully!")
+shutil.copyfile(slx_file, 'Master_Active_Suspension.slx')
+print("Polished Master_Active_Suspension_Clean.slx, Master_Active_Suspension.slx & Master_Active_Suspension_Simulation.slx created successfully!")
 
 # Clean up temp directory
 shutil.rmtree(temp_dir)
