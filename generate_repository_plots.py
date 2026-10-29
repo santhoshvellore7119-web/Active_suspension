@@ -44,10 +44,16 @@ N_roads = len(sim_data)
 # EXACT 3 CONTROLLERS REQUESTED: LQR, Fixed STSMC, Adaptive STSMC
 sys_keys = ['lqr', 'fsmc', 'asmc']
 
+# Ultra-High-Contrast Distinct Color Palette:
+# 1. Optimal LQR:      Deep Cobalt Blue (#0044CC), dashed '--', 2.4 pt (Luminance ~0.15)
+# 2. Fixed STSMC:      Vivid Crimson Red (#CC0000), dash-dot '-.', 2.4 pt (Luminance ~0.28)
+# 3. Adaptive STSMC:   Deep Forest Emerald Green (#006622), solid '-', 2.8 pt (Luminance ~0.20)
+# When curves coincide (e.g., Road 2 & Road 5), solid green base with red dash-dot and blue dashes
+# on top guarantees ALL 3 COLORS are vivid, sharp, and 100% visible on white and in print.
 styles = {
-    'lqr':  {'color': '#1f77b4', 'ls': '--', 'lw': 1.8, 'label': 'Optimal LQR'},
-    'fsmc': {'color': '#ff7f0e', 'ls': '-.', 'lw': 1.8, 'label': 'Fixed STSMC'},
-    'asmc': {'color': '#2ca02c', 'ls': '-',  'lw': 1.8, 'label': 'Adaptive STSMC'}
+    'lqr':  {'color': '#0044CC', 'ls': '--', 'lw': 2.4, 'label': 'Optimal LQR',     'zorder': 4},
+    'fsmc': {'color': '#CC0000', 'ls': '-.', 'lw': 2.4, 'label': 'Fixed STSMC',    'zorder': 3},
+    'asmc': {'color': '#006622', 'ls': '-',  'lw': 2.8, 'label': 'Adaptive STSMC', 'zorder': 2}
 }
 
 # Collect summary metrics across all roads for 3 controllers
@@ -103,75 +109,85 @@ for r_idx in range(N_roads):
     # Subplot 1: Sprung Mass Body Acceleration (Ride Comfort)
     # -------------------------------------------------------------
     ax1.set_facecolor('white')
-    ax1.grid(True)
-    ax1.axvline(t_settle, color='#888888', linestyle=':', linewidth=1.0)
+    ax1.grid(True, linestyle=':', color='#cccccc', alpha=0.7)
+    ax1.axvline(t_settle, color='#666666', linestyle=':', linewidth=1.2)
     
     acc_all = [trajs[k]['acc'].item() for k in sys_keys]
     max_acc = np.max([np.max(np.abs(a)) for a in acc_all])
     if max_acc < 0.05: max_acc = 0.05
 
     ax1.text(t_settle + 0.1, 0.82 * max_acc * 1.25,
-             r'Steady-State Window ($t \geq 5$ s)', fontsize=8.5, color='#555555', fontstyle='italic')
+             r'Steady-State Window ($t \geq 5$ s)', fontsize=8.5, color='#444444', fontstyle='italic')
 
-    for k in sys_keys:
+    # Plot in z-order: Adaptive STSMC solid base first, then Fixed STSMC dash-dot, then LQR dashed
+    plot_handles = {}
+    for k in ['asmc', 'fsmc', 'lqr']:
         acc = trajs[k]['acc'].item()
         ss_rms = trajs[k]['rms_acc_ss'].item()
         lbl = f"{styles[k]['label']} (SS RMS: {ss_rms:.3f} m/s² | Peak: {np.max(np.abs(acc)):.3f})"
-        ax1.plot(t, acc, color=styles[k]['color'], linestyle=styles[k]['ls'],
-                 linewidth=styles[k]['lw'], label=lbl)
+        line_obj, = ax1.plot(t, acc, color=styles[k]['color'], linestyle=styles[k]['ls'],
+                             linewidth=styles[k]['lw'], label=lbl, zorder=styles[k]['zorder'])
+        plot_handles[k] = line_obj
 
     ax1.set_ylabel('Body Accel (m/s²)', fontsize=11, fontweight='bold', color='black')
     ax1.set_ylim([-max_acc * 1.30, max_acc * 1.30])
-    ax1.legend(loc='upper right', fontsize=9.0, ncol=3, framealpha=0.95,
-               facecolor='white', edgecolor='#cccccc')
+    ordered_handles = [plot_handles['lqr'], plot_handles['fsmc'], plot_handles['asmc']]
+    ax1.legend(handles=ordered_handles, loc='upper right', fontsize=9.0, ncol=3, framealpha=0.96,
+               facecolor='white', edgecolor='#aaaaaa')
 
     # -------------------------------------------------------------
     # Subplot 2: Suspension Travel Stroke (z_s - z_us)
     # -------------------------------------------------------------
     ax2.set_facecolor('white')
-    ax2.grid(True)
-    ax2.axvline(t_settle, color='#888888', linestyle=':', linewidth=1.0)
+    ax2.grid(True, linestyle=':', color='#cccccc', alpha=0.7)
+    ax2.axvline(t_settle, color='#666666', linestyle=':', linewidth=1.2)
 
-    for k in sys_keys:
+    plot_handles_2 = {}
+    for k in ['asmc', 'fsmc', 'lqr']:
         defl = trajs[k]['def'].item()
         pk = trajs[k]['pk_def'].item()
         lbl = f"{styles[k]['label']} (Peak: {pk:.1f} mm)"
-        ax2.plot(t, defl, color=styles[k]['color'], linestyle=styles[k]['ls'],
-                 linewidth=styles[k]['lw'], label=lbl)
+        line_obj, = ax2.plot(t, defl, color=styles[k]['color'], linestyle=styles[k]['ls'],
+                             linewidth=styles[k]['lw'], label=lbl, zorder=styles[k]['zorder'])
+        plot_handles_2[k] = line_obj
 
     ax2.set_ylabel('Susp. Travel (mm)', fontsize=11, fontweight='bold', color='black')
     def_all = [trajs[k]['def'].item() for k in sys_keys]
     max_def = np.max([np.max(np.abs(d)) for d in def_all])
 
     # Dynamic Zooming: Zoom comfortably around signal
+    ordered_handles_2 = [plot_handles_2['lqr'], plot_handles_2['fsmc'], plot_handles_2['asmc']]
     if max_def < 25.0:
         y_lim_def = max(max_def * 1.35, 1.0)
         ax2.set_ylim([-y_lim_def, y_lim_def])
         ax2.text(0.02, 0.88, f"Rail Travel Limit: ±38.0 mm | Max Active: {max_def:.1f} mm [PASS: SAFE]",
-                 transform=ax2.transAxes, fontsize=8.5, fontweight='bold', color='#1a73e8',
-                 bbox=dict(boxstyle='square,pad=0.3', facecolor='#f1f8ff', edgecolor='#99c2ff'))
+                 transform=ax2.transAxes, fontsize=8.5, fontweight='bold', color='#0044CC',
+                 bbox=dict(boxstyle='square,pad=0.3', facecolor='#f0f4ff', edgecolor='#99b3ff'))
     else:
         y_lim_def = max(max_def * 1.15, 42.0)
         ax2.set_ylim([-y_lim_def, y_lim_def])
-        ax2.axhline(38.0, color='red', linestyle='--', linewidth=1.2, label='Travel Limit (+38 mm)')
-        ax2.axhline(-38.0, color='red', linestyle='--', linewidth=1.2)
+        h_lim = ax2.axhline(38.0, color='#333333', linestyle='--', linewidth=1.3, label='Travel Limit (±38 mm)')
+        ax2.axhline(-38.0, color='#333333', linestyle='--', linewidth=1.3)
+        ordered_handles_2.append(h_lim)
 
-    ax2.legend(loc='lower right', fontsize=9.0, ncol=3, framealpha=0.95,
-               facecolor='white', edgecolor='#cccccc')
+    ax2.legend(handles=ordered_handles_2, loc='lower right', fontsize=9.0, ncol=3, framealpha=0.96,
+               facecolor='white', edgecolor='#aaaaaa')
 
     # -------------------------------------------------------------
     # Subplot 3: Actuator Control Force Demand
     # -------------------------------------------------------------
     ax3.set_facecolor('white')
-    ax3.grid(True)
-    ax3.axvline(t_settle, color='#888888', linestyle=':', linewidth=1.0)
+    ax3.grid(True, linestyle=':', color='#cccccc', alpha=0.7)
+    ax3.axvline(t_settle, color='#666666', linestyle=':', linewidth=1.2)
 
-    for k in sys_keys:
+    plot_handles_3 = {}
+    for k in ['asmc', 'fsmc', 'lqr']:
         u_sig = trajs[k]['u'].item()
         pk = trajs[k]['pk_u'].item()
         lbl = f"{styles[k]['label']} (Peak: {pk:.1f} N)"
-        ax3.plot(t, u_sig, color=styles[k]['color'], linestyle=styles[k]['ls'],
-                 linewidth=styles[k]['lw'], label=lbl)
+        line_obj, = ax3.plot(t, u_sig, color=styles[k]['color'], linestyle=styles[k]['ls'],
+                             linewidth=styles[k]['lw'], label=lbl, zorder=styles[k]['zorder'])
+        plot_handles_3[k] = line_obj
 
     ax3.set_ylabel('Control Force (N)', fontsize=11, fontweight='bold', color='black')
     ax3.set_xlabel('Time (s)', fontsize=11, fontweight='bold', color='black')
@@ -181,20 +197,22 @@ for r_idx in range(N_roads):
     max_u = np.max([np.max(np.abs(u)) for u in u_all])
 
     # Dynamic Zooming for force
+    ordered_handles_3 = [plot_handles_3['lqr'], plot_handles_3['fsmc'], plot_handles_3['asmc']]
     if max_u < 30.0:
         y_lim_u = max(max_u * 1.35, 1.5)
         ax3.set_ylim([-y_lim_u, y_lim_u])
         ax3.text(0.02, 0.88, f"Motor Saturation Limit: ±39.2 N | Peak Commanded: {max_u:.1f} N [PASS: SAFE]",
-                 transform=ax3.transAxes, fontsize=8.5, fontweight='bold', color='#1e7e34',
-                 bbox=dict(boxstyle='square,pad=0.3', facecolor='#f4fbf4', edgecolor='#94d3a2'))
+                 transform=ax3.transAxes, fontsize=8.5, fontweight='bold', color='#006622',
+                 bbox=dict(boxstyle='square,pad=0.3', facecolor='#f0f8f2', edgecolor='#80c294'))
     else:
         y_lim_u = max(max_u * 1.15, 44.0)
         ax3.set_ylim([-y_lim_u, y_lim_u])
-        ax3.axhline(39.2, color='black', linestyle='--', linewidth=1.2, label='Saturation (±39.2 N)')
-        ax3.axhline(-39.2, color='black', linestyle='--', linewidth=1.2)
+        h_sat = ax3.axhline(39.2, color='#333333', linestyle='--', linewidth=1.3, label='Saturation (±39.2 N)')
+        ax3.axhline(-39.2, color='#333333', linestyle='--', linewidth=1.3)
+        ordered_handles_3.append(h_sat)
 
-    ax3.legend(loc='lower right', fontsize=9.0, ncol=3, framealpha=0.95,
-               facecolor='white', edgecolor='#cccccc')
+    ax3.legend(handles=ordered_handles_3, loc='lower right', fontsize=9.0, ncol=3, framealpha=0.96,
+               facecolor='white', edgecolor='#aaaaaa')
 
     plt.tight_layout(rect=[0, 0.02, 1, 0.96])
 
@@ -235,29 +253,40 @@ fig_dash.suptitle('Multi-Controller Performance Evaluation (LQR vs. Fixed STSMC 
 
 x_pos = np.arange(N_roads)
 bar_width = 0.24
-c_bars = ['#1f77b4', '#ff7f0e', '#2ca02c']
+c_bars = ['#0044CC', '#CC0000', '#006622']
+edge_colors = ['#002266', '#660000', '#003311']
 ctrl_labels = ['Optimal LQR', 'Fixed STSMC', 'Adaptive STSMC']
 
 # Subplot 1: RMS Body Acceleration
 ax = axs[0, 0]
 ax.set_facecolor('white')
-ax.grid(True, axis='y')
+ax.grid(True, axis='y', linestyle=':', color='#cccccc', alpha=0.7)
 for c_i in range(3):
-    ax.bar(x_pos + (c_i - 1.0) * bar_width, summary['rms_acc_ss'][:, c_i],
-           width=bar_width, color=c_bars[c_i], label=ctrl_labels[c_i])
+    bars = ax.bar(x_pos + (c_i - 1.0) * bar_width, summary['rms_acc_ss'][:, c_i],
+                  width=bar_width, color=c_bars[c_i], edgecolor=edge_colors[c_i], linewidth=1.2, label=ctrl_labels[c_i])
+    for bar in bars:
+        h = bar.get_height()
+        if h > 0.001:
+            ax.text(bar.get_x() + bar.get_width()/2.0, h + 0.015, f'{h:.3f}',
+                    ha='center', va='bottom', fontsize=7.0, fontweight='bold', color='#111111', rotation=25)
 ax.set_title('Ride Comfort: Steady-State RMS Body Accel (Lower is Better)', fontsize=11, fontweight='bold')
 ax.set_ylabel('RMS Body Accel (m/s²)', fontsize=10, fontweight='bold')
 ax.set_xticks(x_pos)
 ax.set_xticklabels([f"{road_short[i]}\n({rsi_labels[i]})" for i in range(N_roads)], fontsize=8.5)
-ax.legend(loc='upper left', fontsize=9.0, framealpha=0.95)
+ax.legend(loc='upper left', fontsize=9.0, framealpha=0.96, facecolor='white', edgecolor='#aaaaaa')
 
 # Subplot 2: RMS Suspension Deflection
 ax = axs[0, 1]
 ax.set_facecolor('white')
-ax.grid(True, axis='y')
+ax.grid(True, axis='y', linestyle=':', color='#cccccc', alpha=0.7)
 for c_i in range(3):
-    ax.bar(x_pos + (c_i - 1.0) * bar_width, summary['rms_def_ss'][:, c_i],
-           width=bar_width, color=c_bars[c_i], label=ctrl_labels[c_i])
+    bars = ax.bar(x_pos + (c_i - 1.0) * bar_width, summary['rms_def_ss'][:, c_i],
+                  width=bar_width, color=c_bars[c_i], edgecolor=edge_colors[c_i], linewidth=1.2, label=ctrl_labels[c_i])
+    for bar in bars:
+        h = bar.get_height()
+        if h > 0.1:
+            ax.text(bar.get_x() + bar.get_width()/2.0, h + 0.15, f'{h:.2f}',
+                    ha='center', va='bottom', fontsize=7.0, fontweight='bold', color='#111111', rotation=25)
 ax.set_title('Suspension Stroke: Steady-State RMS Deflection (Lower is Better)', fontsize=11, fontweight='bold')
 ax.set_ylabel('RMS Susp. Deflection (mm)', fontsize=10, fontweight='bold')
 ax.set_xticks(x_pos)
@@ -266,25 +295,35 @@ ax.set_xticklabels([f"{road_short[i]}\n({rsi_labels[i]})" for i in range(N_roads
 # Subplot 3: Peak Control Force
 ax = axs[1, 0]
 ax.set_facecolor('white')
-ax.grid(True, axis='y')
+ax.grid(True, axis='y', linestyle=':', color='#cccccc', alpha=0.7)
 for c_i in range(3):
-    ax.bar(x_pos + (c_i - 1.0) * bar_width, summary['pk_force'][:, c_i],
-           width=bar_width, color=c_bars[c_i], label=ctrl_labels[c_i])
-ax.axhline(39.2, color='red', linestyle='--', linewidth=1.5, label='Actuator Limit (39.2 N)')
+    bars = ax.bar(x_pos + (c_i - 1.0) * bar_width, summary['pk_force'][:, c_i],
+                  width=bar_width, color=c_bars[c_i], edgecolor=edge_colors[c_i], linewidth=1.2, label=ctrl_labels[c_i])
+    for bar in bars:
+        h = bar.get_height()
+        if h > 0.5:
+            ax.text(bar.get_x() + bar.get_width()/2.0, h + 0.6, f'{h:.1f}',
+                    ha='center', va='bottom', fontsize=7.0, fontweight='bold', color='#111111', rotation=25)
+ax.axhline(39.2, color='#222222', linestyle='--', linewidth=1.5, label='Actuator Limit (39.2 N)')
 ax.set_title('Actuator Demand: Peak Control Force (Limit <= 39.2 N)', fontsize=11, fontweight='bold')
 ax.set_ylabel('Peak Control Force (N)', fontsize=10, fontweight='bold')
-ax.set_ylim([0, 44])
+ax.set_ylim([0, 46])
 ax.set_xticks(x_pos)
 ax.set_xticklabels([f"{road_short[i]}\n({rsi_labels[i]})" for i in range(N_roads)], fontsize=8.5)
-ax.legend(loc='upper left', fontsize=9.0, framealpha=0.95)
+ax.legend(loc='upper left', fontsize=9.0, framealpha=0.96, facecolor='white', edgecolor='#aaaaaa')
 
 # Subplot 4: RMS Dynamic Tire Deflection
 ax = axs[1, 1]
 ax.set_facecolor('white')
-ax.grid(True, axis='y')
+ax.grid(True, axis='y', linestyle=':', color='#cccccc', alpha=0.7)
 for c_i in range(3):
-    ax.bar(x_pos + (c_i - 1.0) * bar_width, summary['rms_tire_ss'][:, c_i],
-           width=bar_width, color=c_bars[c_i], label=ctrl_labels[c_i])
+    bars = ax.bar(x_pos + (c_i - 1.0) * bar_width, summary['rms_tire_ss'][:, c_i],
+                  width=bar_width, color=c_bars[c_i], edgecolor=edge_colors[c_i], linewidth=1.2, label=ctrl_labels[c_i])
+    for bar in bars:
+        h = bar.get_height()
+        if h > 0.1:
+            ax.text(bar.get_x() + bar.get_width()/2.0, h + 0.08, f'{h:.2f}',
+                    ha='center', va='bottom', fontsize=7.0, fontweight='bold', color='#111111', rotation=25)
 ax.set_title('Road Holding: Steady-State RMS Tire Deflection (Lower is Better)', fontsize=11, fontweight='bold')
 ax.set_ylabel('RMS Tire Deflection (mm)', fontsize=10, fontweight='bold')
 ax.set_xticks(x_pos)

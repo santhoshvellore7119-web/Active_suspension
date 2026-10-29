@@ -339,15 +339,15 @@ fprintf('Benchmark dataset exported successfully to %s\n\n', csv_filename);
 fprintf('Generating IEEE publication-grade comparative figures for all 6 road profiles...\n');
 
 colors = {
-    [0.45, 0.45, 0.45], ... % Passive (Gray)
-    [0.85, 0.33, 0.10], ... % Classical LQR (Red-Orange)
-    [0.93, 0.69, 0.13], ... % ACO-LQR (Gold)
-    [0.49, 0.18, 0.56], ... % HS-LQR (Purple)
-    [0.00, 0.45, 0.74], ... % Fixed STSMC (Blue)
-    [0.10, 0.65, 0.25]  ... % Adaptive STSMC (Emerald Green)
+    [0.35, 0.35, 0.35], ... % Passive (Charcoal Gray)
+    [0.00, 0.25, 0.70], ... % Classical LQR (Deep Cobalt Blue)
+    [0.90, 0.60, 0.00], ... % ACO-LQR (Amber)
+    [0.45, 0.12, 0.55], ... % HS-LQR (Deep Purple)
+    [0.82, 0.05, 0.05], ... % Fixed STSMC (Vivid Crimson Red)
+    [0.00, 0.45, 0.18]  ... % Adaptive STSMC (Deep Forest Emerald Green)
 };
-line_styles = {'-', '--', '-.', ':', '-', '-'};
-line_widths = {1.2, 1.4, 1.4, 1.4, 1.8, 2.0};
+line_styles = {'-', '--', '-.', ':', '-.', '-'};
+line_widths = {1.3, 2.2, 1.8, 1.8, 2.4, 2.8};
 
 for r = 1:N_roads
     fig = figure(r);
