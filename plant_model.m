@@ -22,17 +22,17 @@ B = [ 0,         0;
 % Output matrices for Simulink State-Space blocks:
 % Outputs:
 %   y(1:4) = [x1; x2; x3; x4]     : Full state vector
-%   y(5)   = zs_ddot               : Sprung body vertical acceleration (m/s^2)
-%   y(6)   = zs - zus              : Relative suspension stroke (m)
-%   y(7)   = zus - zr              : Dynamic tire deflection (m)
+%   y(5)   = suspension deflection : zs - zus (m)
+%   y(6)   = zs_ddot               : Sprung body acceleration (m/s^2)
 
-C_sim = [ eye(4);
-         -ks/ms, -bs/ms, 0, bs/ms;
-          1,      0,     0,  0;
-          0,      0,     1,  0 ];
+C = [ 1, 0, 0, 0;
+      -ks/ms, -bs/ms, 0, bs/ms ];
 
-D_sim = zeros(7, 2);
-D_sim(5, 2) = 1/ms; % Direct feedthrough from actuator force u to acceleration
+D = zeros(6, 2);
+D(6, 2) = 1/ms;
+
+C_sim = cat(1, eye(4), C);
+D_sim = D;
 
 % Controllability and Inherent Pole Analysis
 B_ctrl = B(:, 2);

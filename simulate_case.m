@@ -44,7 +44,16 @@ function results = simulate_case(road_num, show_plot)
     assignin('base', 'ROAD_ID', road_num);
     evalin('base', 'parameters;');
 
-    model_name = 'Master_Active_Suspension';
+    if exist('Master_Active_Suspension_Clean.slx', 'file')
+        try
+            copyfile('Master_Active_Suspension_Clean.slx', 'Master_Active_Suspension.slx');
+            model_name = 'Master_Active_Suspension';
+        catch
+            model_name = 'Master_Active_Suspension_Clean';
+        end
+    else
+        model_name = 'Master_Active_Suspension';
+    end
     if ~bdIsLoaded(model_name)
         load_system(model_name);
     end

@@ -43,7 +43,16 @@ fprintf('>>> STEP 3: Executing Cross-Rig Identity Check across all 4 Rigs...\n')
 ROAD_ID = 1;
 parameters;
 
-model_name = 'Master_Active_Suspension';
+if exist('Master_Active_Suspension_Clean.slx', 'file')
+    try
+        copyfile('Master_Active_Suspension_Clean.slx', 'Master_Active_Suspension.slx');
+        model_name = 'Master_Active_Suspension';
+    catch
+        model_name = 'Master_Active_Suspension_Clean';
+    end
+else
+    model_name = 'Master_Active_Suspension';
+end
 if ~bdIsLoaded(model_name), load_system(model_name); end
 
 simOut = sim(model_name);

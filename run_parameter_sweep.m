@@ -20,7 +20,16 @@ if ~exist('results', 'dir'), mkdir('results'); end
 % Initialize single source of truth
 parameters;
 
-model_name = 'Master_Active_Suspension';
+if exist('Master_Active_Suspension_Clean.slx', 'file')
+    try
+        copyfile('Master_Active_Suspension_Clean.slx', 'Master_Active_Suspension.slx');
+        model_name = 'Master_Active_Suspension';
+    catch
+        model_name = 'Master_Active_Suspension_Clean';
+    end
+else
+    model_name = 'Master_Active_Suspension';
+end
 if ~bdIsLoaded(model_name), load_system(model_name); end
 
 % Define parameter variations
