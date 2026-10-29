@@ -3,7 +3,7 @@
 **Thilang T.V** (25BEL0036), **Santhosh G** (25BEL0016), **Ananthakrishnan R** (25BEL0005)  
 *Subject: Control Systems*
 *B.Tech Electrical and Computer Science*  
-*Autonomous Systems & Advanced Control Laboratory*  
+*Control Systems*  
 
 ---
 
