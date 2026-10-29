@@ -49,17 +49,20 @@ function results = simulate_case(road_num, show_plot)
     assignin('base', 'ROAD_ID', road_num);
     evalin('base', 'parameters;');
 
-    if exist('Master_Active_Suspension_Clean.slx', 'file')
+    if bdIsLoaded('Master_Active_Suspension')
+        model_name = 'Master_Active_Suspension';
+    elseif bdIsLoaded('Master_Active_Suspension_Clean')
+        model_name = 'Master_Active_Suspension_Clean';
+    elseif exist('Master_Active_Suspension_Clean.slx', 'file')
         try
             copyfile('Master_Active_Suspension_Clean.slx', 'Master_Active_Suspension.slx');
             model_name = 'Master_Active_Suspension';
         catch
             model_name = 'Master_Active_Suspension_Clean';
         end
+        load_system(model_name);
     else
         model_name = 'Master_Active_Suspension';
-    end
-    if ~bdIsLoaded(model_name)
         load_system(model_name);
     end
 
@@ -175,7 +178,7 @@ function results = simulate_case(road_num, show_plot)
     fprintf('========================================================================================================================\n\n');
 
     if show_plot
-        plot_comparisons(results, road_names{road_num});
+        plot_comparisons(results, road_names{road_num}, road_num);
     end
 end
 

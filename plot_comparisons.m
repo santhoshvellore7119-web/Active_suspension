@@ -1,4 +1,4 @@
-function fig = plot_comparisons(res, road_title)
+function fig = plot_comparisons(res, road_title, fig_num)
 % PLOT_COMPARISONS Generates publication-ready comparative response plots
 % Comparing ONLY the 3 ACTIVE CONTROLLERS:
 %   (1) Optimal LQR (Linear Quadratic Regulator)
@@ -12,9 +12,18 @@ function fig = plot_comparisons(res, road_title)
 %   - Dynamic y-axis auto-zooming with headroom (no squashing signals)
 %   - Non-colliding limit compliance badges
 %   - Clean pure white background with pitch-black crisp labels and axes
+%   - Independent figure numbers (Figures 1-6) allowing all 6 windows to remain open simultaneously
 
     if nargin < 2 || isempty(road_title)
         road_title = 'Quarter-Car Comparative Benchmark';
+    end
+
+    if nargin < 3 || isempty(fig_num)
+        if isfield(res, 'road_id') && ~isempty(res.road_id)
+            fig_num = res.road_id;
+        else
+            fig_num = 1;
+        end
     end
 
     t  = res.time(:);
@@ -22,11 +31,24 @@ function fig = plot_comparisons(res, road_title)
     t_settle = t_end * 0.50;
     if isfield(res, 't_settle'), t_settle = res.t_settle; end
 
-    % Set figure properties
-    fig = figure(201);
+    % Set figure properties with cascading screen positions
+    fig = figure(fig_num);
     clf(fig);
-    set(fig, 'Name', sprintf('Active Suspension Dynamic Response: %s', road_title), ...
-             'Color', 'w', 'NumberTitle', 'off', 'Position', [80, 50, 1150, 850], ...
+
+    screen_sz = get(0, 'ScreenSize');
+    if length(screen_sz) >= 4 && screen_sz(3) > 800
+        offset_idx = mod(fig_num - 1, 6);
+        base_x = 40 + offset_idx * 30;
+        base_y = max(40, screen_sz(4) - 780 - offset_idx * 28);
+        fig_w  = min(1120, screen_sz(3) - 70);
+        fig_h  = min(720, screen_sz(4) - 90);
+        fig_pos = [base_x, base_y, fig_w, fig_h];
+    else
+        fig_pos = [60 + (fig_num - 1) * 25, 40, 1100, 750];
+    end
+
+    set(fig, 'Name', sprintf('Figure %d: %s', fig_num, road_title), ...
+             'Color', 'w', 'NumberTitle', 'on', 'Position', fig_pos, ...
              'PaperPositionMode', 'auto');
 
     % Define ultra-high-contrast distinct color palette & line styles:
