@@ -1,7 +1,7 @@
 # Second-Order Super-Twisting Sliding Mode Control Versus Metaheuristic-Tuned LQR for Quarter-Car Active Suspension Systems: Comparative Synthesis, Chattering Elimination, and Multi-Road Benchmark
 
-**Santhosh Kumar**, **Research Team**  
-*Department of Electrical and Electronics Engineering / Mechatronics Engineering*  
+**Thilang T.V** (25BEL0036), **Santhosh G** (25BEL0016), **Ananthakrishnan R** (25BEL0005)  
+*B.Tech Electrical and Computer Science*  
 *Autonomous Systems & Advanced Control Laboratory*  
 
 ---

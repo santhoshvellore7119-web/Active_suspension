@@ -211,3 +211,13 @@ The complete, rigorous IEEE Access format research paper is included in `docs/`:
 - **Title:** Adaptive Super-Twisting Sliding Mode Control for Quarter-Car Active Suspension Systems: Robust Ride Comfort and Deflection Suppression under Road Severity Index Profiles
 - **Pages:** 19 comprehensive pages with formal mathematical proofs (Lyapunov stability, finite-time reachability, boundary-layer chatter attenuation).
 - **Structure:** Abstract, Introduction, Plant Modeling, STSMC Design & Stability Proof, RSI Scheduling across all 6 Road Profiles, Full Experimental Benchmark, Multi-Parameter Sensitivity, and Hardware Compliance Discussion.
+
+---
+
+## 👥 Project Authors & Team
+
+- **Thilang T.V** — `25BEL0036`
+- **Santhosh G** — `25BEL0016`
+- **Ananthakrishnan R** — `25BEL0005`
+
+*B.Tech Electrical and Computer Science*
