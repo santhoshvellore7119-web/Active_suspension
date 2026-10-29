@@ -223,18 +223,20 @@ for r_idx in range(N_roads):
     plt.savefig(primary_path, dpi=300, facecolor='white', edgecolor='none')
     print(f"  [SAVED] {primary_fname}")
 
-    # Aliases to match repository naming conventions exactly
+    # Backward-compatible aliases for report and artifact linking
     aliases = []
-    if sh_name == 'Smooth':
-        aliases = ['Figure1_Smooth_Comparison.png']
-    elif sh_name == 'Normal':
-        aliases = ['Figure2_Normal_Comparison.png']
-    elif sh_name == 'Rough':
-        aliases = ['Figure3_Rough_Comparison.png']
-    elif sh_name == 'Pothole':
-        aliases = ['Figure4_Pothole_Comparison.png']
-    elif sh_name == 'Resonance':
-        aliases = ['Figure5_Resonance_Comparison.png']
+    if sh_name in ['Harmonics', 'Chirp']:
+        aliases = ['Figure1_Harmonics_Comparison.png', 'fig5_resonance.png']
+    elif sh_name in ['Pulse', 'Bump']:
+        aliases = ['Figure2_Pulse_Comparison.png']
+    elif sh_name in ['SignalGen_Sine', 'Rough']:
+        aliases = ['Figure3_SignalGen_Sine_Comparison.png', 'fig3_rough.png']
+    elif sh_name in ['Smooth']:
+        aliases = ['Figure4_Smooth_Comparison.png', 'Figure1_Smooth_Comparison.png', 'fig1_smooth.png']
+    elif sh_name in ['Normal']:
+        aliases = ['Figure5_Normal_Comparison.png', 'Figure2_Normal_Comparison.png', 'fig2_normal.png']
+    elif sh_name in ['Pothole']:
+        aliases = ['Figure6_Pothole_Comparison.png', 'Figure4_Pothole_Comparison.png', 'fig4_pothole.png']
 
     for al in aliases:
         al_path = os.path.join(fig_dir, al)
@@ -246,7 +248,7 @@ for r_idx in range(N_roads):
 # -------------------------------------------------------------
 # Generate 4-Panel Summary Performance Dashboard (3 Controllers)
 # -------------------------------------------------------------
-fig_dash, axs = plt.subplots(2, 2, figsize=(13.5, 9.5), dpi=300)
+fig_dash, axs = plt.subplots(2, 2, figsize=(14.0, 9.8), dpi=300)
 fig_dash.patch.set_facecolor('white')
 fig_dash.suptitle('Multi-Controller Performance Evaluation (LQR vs. Fixed STSMC vs. Adaptive STSMC)',
                   fontsize=14, fontweight='bold', color='black', y=0.98)
@@ -272,7 +274,7 @@ for c_i in range(3):
 ax.set_title('Ride Comfort: Steady-State RMS Body Accel (Lower is Better)', fontsize=11, fontweight='bold')
 ax.set_ylabel('RMS Body Accel (m/s²)', fontsize=10, fontweight='bold')
 ax.set_xticks(x_pos)
-ax.set_xticklabels([f"{road_short[i]}\n({rsi_labels[i]})" for i in range(N_roads)], fontsize=8.5)
+ax.set_xticklabels([f"{road_short[i]}\n({rsi_labels[i]})" for i in range(N_roads)], fontsize=8.0)
 ax.legend(loc='upper left', fontsize=9.0, framealpha=0.96, facecolor='white', edgecolor='#aaaaaa')
 
 # Subplot 2: RMS Suspension Deflection
@@ -290,7 +292,7 @@ for c_i in range(3):
 ax.set_title('Suspension Stroke: Steady-State RMS Deflection (Lower is Better)', fontsize=11, fontweight='bold')
 ax.set_ylabel('RMS Susp. Deflection (mm)', fontsize=10, fontweight='bold')
 ax.set_xticks(x_pos)
-ax.set_xticklabels([f"{road_short[i]}\n({rsi_labels[i]})" for i in range(N_roads)], fontsize=8.5)
+ax.set_xticklabels([f"{road_short[i]}\n({rsi_labels[i]})" for i in range(N_roads)], fontsize=8.0)
 
 # Subplot 3: Peak Control Force
 ax = axs[1, 0]
@@ -309,7 +311,7 @@ ax.set_title('Actuator Demand: Peak Control Force (Limit <= 39.2 N)', fontsize=1
 ax.set_ylabel('Peak Control Force (N)', fontsize=10, fontweight='bold')
 ax.set_ylim([0, 46])
 ax.set_xticks(x_pos)
-ax.set_xticklabels([f"{road_short[i]}\n({rsi_labels[i]})" for i in range(N_roads)], fontsize=8.5)
+ax.set_xticklabels([f"{road_short[i]}\n({rsi_labels[i]})" for i in range(N_roads)], fontsize=8.0)
 ax.legend(loc='upper left', fontsize=9.0, framealpha=0.96, facecolor='white', edgecolor='#aaaaaa')
 
 # Subplot 4: RMS Dynamic Tire Deflection
@@ -327,12 +329,14 @@ for c_i in range(3):
 ax.set_title('Road Holding: Steady-State RMS Tire Deflection (Lower is Better)', fontsize=11, fontweight='bold')
 ax.set_ylabel('RMS Tire Deflection (mm)', fontsize=10, fontweight='bold')
 ax.set_xticks(x_pos)
-ax.set_xticklabels([f"{road_short[i]}\n({rsi_labels[i]})" for i in range(N_roads)], fontsize=8.5)
+ax.set_xticklabels([f"{road_short[i]}\n({rsi_labels[i]})" for i in range(N_roads)], fontsize=8.0)
 
 plt.tight_layout(rect=[0, 0.03, 1, 0.96])
 
 dash_fnames = [
-    'Figure5_Summary_Performance_Dashboard.png'
+    'Figure7_Summary_Performance_Dashboard.png',
+    'Figure5_Summary_Performance_Dashboard.png',
+    'fig_dashboard.png'
 ]
 for d_fn in dash_fnames:
     p = os.path.join(fig_dir, d_fn)
@@ -342,10 +346,8 @@ for d_fn in dash_fnames:
 plt.close(fig_dash)
 
 # Also save copies to results/ for easy access
-shutil.copyfile(os.path.join(fig_dir, 'Figure1_Smooth_Comparison.png'), os.path.join(results_dir, 'Figure1_Smooth_Comparison.png'))
-shutil.copyfile(os.path.join(fig_dir, 'Figure2_Normal_Comparison.png'), os.path.join(results_dir, 'Figure2_Normal_Comparison.png'))
-shutil.copyfile(os.path.join(fig_dir, 'Figure3_Rough_Comparison.png'), os.path.join(results_dir, 'Figure3_Rough_Comparison.png'))
-shutil.copyfile(os.path.join(fig_dir, 'Figure4_Pothole_Comparison.png'), os.path.join(results_dir, 'Figure4_Pothole_Comparison.png'))
-shutil.copyfile(os.path.join(fig_dir, 'Figure5_Summary_Performance_Dashboard.png'), os.path.join(results_dir, 'Figure5_Summary_Performance_Dashboard.png'))
+for f in os.listdir(fig_dir):
+    if f.endswith('.png'):
+        shutil.copyfile(os.path.join(fig_dir, f), os.path.join(results_dir, f))
 
-print("\nAll 3-controller publication figures successfully placed into 'figures/' directory!\n")
+print("\nAll 3-controller publication figures successfully placed into 'figures/' and 'results/' directories!\n")

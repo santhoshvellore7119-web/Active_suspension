@@ -1,11 +1,10 @@
 % SETUP_AS
 % Master Parameter Configuration Script for Quanser Active Suspension System
 % Dedicated Super-Twisting Sliding Mode Control (STSMC) & Adaptive Gain Scheduling
-%
-% Strictly STSMC - All LQR artifacts removed.
+% Aligned with ananthu0987/Roadprofile_CSelec and VIT-EMPOWER Grant 2026-27
 
 fprintf('========================================================================\n');
-fprintf('  QUANSER ACTIVE SUSPENSION SYSTEM: PURE STSMC CONTROLLER SETUP\n');
+fprintf('  QUANSER ACTIVE SUSPENSION SYSTEM: CONTROLLER SETUP\n');
 fprintf('========================================================================\n');
 
 %% 1. Plant Physical Parameters (Quanser Quarter-Car Benchmark)
@@ -69,39 +68,39 @@ C_sim = cat(1, eye(4), C);
 D_sim = D;
 
 %% 3. Road Surface Excitation Profile Parameters
-road_smooth_amp  = 0.004;    % Amplitude (m) [4 mm]
-road_smooth_freq = 0.20;     % Frequency (Hz)
+% 6 Standard Road Profiles from ananthu0987/Roadprofile_CSelec:
+%   1: Harmonics Generator (Chirp / Multi-frequency Resonance)
+%   2: Discrete Pulse Generator (Periodic Bump / Step Drop)
+%   3: Continuous Signal Generator (Sinusoidal Road Undulation)
+%   4: Smooth Road (ISO Class A Elevation Variations)
+%   5: Normal Road (ISO Class B/C Rolling Undulations)
+%   6: Pothole Road (Random Roughness + Severe Localized Dips)
 
-road_normal_amp  = 0.020;    % Amplitude (m) [20 mm]
-road_normal_freq = 0.20;     % Frequency (Hz)
-
-road_rough_amp   = 0.015;    % Peak amplitude (m) [15 mm]
-road_rough_speed = 25.0;     % Vehicle forward speed (m/s) [90 km/h]
-
+road_harm_amp      = 0.015;  % Harmonic amplitude (m)
 road_pothole_amp   = 0.020;  % Pulse amplitude (m) [20 mm]
-road_pothole_freq  = 0.30;   % Pulse repetition frequency (Hz)
-road_pothole_width = 10.0;   % Pulse width (% of period)
+road_pothole_freq  = 0.25;   % Pulse repetition frequency (Hz)
+road_pothole_width = 50.0;   % Pulse width (% of period)
+road_sine_amp      = 0.020;  % Sine bump amplitude (m)
+road_sine_freq     = 0.20;   % Sine bump frequency (Hz)
 
 if ~exist('ROAD_PROFILE_ID', 'var') || isempty(ROAD_PROFILE_ID)
-    ROAD_PROFILE_ID = 2; % Default: Normal Road
+    if exist('ROAD_ID', 'var') && ~isempty(ROAD_ID)
+        ROAD_PROFILE_ID = ROAD_ID;
+    else
+        ROAD_PROFILE_ID = 4; % Default: Smooth Road
+    end
 end
+ROAD_ID = ROAD_PROFILE_ID;
 
 %% 4. Super-Twisting Sliding Mode Controller (STSMC) Gains & Parameters
-% Boundary layer thickness for continuous chattering-free sliding
-eps_bl = 0.01; 
+eps_bl = 0.01; % Uniform boundary layer for smooth tanh(s/eps)
 
-% Mode selector:
-%   'adaptive'     = Dynamic gain scheduling based on Road Severity Index (RSI)
-%   'conservative' = Comfort-oriented lower gains (c1=5.0, k1=20.0, k2=8.0)
-%   'moderate'     = Balanced performance (c1=7.0, k1=60.0, k2=25.0)
-%   'aggressive'   = High disturbance rejection (c1=15.0, k1=180.0, k2=90.0)
 if ~exist('STSMC_MODE', 'var') || isempty(STSMC_MODE)
     STSMC_MODE = 'adaptive';
 end
 
 if strcmp(STSMC_MODE, 'adaptive')
-    % Automatically schedule STSMC gains based on Road Profile / RSI
-    [k1, k2, c1] = stsmc_rsi_scheduler(ROAD_PROFILE_ID, 'scaled');
+    [k1, k2, c1, rsi_val, mode_name] = stsmc_rsi_scheduler(ROAD_PROFILE_ID, 'scaled');
 elseif strcmp(STSMC_MODE, 'conservative')
     c1 = 5.0;  k1 = 20.0;  k2 = 8.0;
 elseif strcmp(STSMC_MODE, 'aggressive')
@@ -116,13 +115,21 @@ T_stop   = 10.0;
 RelTol   = 1e-4;
 MaxStep  = 1e-3;
 
-road_names = {'Smooth (4 mm Sine)', 'Normal (20 mm Sine)', 'Rough (15 mm Harmonic)', 'Pothole (20 mm Pulse)'};
+road_names = { ...
+    'Harmonics Generator (Chirp 1-8 Hz, Resonant)', ...
+    'Pulse Generator (20 mm Discrete Bump)', ...
+    'Signal Generator (20 mm Rectified Sine)', ...
+    'Smooth Road (5 mm Sine, Class A)', ...
+    'Normal Road (Dual Sine, Class B/C)', ...
+    'Pothole Road (Random Texture + Dips)' ...
+};
+
 fprintf('Plant Parameters:\n');
 fprintf('  Sprung Mass (ms): %.2f kg, Unsprung Mass (mu): %.2f kg\n', ms, mu);
 fprintf('  Suspension Stiffness (ks): %.1f N/m, Tire Stiffness (kt): %.1f N/m\n', ks, kt);
 fprintf('  Mechanical Travel Limit: +/- %.3f m (38 mm)\n', St_max);
 fprintf('  Actuator Force Limit:   +/- %.1f N\n', Fc_max);
-fprintf('STSMC Active Configuration:\n');
+fprintf('Controller Configuration:\n');
 fprintf('  Selected Road Profile [%d]: %s\n', ROAD_PROFILE_ID, road_names{ROAD_PROFILE_ID});
 fprintf('  Mode: %s\n', STSMC_MODE);
 fprintf('  Sliding Surface Gain (c1): %.2f\n', c1);
@@ -131,27 +138,21 @@ fprintf('  Integral Gain       (k2): %.2f\n', k2);
 fprintf('  Boundary Layer (eps_bl):   %.4f\n', eps_bl);
 fprintf('========================================================================\n\n');
 
-%% --- Road Profile Extensions ---
-% Simulation time vector matching system sample time
-t_sim = 0:0.001:10; % adjust end time to your sim stop time
+%% 6. Road Disturbance Timeseries Objects for Simulink FromWorkspace Blocks
+t_sim = (0:0.001:T_stop)';
 
-% 1. Smooth Road Profile (Class A ISO equivalent: minor long-wavelength elevation variations)
-% Amplitude ~ 5 mm (0.005 m) at gentle frequency
+% Profile 4: Smooth Road (ISO Class A equivalent: minor elevation variations)
 z_smooth = 0.005 * sin(2 * pi * 0.5 * t_sim);
-road_smooth = timeseries(z_smooth(:), t_sim(:));
+road_smooth = timeseries(z_smooth, t_sim);
 
-% 2. Normal Road Profile (Class B/C ISO equivalent: mixed gentle rolling undulations)
-% Amplitudes ~ 15-20 mm
+% Profile 5: Normal Road (ISO Class B/C equivalent: mixed rolling undulations)
 z_normal = 0.015 * sin(2 * pi * 1.2 * t_sim) + 0.008 * sin(2 * pi * 2.8 * t_sim);
-road_normal = timeseries(z_normal(:), t_sim(:));
+road_normal = timeseries(z_normal, t_sim);
 
-% 3. Random Pothole Filled Road Profile
-% Baseline road roughness + localized negative dips (potholes)
-rng(42); % repeatable seed
-z_potholes = 0.005 * randn(size(t_sim)); % subtle surface texture
-% Pothole pulses (negative displacement, e.g., -40 mm to -60 mm depth)
-% Scaled Pothole pulses for benchtop 39.2N motor
-z_potholes(t_sim >= 2.0 & t_sim <= 2.2) = z_potholes(t_sim >= 2.0 & t_sim <= 2.2) - 0.012; 
+% Profile 6: Random Pothole Filled Road Profile
+rng(42); % Fixed seed for exact reproducibility
+z_potholes = 0.005 * randn(size(t_sim));
+z_potholes(t_sim >= 2.0 & t_sim <= 2.2)  = z_potholes(t_sim >= 2.0 & t_sim <= 2.2)  - 0.012; 
 z_potholes(t_sim >= 5.0 & t_sim <= 5.15) = z_potholes(t_sim >= 5.0 & t_sim <= 5.15) - 0.015; 
-z_potholes(t_sim >= 7.5 & t_sim <= 7.7) = z_potholes(t_sim >= 7.5 & t_sim <= 7.7) - 0.012; 
-road_potholes = timeseries(z_potholes(:), t_sim(:));
+z_potholes(t_sim >= 7.5 & t_sim <= 7.7)  = z_potholes(t_sim >= 7.5 & t_sim <= 7.7)  - 0.012; 
+road_potholes = timeseries(z_potholes, t_sim);

@@ -3,36 +3,41 @@ function results = simulate_case(road_num, show_plot)
 % Compares LQR, Fixed Super-Twisting SMC, and Adaptive Super-Twisting SMC
 % simultaneously on the exact same plant with identical disturbance input.
 %
-% Road Profiles from Reference Repository (Active_Suspension_STSMC_Project):
-%   1 : Smooth Road (RSI 0.10: 4 mm Sine, 0.20 Hz)
-%   2 : Normal Road (RSI 0.35: 20 mm Sine, 0.20 Hz)
-%   3 : Rough Road (RSI 0.65: ISO Class D Broadband, 90 km/h)
-%   4 : Pothole Road (RSI 0.95: 20 mm Pulse Drops, 0.30 Hz)
-%   5 : Harmonic Resonance (2.58 Hz Body Hop Mode)
+% 6 Standard Road Profiles from Reference Repository (ananthu0987/Roadprofile_CSelec):
+%   1 : Harmonics Generator (Chirp / Multi-frequency Resonance, 1-8 Hz)
+%   2 : Discrete Pulse Generator (Periodic Bump/Step Drop, 20 mm, 0.25 Hz)
+%   3 : Continuous Signal Generator (Sinusoidal Road Bump, 20 mm Sine at 0.20 Hz)
+%   4 : Smooth Road (ISO Class A Elevation Variations, 5 mm Sine at 0.50 Hz)
+%   5 : Normal Road (ISO Class B/C Rolling Undulations, Dual Sine 1.2 Hz & 2.8 Hz)
+%   6 : Pothole Road (Random Surface Roughness + Severe Localized Negative Dips)
 %
 % Usage:
-%   simulate_case()         % Runs Road 1: Smooth Road (RSI 0.10)
-%   simulate_case(2)        % Runs Road 2: Normal Road (RSI 0.35)
-%   simulate_case(3)        % Runs Road 3: Rough Road (RSI 0.65)
-%   simulate_case(4)        % Runs Road 4: Pothole Road (RSI 0.95)
+%   simulate_case()         % Runs Road 4: Smooth Road (ISO Class A)
+%   simulate_case(1)        % Runs Road 1: Harmonics Generator
+%   simulate_case(2)        % Runs Road 2: Pulse Generator
+%   simulate_case(3)        % Runs Road 3: Signal Generator Sine
+%   simulate_case(4)        % Runs Road 4: Smooth Road
+%   simulate_case(5)        % Runs Road 5: Normal Road
+%   simulate_case(6)        % Runs Road 6: Pothole Road
 
     if nargin < 1 || isempty(road_num)
-        road_num = 1;
+        road_num = 4; % Default: Smooth Road
     end
     if nargin < 2 || isempty(show_plot)
         show_plot = true;
     end
 
-    if ~ismember(road_num, 1:5)
-        error('Invalid road_num %d. Please select an integer from 1 to 5.', road_num);
+    if ~ismember(road_num, 1:6)
+        error('Invalid road_num %d. Please select an integer from 1 to 6.', road_num);
     end
 
     road_names = { ...
-        'Smooth (RSI 0.10: 4 mm Sine, 0.20 Hz)', ...
-        'Normal (RSI 0.35: 20 mm Sine, 0.20 Hz)', ...
-        'Rough (RSI 0.65: ISO Class D Broadband, 90 km/h)', ...
-        'Pothole (RSI 0.95: 20 mm Pulse Drops, 0.30 Hz)', ...
-        'Harmonic Resonance (2.58 Hz Body Hop Mode)' ...
+        'Harmonics Generator (Chirp 1-8 Hz, Resonant)', ...
+        'Pulse Generator (20 mm Discrete Bump)', ...
+        'Signal Generator (20 mm Rectified Sine)', ...
+        'Smooth Road (5 mm Sine, Class A)', ...
+        'Normal Road (Dual Sine, Class B/C)', ...
+        'Pothole Road (Random Texture + Dips)' ...
     };
 
     fprintf('\n========================================================================================\n');

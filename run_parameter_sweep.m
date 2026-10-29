@@ -33,8 +33,8 @@ end
 if ~bdIsLoaded(model_name), load_system(model_name); end
 
 % Define parameter variations
-roads = [1, 2, 3, 4, 5];
-road_labels = {'Smooth_RSI_0.10', 'Normal_RSI_0.35', 'Rough_RSI_0.65', 'Pothole_RSI_0.95', 'Resonance_2.58Hz'};
+roads = [1, 2, 3, 4, 5, 6];
+road_labels = {'Harmonics_Chirp', 'Pulse_Bump', 'SignalGen_Sine', 'Smooth_ClassA', 'Normal_ClassBC', 'Pothole_Dips'};
 
 mass_variations = [2.45, 3.20, 1.95];
 mass_labels     = {'Nominal_2.45kg', 'Loaded_3.20kg', 'Light_1.95kg'};

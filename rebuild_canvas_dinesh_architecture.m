@@ -237,8 +237,8 @@ add_line(model_name, 'Open-loop Simulation2/1', 'STSMC_Adaptive_Controller/1', '
 add_line(model_name, 'STSMC_Adaptive_Controller/1', 'Saturation2/1', 'autorouting', 'on');
 set_param([model_name '/Saturation2'], 'UpperLimit', 'F_max', 'LowerLimit', '-F_max');
 
-%% 4. Reconfigure Road Surface Generator with 5 Profiles
-fprintf('[5/6] Updating Road Surface Generator with 5 standardized profiles...\n');
+%% 4. Reconfigure Road Surface Generator with 6 Standard Profiles
+fprintf('[5/6] Updating Road Surface Generator with all 6 exact profiles from reference repository...\n');
 road_sub = [model_name '/Road Surface Generator'];
 
 % Remove legacy switch blocks inside Road Surface Generator
@@ -246,13 +246,13 @@ blks_del = { ...
     [road_sub '/Manual Switch'], ...
     [road_sub '/Manual Switch1'], ...
     [road_sub '/Constant'], ...
-    [road_sub '/Signal Generator'], ...
-    [road_sub '/Pulse\nGenerator'], ...
-    [road_sub '/Pulse Generator'], ...
-    [road_sub '/Saturation'], ...
-    [road_sub '/Scope'], ...
-    [road_sub '/Scope1'], ...
-    [road_sub '/Scope2'] ...
+    [road_sub '/Profile 1: Smooth Sine (4mm, 0.2Hz)'], ...
+    [road_sub '/Profile 2: Normal Sine (20mm, 0.2Hz)'], ...
+    [road_sub '/Profile 3: Rough ISO Class D'], ...
+    [road_sub '/Profile 4: Pothole Pulse (-20mm)'], ...
+    [road_sub '/Profile 5: Resonance (2.58Hz)'], ...
+    [road_sub '/Multiport_Switch'], ...
+    [road_sub '/Select_Road_ID'] ...
 };
 for i = 1:length(blks_del)
     b = blks_del{i};
@@ -274,67 +274,107 @@ if getSimulinkBlockHandle(zr_out) ~= -1
     if l ~= -1, delete_line(l); end
 end
 
-% Constant block for Road Profile Selection
+% Clean existing lines from Harmonics, Pulse, Signal Gen, Saturation if any
+check_clean = {[road_sub '/Harmonics Generator'], [road_sub '/Pulse Generator'], [road_sub '/Pulse\nGenerator'], [road_sub '/Signal Generator'], [road_sub '/Saturation']};
+for i = 1:length(check_clean)
+    b = check_clean{i};
+    if getSimulinkBlockHandle(b) ~= -1
+        ph = get_param(b, 'PortHandles');
+        for p = [ph.Inport, ph.Outport]
+            l = get_param(p, 'Line');
+            if l ~= -1, delete_line(l); end
+        end
+    end
+end
+
+% Constant block for Road Profile Selection (1 to 6)
 sel_blk = [road_sub '/Select_Road_ID'];
-if getSimulinkBlockHandle(sel_blk) == -1
-    add_block('simulink/Sources/Constant', sel_blk, 'Value', 'ROAD_ID', 'Position', [280, 20, 360, 50]);
-else
-    set_param(sel_blk, 'Value', 'ROAD_ID', 'Position', [280, 20, 360, 50]);
-end
+add_block('simulink/Sources/Constant', sel_blk, 'Value', 'ROAD_ID', 'Position', [340, 20, 400, 50]);
 
-% Profile 1: Smooth Sine (4 mm, 0.20 Hz)
-p1_blk = [road_sub '/Profile 1: Smooth Sine (4mm, 0.2Hz)'];
-if getSimulinkBlockHandle(p1_blk) == -1
-    add_block('simulink/Sources/Sine Wave', p1_blk, ...
-        'Amplitude', 'road1_amp', 'Frequency', '2*pi*road1_freq', 'SampleTime', '0', ...
-        'Position', [60, 80, 180, 110]);
-end
-
-% Profile 2: Normal Sine (20 mm, 0.20 Hz)
-p2_blk = [road_sub '/Profile 2: Normal Sine (20mm, 0.2Hz)'];
-if getSimulinkBlockHandle(p2_blk) == -1
-    add_block('simulink/Sources/Sine Wave', p2_blk, ...
-        'Amplitude', 'road2_amp', 'Frequency', '2*pi*road2_freq', 'SampleTime', '0', ...
-        'Position', [60, 140, 180, 170]);
-end
-
-% Profile 3: Rough ISO Class D Broadband (From Workspace Timeseries)
-p3_blk = [road_sub '/Profile 3: Rough ISO Class D'];
-if getSimulinkBlockHandle(p3_blk) == -1
-    add_block('simulink/Sources/From Workspace', p3_blk, ...
-        'VariableName', 'road_rough_data', 'SampleTime', '0', 'Interpolate', 'on', ...
-        'Position', [60, 200, 180, 230]);
-end
-
-% Profile 4: Pothole Pulse (-20 mm Drops)
-p4_blk = [road_sub '/Profile 4: Pothole Pulse (-20mm)'];
-if getSimulinkBlockHandle(p4_blk) == -1
-    add_block('simulink/Sources/Pulse Generator', p4_blk, ...
-        'Amplitude', '-road4_amp', 'Period', '1/road4_freq', 'PulseWidth', 'road4_width', 'PhaseDelay', '1.0', ...
-        'Position', [60, 260, 180, 290]);
-end
-
-% Profile 5: Harmonic Resonance (2.58 Hz Sine)
-p5_blk = [road_sub '/Profile 5: Resonance (2.58Hz)'];
-if getSimulinkBlockHandle(p5_blk) == -1
-    add_block('simulink/Sources/Sine Wave', p5_blk, ...
-        'Amplitude', 'road5_amp', 'Frequency', '2*pi*road5_freq', 'SampleTime', '0', ...
-        'Position', [60, 320, 180, 350]);
-end
-
-% Multiport Switch
+% Configure Multiport Switch (Inputs = 6)
 sw_blk = [road_sub '/Multiport_Switch'];
-if getSimulinkBlockHandle(sw_blk) == -1
-    add_block('simulink/Signal Routing/Multiport Switch', sw_blk, ...
-        'Inputs', '5', 'DataPortOrder', 'One-based contiguous', 'Position', [400, 30, 440, 360]);
-    add_line(road_sub, 'Select_Road_ID/1', 'Multiport_Switch/1');
-    add_line(road_sub, 'Profile 1: Smooth Sine (4mm, 0.2Hz)/1', 'Multiport_Switch/2');
-    add_line(road_sub, 'Profile 2: Normal Sine (20mm, 0.2Hz)/1', 'Multiport_Switch/3');
-    add_line(road_sub, 'Profile 3: Rough ISO Class D/1',          'Multiport_Switch/4');
-    add_line(road_sub, 'Profile 4: Pothole Pulse (-20mm)/1',     'Multiport_Switch/5');
-    add_line(road_sub, 'Profile 5: Resonance (2.58Hz)/1',        'Multiport_Switch/6');
-    add_line(road_sub, 'Multiport_Switch/1', 'zr/1');
+add_block('simulink/Signal Routing/Multiport Switch', sw_blk, ...
+    'Inputs', '6', 'DataPortOrder', 'One-based contiguous', 'Position', [470, 60, 510, 490]);
+add_line(road_sub, 'Select_Road_ID/1', 'Multiport_Switch/1', 'autorouting', 'on');
+
+% 1. Port 2 (Data 1): Harmonics Generator Subsystem (SID 66)
+harm_blk = [road_sub '/Harmonics Generator'];
+if getSimulinkBlockHandle(harm_blk) ~= -1
+    set_param(harm_blk, 'Position', [120, 75, 220, 125]);
+    add_line(road_sub, 'Harmonics Generator/1', 'Multiport_Switch/2', 'autorouting', 'on');
+else
+    % Create chirp subsystem if missing
+    add_block('simulink/Ports & Subsystems/Subsystem', harm_blk, 'Position', [120, 75, 220, 125]);
+    delete_line(harm_blk, 'In1/1', 'Out1/1');
+    delete_block([harm_blk '/In1']);
+    add_block('simulink/Sources/Chirp Signal', [harm_blk '/Chirp'], ...
+        'f1', '1.0', 'T', '30.0', 'f2', '8.0', 'Position', [40, 40, 80, 70]);
+    add_block('simulink/Math Operations/Gain', [harm_blk '/Gain_amp'], ...
+        'Gain', '0.015', 'Position', [130, 45, 170, 65]);
+    add_line(harm_blk, 'Chirp/1', 'Gain_amp/1');
+    add_line(harm_blk, 'Gain_amp/1', 'Out1/1');
+    add_line(road_sub, 'Harmonics Generator/1', 'Multiport_Switch/2', 'autorouting', 'on');
 end
+
+% 2. Port 3 (Data 2): Discrete Pulse Generator (20 mm Bump Drop)
+pulse_blk = [road_sub '/Pulse Generator'];
+if getSimulinkBlockHandle(pulse_blk) == -1
+    pulse_blk_alt = [road_sub '/Pulse\nGenerator'];
+    if getSimulinkBlockHandle(pulse_blk_alt) ~= -1
+        set_param(pulse_blk_alt, 'Name', 'Pulse Generator');
+    else
+        add_block('simulink/Sources/Pulse Generator', pulse_blk);
+    end
+end
+set_param(pulse_blk, 'Amplitude', '0.02', 'Period', '4', 'PulseWidth', '50', 'PhaseDelay', '0.1', ...
+    'Position', [120, 145, 200, 185]);
+add_line(road_sub, 'Pulse Generator/1', 'Multiport_Switch/3', 'autorouting', 'on');
+
+% 3. Port 4 (Data 3): Signal Generator (20 mm Sine at 0.2 Hz) + Half-wave Saturation
+sig_blk = [road_sub '/Signal Generator'];
+if getSimulinkBlockHandle(sig_blk) == -1
+    add_block('simulink/Sources/Signal Generator', sig_blk);
+end
+set_param(sig_blk, 'WaveForm', 'sine', 'Amplitude', '0.02', 'Frequency', '0.2', ...
+    'Position', [60, 205, 120, 235]);
+
+sat_blk = [road_sub '/Saturation'];
+if getSimulinkBlockHandle(sat_blk) == -1
+    add_block('simulink/Discontinuities/Saturation', sat_blk);
+end
+set_param(sat_blk, 'UpperLimit', '0.02', 'LowerLimit', '0', 'ZeroCross', 'off', ...
+    'Position', [160, 205, 200, 235]);
+
+add_line(road_sub, 'Signal Generator/1', 'Saturation/1', 'autorouting', 'on');
+add_line(road_sub, 'Saturation/1', 'Multiport_Switch/4', 'autorouting', 'on');
+
+% 4. Port 5 (Data 4): Smooth Road (FromWorkspace 'road_smooth')
+smooth_blk = [road_sub '/Smooth Road'];
+if getSimulinkBlockHandle(smooth_blk) ~= -1, delete_block(smooth_blk); end
+add_block('simulink/Sources/From Workspace', smooth_blk, ...
+    'VariableName', 'road_smooth', 'SampleTime', '0', 'Interpolate', 'on', ...
+    'Position', [120, 270, 220, 300]);
+add_line(road_sub, 'Smooth Road/1', 'Multiport_Switch/5', 'autorouting', 'on');
+
+% 5. Port 6 (Data 5): Normal Road (FromWorkspace 'road_normal')
+normal_blk = [road_sub '/Normal Road'];
+if getSimulinkBlockHandle(normal_blk) ~= -1, delete_block(normal_blk); end
+add_block('simulink/Sources/From Workspace', normal_blk, ...
+    'VariableName', 'road_normal', 'SampleTime', '0', 'Interpolate', 'on', ...
+    'Position', [120, 340, 220, 370]);
+add_line(road_sub, 'Normal Road/1', 'Multiport_Switch/6', 'autorouting', 'on');
+
+% 6. Port 7 (Data 6): Pothole Road (FromWorkspace 'road_potholes')
+pothole_blk = [road_sub '/Pothole Road'];
+if getSimulinkBlockHandle(pothole_blk) ~= -1, delete_block(pothole_blk); end
+add_block('simulink/Sources/From Workspace', pothole_blk, ...
+    'VariableName', 'road_potholes', 'SampleTime', '0', 'Interpolate', 'on', ...
+    'Position', [120, 410, 220, 440]);
+add_line(road_sub, 'Pothole Road/1', 'Multiport_Switch/7', 'autorouting', 'on');
+
+% Final connection to Outport zr
+set_param(zr_out, 'Position', [580, 265, 610, 285]);
+add_line(road_sub, 'Multiport_Switch/1', 'zr/1', 'autorouting', 'on');
 
 %% 5. Encapsulated Data_Logging Subsystem
 fprintf('[6/6] Creating pristine Data_Logging Subsystem (no canvas clutter)...\n');

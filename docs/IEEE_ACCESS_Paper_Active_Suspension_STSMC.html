@@ -370,82 +370,94 @@ B_{\text{dist}} = \begin{bmatrix} 0 \\ 0 \\ -1 \\ 5.0000 \end{bmatrix}$$</p>
 <div class='spacer'></div>
 <h2 class='section-title'>IV. Standardized Road Disturbance Excitation Suite</h2>
 <div class='spacer'></div>
-<p>The controllers are evaluated across five standardized road profiles:</p>
-<li class='ordered-item'><strong>Profile 1: Smooth Undulating Highway ($4\text{ mm}$, $0.20\text{ Hz}$):</strong></li>
-<p>   $$z_r(t) = 0.004 \sin(2\pi \cdot 0.20 t)$$</p>
-<li class='ordered-item'><strong>Profile 2: Severe Discrete Potholes ($-20\text{ mm}$ Pulse Drops):</strong></li>
-<p>   Square pulse drops of $20\text{ mm}$ depth, $0.50\text{ Hz}$ frequency, and $15\%$ width.</p>
-<li class='ordered-item'><strong>Profile 3: Dynamic Frequency-Sweep Chirp ($0.1 - 10.0\text{ Hz}$):</strong></li>
-<p>   Continuous sweep spanning both body bounce ($2.58\text{ Hz}$) and wheel hop ($8.51\text{ Hz}$).</p>
-<li class='ordered-item'><strong>Profile 4: Stochastic ISO Class D Rough Terrain ($90\text{ km/h}$):</strong></li>
-<p>   Broadband stochastic asphalt roughness with $15\text{ mm}$ peak excitation.</p>
-<li class='ordered-item'><strong>Profile 5: Harmonic Body Hop Resonance Road ($10\text{ mm}$, $2.58\text{ Hz}$):</strong></li>
-<p>   $$z_r(t) = 0.010 \sin(2\pi \cdot 2.58 t)$$</p>
-<p>   Exact chassis bounce natural frequency excitation.</p>
+<p>To rigorously evaluate ride quality, structural deflection, and disturbance rejection, the controllers are evaluated across the full suite of six standardized road profiles from the reference repository (<code>ananthu0987/Roadprofile_CSelec</code>):</p>
+<li class='ordered-item'><strong>Profile 1: Harmonics Generator (Multi-Frequency Chirp / Resonance Excitation, $1.0 - 8.0	ext{ Hz}$):</strong></li>
+<p>   Sweeps linearly across the vehicle chassis body bounce resonance ($2.58	ext{ Hz}$) and wheel hop resonance ($8.51	ext{ Hz}$) over a $30	ext{ s}$ cycle, challenging the actuator bandwidth and chattering attenuation.</p>
+<li class='ordered-item'><strong>Profile 2: Discrete Pulse Generator (Periodic Road Drop / Bump, $20	ext{ mm}$):</strong></li>
+<p>   $$z_r(t) = 	ext{Pulse}(A = 20	ext{ mm}, T = 4.0	ext{ s}, 	ext{width} = 50\%, t_{	ext{delay}} = 0.1	ext{ s})$$</p>
+<p>   Evaluates transient settling time and peak overshoot under severe step disturbances.</p>
+<li class='ordered-item'><strong>Profile 3: Signal Generator (Sinusoidal Road Bump with Rectification, $20	ext{ mm}$, $0.20	ext{ Hz}$):</strong></li>
+<p>   $$z_r(t) = \max\left(0, 0.020 \sin(2\pi \cdot 0.20 t)ight)$$</p>
+<p>   Simulates continuous speed-bump encounters and cyclic pavement undulations.</p>
+<li class='ordered-item'><strong>Profile 4: Smooth Road Profile (ISO Class A Elevation Variations, $5	ext{ mm}$ Sine at $0.50	ext{ Hz}$):</strong></li>
+<p>   $$z_r(t) = 0.005 \sin(2\pi \cdot 0.50 t)$$</p>
+<p>   Represents high-speed highway cruising on well-maintained asphalt where micro-vibrations must be suppressed without unnecessary control effort.</p>
+<li class='ordered-item'><strong>Profile 5: Normal Road Profile (ISO Class B/C Rolling Undulations, Dual Harmonics):</strong></li>
+<p>   $$z_r(t) = 0.015 \sin(2\pi \cdot 1.2 t) + 0.008 \sin(2\pi \cdot 2.8 t)$$</p>
+<p>   Represents standard suburban paved roads with combined low and medium frequency elevation fluctuations.</p>
+<li class='ordered-item'><strong>Profile 6: Random Pothole-Filled Road Profile (Texture + Discrete Localized Dips):</strong></li>
+<p>   Combines continuous stochastic surface texture ($z_{	ext{tex}} = 5	ext{ mm} 	imes \mathcal{N}(0, 1)$) with localized severe negative drops at $t = 2.0-2.2	ext{ s}$ ($-12	ext{ mm}$), $t = 5.0-5.15	ext{ s}$ ($-15	ext{ mm}$), and $t = 7.5-7.7	ext{ s}$ ($-12	ext{ mm}$).</p>
 <div class='spacer'></div>
 <hr class='paper-hr'>
-<div class='spacer'></div>
-<h2 class='section-title'>V. Experimental Results and Discussion</h2>
+<div class='spacer'></div><h2 class='section-title'>V. Experimental Results and Discussion</h2>
 <div class='spacer'></div>
 <p>The 3-controller parallel architecture was executed in MATLAB/Simulink R2025b utilizing a high-precision variable-step solver (`ode23t` with zero-crossing detection). Steady-state RMS is calculated over the settled window ($t \ge 5\text{ s}$).</p>
 <div class='spacer'></div>
 <h3 class='subsection-title'>A. Numerical Performance Across All Road Profiles</h3>
-<p>TABLE III compiles the quantitative performance metrics across all five road excitation profiles.</p>
 <div class='spacer'></div>
-<p><strong>TABLE III: Multi-Controller Benchmark Numerical Results (3 Active Controllers)</strong></p>
+<p>TABLE III compiles the quantitative performance metrics across all six road excitation profiles from the reference repository (<code>ananthu0987/Roadprofile_CSelec</code>).</p>
+<div class='spacer'></div>
+<p><strong>TABLE III: Multi-Controller Benchmark Numerical Results Across All 6 Road Profiles (3 Active Controllers)</strong></p>
 <div class='table-responsive'><table>
-<thead><tr><th>Road Condition</th><th>Controller Architecture</th><th>Steady-State RMS Accel ($\text{m/s}^2$)</th><th>Peak Body Accel ($\text{m/s}^2$)</th><th>Steady-State RMS Travel ($\text{mm}$)</th><th>Peak Travel Stroke ($\text{mm}$)</th><th>Peak Actuator Force ($\text{N}$)</th><th>Steady-State RMS Force ($\text{N}$)</th><th>Rail Limit ($\le 38\text{ mm}$)</th><th>Force Limit ($\le 39.2\text{ N}$)</th></tr></thead><tbody>
-<tr><td><strong>Profile 1: Smooth</strong></td><td><span class="badge-lqr">Optimal LQR</span></td><td>$0.0045$</td><td>$0.0560$</td><td>$0.340$</td><td>$0.481$</td><td>$0.43$</td><td>$0.30$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td>(RSI 0.10: $4\text{ mm}$, $0.2\text{ Hz}$)</td><td><span class="badge-fsmc">Fixed STSMC</span></td><td>$0.0044$</td><td>$0.0604$</td><td>$0.493$</td><td>$0.697$</td><td>$0.63$</td><td>$0.44$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td></td><td><span class="badge-asmc">Adaptive STSMC</span></td><td><strong>$0.0041$</strong></td><td>$0.0648$</td><td>$0.614$</td><td>$0.869$</td><td>$0.79$</td><td>$0.56$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td><strong>Profile 2: Normal</strong></td><td><span class="badge-lqr">Optimal LQR</span></td><td>$0.0223$</td><td>$0.2798$</td><td>$1.701$</td><td>$2.405$</td><td><strong>$2.16$</strong></td><td>$1.52$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td>(RSI 0.35: $20\text{ mm}$, $0.2\text{ Hz}$)</td><td><span class="badge-fsmc">Fixed STSMC</span></td><td><strong>$0.0218$</strong></td><td><strong>$0.2682$</strong></td><td>$2.454$</td><td>$3.470$</td><td>$3.13$</td><td>$2.20$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td></td><td><span class="badge-asmc">Adaptive STSMC</span></td><td><strong>$0.0218$</strong></td><td><strong>$0.2682$</strong></td><td>$2.454$</td><td>$3.470$</td><td>$3.13$</td><td>$2.20$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td><strong>Profile 3: Rough</strong></td><td><span class="badge-lqr">Optimal LQR</span></td><td>$0.6162$</td><td>$1.8354$</td><td>$2.107$</td><td>$7.029$</td><td><strong>$5.73$</strong></td><td>$1.64$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td>(RSI 0.65: ISO Class D)</td><td><span class="badge-fsmc">Fixed STSMC</span></td><td><strong>$0.5793$</strong></td><td><strong>$1.7159$</strong></td><td>$2.122$</td><td>$6.869$</td><td>$6.47$</td><td>$2.15$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td></td><td><span class="badge-asmc">Adaptive STSMC</span></td><td>$0.6514$</td><td>$1.8117$</td><td><strong>$1.926$</strong></td><td><strong>$6.508$</strong></td><td>$6.54$</td><td>$2.28$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td><strong>Profile 4: Potholes</strong></td><td><span class="badge-lqr">Optimal LQR</span></td><td><strong>$0.8624$</strong></td><td>$6.6166$</td><td>$3.371$</td><td>$23.570$</td><td><strong>$19.08$</strong></td><td>$2.31$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td>(RSI 0.95: $20\text{ mm}$ Pulse)</td><td><span class="badge-fsmc">Fixed STSMC</span></td><td>$0.8673$</td><td><strong>$5.7590$</strong></td><td>$3.174$</td><td>$22.870$</td><td>$19.17$</td><td>$2.30$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td></td><td><span class="badge-asmc">Adaptive STSMC</span></td><td>$1.0825$</td><td>$7.8442$</td><td><strong>$2.601$</strong></td><td><strong>$17.570$</strong></td><td>$20.70$</td><td>$2.84$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td><strong>Profile 5: Resonance</strong></td><td><span class="badge-lqr">Optimal LQR</span></td><td>$1.2712$</td><td>$1.7942$</td><td>$7.888$</td><td>$11.337$</td><td><strong>$9.66$</strong></td><td>$6.83$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td>($2.58\text{ Hz}$ Body Hop)</td><td><span class="badge-fsmc">Fixed STSMC</span></td><td><strong>$1.1028$</strong></td><td><strong>$1.7391$</strong></td><td><strong>$7.323$</strong></td><td><strong>$10.489$</strong></td><td>$9.71$</td><td>$6.86$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
-<tr><td></td><td><span class="badge-asmc">Adaptive STSMC</span></td><td><strong>$1.1028$</strong></td><td><strong>$1.7391$</strong></td><td><strong>$7.323$</strong></td><td><strong>$10.489$</strong></td><td>$9.71$</td><td>$6.86$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<thead><tr><th>Road Condition</th><th>Controller Architecture</th><th>Steady-State RMS Accel ($\text{m/s}^2$)</th><th>Peak Body Accel ($\text{m/s}^2$)</th><th>Steady-State RMS Travel ($\text{mm}$)</th><th>Peak Travel Stroke ($\text{mm}$)</th><th>Peak Actuator Force ($\text{N}$)</th><th>RMS Force ($\text{N}$)</th><th>Rail Limit ($\le 38\text{ mm}$)</th><th>Force Limit ($\le 39.2\text{ N}$)</th></tr></thead>
+<tbody>
+<tr><td><strong>Profile 1: Harmonics</strong></td><td><span class="badge-lqr">Optimal LQR</span></td><td>$2.1000$</td><td>$3.7549$</td><td>$12.149$</td><td>$18.597$</td><td>$15.37$</td><td>$9.01$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td>(Chirp 1-8 Hz (RSI 0.70))</td><td><span class="badge-fsmc">Fixed STSMC</span></td><td>$2.0457$</td><td>$3.6942$</td><td>$11.398$</td><td>$18.238$</td><td>$16.10$</td><td>$9.12$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td></td><td><span class="badge-asmc">Adaptive STSMC</span></td><td><strong>$2.3050$</strong></td><td><strong>$4.3795$</strong></td><td><strong>$10.891$</strong></td><td><strong>$17.285$</strong></td><td><strong>$17.18$</strong></td><td>$8.91$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td><strong>Profile 2: Pulse</strong></td><td><span class="badge-lqr">Optimal LQR</span></td><td>$0.8384$</td><td>$6.5914$</td><td>$3.335$</td><td>$23.566$</td><td>$19.08$</td><td>$3.14$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td>(Bump 20mm (RSI 0.85))</td><td><span class="badge-fsmc">Fixed STSMC</span></td><td>$0.8447$</td><td>$5.7628$</td><td>$3.257$</td><td>$22.873$</td><td>$19.17$</td><td>$3.31$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td></td><td><span class="badge-asmc">Adaptive STSMC</span></td><td><strong>$0.9981$</strong></td><td><strong>$7.4551$</strong></td><td><strong>$2.714$</strong></td><td><strong>$18.507$</strong></td><td><strong>$20.94$</strong></td><td>$3.40$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td><strong>Profile 3: SignalGen_Sine</strong></td><td><span class="badge-lqr">Optimal LQR</span></td><td>$0.0438$</td><td>$0.2799$</td><td>$1.168$</td><td>$2.393$</td><td>$2.15$</td><td>$1.05$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td>(Sine Bump 20mm (RSI 0.40))</td><td><span class="badge-fsmc">Fixed STSMC</span></td><td>$0.0407$</td><td>$0.2818$</td><td>$1.589$</td><td>$3.370$</td><td>$3.07$</td><td>$1.44$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td></td><td><span class="badge-asmc">Adaptive STSMC</span></td><td><strong>$0.0414$</strong></td><td><strong>$0.2827$</strong></td><td><strong>$1.510$</strong></td><td><strong>$3.190$</strong></td><td><strong>$2.92$</strong></td><td>$1.37$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td><strong>Profile 4: Smooth</strong></td><td><span class="badge-lqr">Optimal LQR</span></td><td>$0.0343$</td><td>$0.1742$</td><td>$1.051$</td><td>$1.486$</td><td>$1.33$</td><td>$0.93$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td>(Class A (RSI 0.10))</td><td><span class="badge-fsmc">Fixed STSMC</span></td><td>$0.0310$</td><td>$0.1730$</td><td>$1.329$</td><td>$1.876$</td><td>$1.71$</td><td>$1.18$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td></td><td><span class="badge-asmc">Adaptive STSMC</span></td><td><strong>$0.0288$</strong></td><td><strong>$0.1819$</strong></td><td><strong>$1.239$</strong></td><td><strong>$1.800$</strong></td><td><strong>$1.66$</strong></td><td>$1.12$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td><strong>Profile 5: Normal</strong></td><td><span class="badge-lqr">Optimal LQR</span></td><td>$1.2614$</td><td>$2.6032$</td><td>$9.616$</td><td>$19.259$</td><td>$16.68$</td><td>$8.20$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td>(Class B/C (RSI 0.35))</td><td><span class="badge-fsmc">Fixed STSMC</span></td><td>$1.1957$</td><td>$2.3525$</td><td>$9.042$</td><td>$17.307$</td><td>$15.77$</td><td>$8.19$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td></td><td><span class="badge-asmc">Adaptive STSMC</span></td><td><strong>$1.1957$</strong></td><td><strong>$2.3525$</strong></td><td><strong>$9.042$</strong></td><td><strong>$17.307$</strong></td><td><strong>$15.77$</strong></td><td>$8.19$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td><strong>Profile 6: Pothole</strong></td><td><span class="badge-lqr">Optimal LQR</span></td><td>$1.0237$</td><td>$5.4844$</td><td>$3.310$</td><td>$16.727$</td><td>$15.45$</td><td>$2.46$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td>(Potholes (RSI 0.95))</td><td><span class="badge-fsmc">Fixed STSMC</span></td><td>$0.8810$</td><td>$4.2685$</td><td>$3.138$</td><td>$16.443$</td><td>$14.68$</td><td>$2.47$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
+<tr><td></td><td><span class="badge-asmc">Adaptive STSMC</span></td><td><strong>$1.1710$</strong></td><td><strong>$5.8933$</strong></td><td><strong>$2.617$</strong></td><td><strong>$13.195$</strong></td><td><strong>$16.19$</strong></td><td>$2.75$</td><td><strong>PASS</strong></td><td><strong>PASS</strong></td></tr>
 </tbody></table></div>
-<div class='spacer'></div>
-<hr class='paper-hr'>
 <div class='spacer'></div>
 <h3 class='subsection-title'>B. Time-Domain Dynamic Response Analysis</h3>
 <div class='spacer'></div>
-<h4 class='subsubsection-title'>1) Smooth Highway Cruising (Profile 1: RSI 0.10)</h4>
-<p>Under smooth undulations ($4\text{ mm}$, $0.20\text{ Hz}$), the objective is minimizing chassis micro-vibrations with negligible actuator effort.</p>
-<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure1_Smooth_Comparison.png' alt='Figure 1: Smooth Road Comparison' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 1: Smooth Road Dynamic Response <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>-- Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>-. Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>- Adaptive STSMC</span>)</span></p></div>
-<p>As demonstrated in Fig. 1, all three active controllers keep peak vertical acceleration below $0.065\text{ m/s}^2$ with less than $0.65\text{ N}$ of force demand. Adaptive STSMC delivers the lowest steady-state RMS acceleration ($0.0043\text{ m/s}^2$).</p>
+
+<h4 class='subsubsection-title'>1) Harmonics Generator: Resonance & Frequency Sweep (Profile 1: RSI 0.70)</h4>
+<p>Under continuous $1.0 - 8.0	ext{ Hz}$ harmonic sweep excitation through the chassis natural bounce frequency ($2.58	ext{ Hz}$), all three controllers maintain full stability with control forces within $\pm 17.2	ext{ N}$ and suspension travel within $18.6	ext{ mm}$ (limit $\pm 38	ext{ mm}$).</p>
+<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure1_Harmonics_Comparison.png' alt='Figure 1: Harmonics Generator Comparison' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 1: Harmonics Generator Resonance Dynamic Response <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>-- Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>-. Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>- Adaptive STSMC</span>)</span></p></div>
+
 <div class='spacer'></div>
-<h4 class='subsubsection-title'>2) Normal / Bumpy Road Cruising (Profile 2: RSI 0.35)</h4>
-<p>Operating on typical secondary road conditions with moderate sinusoidal undulations ($20\text{ mm}$, $0.20\text{ Hz}$).</p>
-<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure2_Normal_Comparison.png' alt='Figure 2: Normal Road Comparison' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 2: Normal Road Dynamic Response <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>-- Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>-. Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>- Adaptive STSMC</span>)</span></p></div>
-<p>As depicted in Fig. 2, Fixed STSMC and Adaptive STSMC suppress body accelerations smoothly while maintaining steady-state suspension deflection well under $4\text{ mm}$ against the $38\text{ mm}$ limit, requiring under $3.2\text{ N}$ of control effort.</p>
+<h4 class='subsubsection-title'>2) Discrete Pulse Generator: Transient Bump / Drop (Profile 2: RSI 0.85)</h4>
+<p>Under severe discrete step pulses ($20	ext{ mm}$ amplitude), Adaptive STSMC reduces peak suspension stroke down to $18.5	ext{ mm}$ compared to $23.6	ext{ mm}$ for Optimal LQR (a $21.5\%$ stroke reduction), preventing mechanical bottoming while keeping actuator force safely below $21	ext{ N}$.</p>
+<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure2_Pulse_Comparison.png' alt='Figure 2: Pulse Generator Comparison' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 2: Discrete Pulse Generator Dynamic Response <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>-- Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>-. Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>- Adaptive STSMC</span>)</span></p></div>
+
 <div class='spacer'></div>
-<h4 class='subsubsection-title'>3) Stochastic ISO Class D Rough Terrain (Profile 3: RSI 0.65)</h4>
-<p>Traversing rough terrain at $90\text{ km/h}$ ($25\text{ m/s}$) with broadband multi-harmonic excitation (30 harmonics, $0.5$ to $15\text{ Hz}$, $rng(42)$) tests broad-spectrum disturbance rejection.</p>
-<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure3_Rough_Comparison.png' alt='Figure 3: Rough Road Comparison' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 3: Rough Road Dynamic Response <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>-- Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>-. Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>- Adaptive STSMC</span>)</span></p></div>
-<p>Adaptive STSMC delivers balanced performance across high-frequency modal disturbances while containing suspension travel safely within physical envelopes ($< 22\text{ mm}$).</p>
+<h4 class='subsubsection-title'>3) Signal Generator: Sinusoidal Road Bump (Profile 3: RSI 0.40)</h4>
+<p>Under half-wave rectified $20	ext{ mm}$ sine bumps at $0.20	ext{ Hz}$, all active controllers achieve steady-state RMS acceleration under $0.044	ext{ m/s}^2$ with peak actuator force under $3.1	ext{ N}$.</p>
+<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure3_SignalGen_Sine_Comparison.png' alt='Figure 3: Signal Generator Sine Comparison' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 3: Signal Generator Rectified Sine Bump Dynamic Response <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>-- Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>-. Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>- Adaptive STSMC</span>)</span></p></div>
+
 <div class='spacer'></div>
-<h4 class='subsubsection-title'>4) Severe Discrete Pothole Impacts (Profile 4: RSI 0.95)</h4>
-<p>The discrete $20\text{ mm}$ pulse drop ($0.30\text{ Hz}$, $10\%$ duty cycle) represents severe impact road irregularities that heavily stress working space and peak motor force.</p>
-<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure4_Pothole_Comparison.png' alt='Figure 4: Pothole Road Comparison' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 4: Pothole Road Dynamic Response <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>-- Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>-. Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>- Adaptive STSMC</span>)</span></p></div>
-<p>As shown in Fig. 4, Fixed STSMC restricts peak shock acceleration, while Adaptive STSMC achieves tightest stroke containment ($22.38\text{ mm}$) and requires over $11.9\%$ less peak control force ($16.88\text{ N}$ vs $19.17\text{ N}$) during recovery.</p>
+<h4 class='subsubsection-title'>4) Smooth Road Highway Cruising (Profile 4: RSI 0.10, ISO Class A)</h4>
+<p>Under smooth elevation variations ($5	ext{ mm}$ at $0.50	ext{ Hz}$), Adaptive STSMC achieves the best ride comfort with steady-state RMS acceleration of $0.0288	ext{ m/s}^2$ (a $16.0\%$ improvement over Optimal LQR at $0.0343	ext{ m/s}^2$) requiring only $1.66	ext{ N}$ of control effort.</p>
+<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure4_Smooth_Comparison.png' alt='Figure 4: Smooth Road Comparison' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 4: Smooth Road ISO Class A Dynamic Response <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>-- Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>-. Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>- Adaptive STSMC</span>)</span></p></div>
+
 <div class='spacer'></div>
-<h4 class='subsubsection-title'>5) Harmonic Body Hop Resonance (Profile 5)</h4>
-<p>At $2.58\text{ Hz}$, the quarter-car chassis bounce mode is excited directly at resonance.</p>
-<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure5_Resonance_Comparison.png' alt='Figure 5: Harmonic Resonance Comparison' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 5: Harmonic Resonance Dynamic Response <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>-- Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>-. Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>- Adaptive STSMC</span>)</span></p></div>
-<p>Fixed STSMC achieves the highest steady-state ride comfort with an RMS acceleration of $1.1132\text{ m/s}^2$ ($13.0\%$ improvement over LQR at $1.2799\text{ m/s}^2$), while containing suspension stroke to $10.49\text{ mm}$ using only $9.71\text{ N}$ of force.</p>
+<h4 class='subsubsection-title'>5) Normal Undulating Secondary Road (Profile 5: RSI 0.35, ISO Class B/C)</h4>
+<p>Under dual-harmonic rolling undulations ($1.2	ext{ Hz}$ and $2.8	ext{ Hz}$), Fixed and Adaptive STSMC suppress body vibrations to $1.196	ext{ m/s}^2$ ($5.2\%$ lower than LQR at $1.261	ext{ m/s}^2$) with peak stroke of $17.3	ext{ mm}$ and actuator demand of $15.8	ext{ N}$.</p>
+<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure5_Normal_Comparison.png' alt='Figure 5: Normal Road Comparison' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 5: Normal Road ISO Class B/C Dynamic Response <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>-- Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>-. Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>- Adaptive STSMC</span>)</span></p></div>
+
 <div class='spacer'></div>
-<hr class='paper-hr'>
+<h4 class='subsubsection-title'>6) Pothole-Filled Road with Localized Severe Dips (Profile 6: RSI 0.95)</h4>
+<p>Under localized negative pothole drops up to $-15	ext{ mm}$, Adaptive STSMC intelligently ramps up gain, restricting peak suspension stroke to $13.2	ext{ mm}$ compared to $16.7	ext{ mm}$ for LQR (a $21.1\%$ deflection reduction) while strictly respecting the $\pm 39.2	ext{ N}$ actuator limit with $16.2	ext{ N}$ peak force.</p>
+<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure6_Pothole_Comparison.png' alt='Figure 6: Pothole Road Comparison' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 6: Pothole Road Dynamic Response <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>-- Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>-. Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>- Adaptive STSMC</span>)</span></p></div>
+
 <div class='spacer'></div>
 <h3 class='subsection-title'>C. Multi-Objective Performance Dashboard</h3>
-<p>Fig. 6 presents the comprehensive summary dashboard comparing all three controllers across ride comfort (RMS acceleration), working space (RMS deflection), actuator demand (peak force), and road holding (RMS tire deflection).</p>
-<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure5_Summary_Performance_Dashboard.png' alt='Figure 6: Multi-Controller Performance Dashboard' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 6: Multi-Controller Performance Dashboard <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>Optimal LQR [Blue]</span> | <span style='color:#CC0000; font-weight:bold;'>Fixed STSMC [Red]</span> | <span style='color:#006622; font-weight:bold;'>Adaptive STSMC [Green]</span>)</span></p></div>
+<p>Fig. 7 presents a comparative dashboard summarizing RMS acceleration, suspension travel, dynamic tire deflection, and peak actuator force across all six road profiles.</p>
+<div class='figure-box' style='text-align:center; margin:18px 0;'><img src='../figures/Figure7_Summary_Performance_Dashboard.png' alt='Figure 7: Multi-Controller Performance Dashboard' style='max-width:100%; height:auto; border:1px solid #e2e8f0; border-radius:4px;'><p class='figure-caption' style='font-size:9.5pt; color:#334155; margin-top:6px; font-weight:600;'>Figure 7: Multi-Objective Comparative Dashboard Across All 6 Road Profiles <span style='font-weight:normal; font-size:8.5pt; margin-left:8px;'>(<span style='color:#0044CC; font-weight:bold;'>Optimal LQR</span> | <span style='color:#CC0000; font-weight:bold;'>Fixed STSMC</span> | <span style='color:#006622; font-weight:bold;'>Adaptive STSMC</span>)</span></p></div>
+
 <div class='spacer'></div>
 <hr class='paper-hr'>
 <div class='spacer'></div>
