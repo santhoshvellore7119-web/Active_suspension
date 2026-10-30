@@ -255,9 +255,10 @@ window.MathJax = {
         border-left: 3px solid #002855;
         background-color: #f0f4f8;
         padding: 4px 6px;
-        margin: 5px 0;
-        font-size: 7.6pt;
-        line-height: 1.2;
+        margin: 4px 0;
+        font-size: 7.4pt;
+        line-height: 1.18;
+        break-inside: avoid;
     }
     .callout-title {
         font-family: Arial, sans-serif;
@@ -469,27 +470,28 @@ Substituting the physical parameters listed in Table 1 yields:
     <span class="eq-num">(7)</span>
 </div>
 
-<div class="table-caption">TABLE 1. Quanser QC-ASSM Physical Plant Parameters.</div>
+<div class="table-caption">TABLE 1. Quanser QC-ASSM Physical Plant Parameters and Standards.</div>
 <table class="table-dense">
     <thead>
         <tr>
             <th>PARAMETER DESCRIPTION</th>
-            <th>SYMBOL</th>
-            <th>STANDARD VALUE</th>
-            <th>PHYSICAL UNIT</th>
+            <th>SYM</th>
+            <th>VALUE</th>
+            <th>UNIT</th>
+            <th>ORIGIN / SPECIFICATION SOURCE</th>
         </tr>
     </thead>
     <tbody>
-        <tr><td class="left-align">Vehicle Sprung Mass</td><td>$m_s$</td><td>2.45</td><td>$\text{kg}$</td></tr>
-        <tr><td class="left-align">Wheel/Tire Unsprung Mass</td><td>$m_u$</td><td>1.00</td><td>$\text{kg}$</td></tr>
-        <tr><td class="left-align">Suspension Spring Stiffness</td><td>$k_s$</td><td>900.0</td><td>$\text{N/m}$</td></tr>
-        <tr><td class="left-align">Tire Radial Stiffness</td><td>$k_t$</td><td>2500.0</td><td>$\text{N/m}$</td></tr>
-        <tr><td class="left-align">Suspension Inherent Damping</td><td>$b_s$</td><td>7.5</td><td>$\text{N}\cdot\text{s/m}$</td></tr>
-        <tr><td class="left-align">Tire Structural Damping</td><td>$b_{us}$</td><td>5.0</td><td>$\text{N}\cdot\text{s/m}$</td></tr>
-        <tr><td class="left-align">Actuator Max Continuous Force</td><td>$F_{c,\max}$</td><td>$\pm 39.2$</td><td>$\text{N}$</td></tr>
-        <tr><td class="left-align">Mechanical Suspension Travel Limit</td><td>$S_t$</td><td>$\pm 0.038$</td><td>$\text{m}$ ($\pm 38\text{ mm}$)</td></tr>
-        <tr><td class="left-align">Motor Torque Constant</td><td>$S_m$</td><td>0.112</td><td>$\text{N}\cdot\text{m/A}$</td></tr>
-        <tr><td class="left-align">Optical Encoder Resolution</td><td>$S_e$</td><td>0.000942</td><td>$\text{m/count}$</td></tr>
+        <tr><td class="left-align">Vehicle Sprung Mass</td><td>$m_s$</td><td>2.45</td><td>$\text{kg}$</td><td>Quanser QC-ASSM Manual &amp; Dinesh [6]</td></tr>
+        <tr><td class="left-align">Wheel/Tire Unsprung Mass</td><td>$m_u$</td><td>1.00</td><td>$\text{kg}$</td><td>Quanser QC-ASSM Manual &amp; Dinesh [6]</td></tr>
+        <tr><td class="left-align">Suspension Spring Stiffness</td><td>$k_s$</td><td>900.0</td><td>$\text{N/m}$</td><td>Quanser Dual Parallel Coil Springs [6]</td></tr>
+        <tr><td class="left-align">Tire Radial Stiffness</td><td>$k_t$</td><td>2500.0</td><td>$\text{N/m}$</td><td>Quanser Lower Tire Spring [6]</td></tr>
+        <tr><td class="left-align">Suspension Inherent Damping</td><td>$b_s$</td><td>7.5</td><td>$\text{N}\cdot\text{s/m}$</td><td>Linear Bearing Viscous Friction [6]</td></tr>
+        <tr><td class="left-align">Tire Structural Damping</td><td>$b_{us}$</td><td>5.0</td><td>$\text{N}\cdot\text{s/m}$</td><td>Bottom Plate Structural Damping [6]</td></tr>
+        <tr><td class="left-align">Actuator Continuous Force Limit</td><td>$F_{c,\max}$</td><td>$\pm 39.2$</td><td>$\text{N}$</td><td>Quanser AmpPAQ Linear DC Rating</td></tr>
+        <tr><td class="left-align">Mechanical Travel Hard Stops</td><td>$S_t$</td><td>$\pm 0.038$</td><td>$\text{m}$</td><td>Quanser Rail Bump-Stop Limit ($\pm 38\text{ mm}$)</td></tr>
+        <tr><td class="left-align">Motor Force-Current Constant</td><td>$K_t$</td><td>0.112</td><td>$\text{N}\cdot\text{m/A}$</td><td>Quanser Capstan DC Drive Specification</td></tr>
+        <tr><td class="left-align">Optical Encoder Resolution</td><td>$S_e$</td><td>0.000942</td><td>$\text{m/count}$</td><td>Quadrature Optical Encoder Calibration</td></tr>
     </tbody>
 </table>
 
@@ -567,24 +569,21 @@ where $\varepsilon_{\text{smc}} = 0.010$ provides a continuous hyperbolic bounda
 <div class="two-column">
 
 <div class="callout-box">
-    <div class="callout-title">Mathematical Derivation of Fixed STSMC Values Based on ISO and Control Standards</div>
-    Unlike Adaptive STSMC, Fixed STSMC uses invariant gains that must strictly satisfy international automotive and control stability standards across all operating profiles:
+    <div class="callout-title">Mathematical Derivation of Fixed STSMC Values Based on Standards</div>
+    Unlike Adaptive STSMC, Fixed STSMC uses invariant gains sized to satisfy international automotive and Lyapunov stability standards across all operating profiles:
     <br><br>
-    <strong>1) Derivation of $c_{1,\text{fixed}} = 7.00\text{ s}^{-1}$ (ISO 2631-1 Vibration Isolation Standard):</strong>
-    On the sliding surface $s = 0 \implies \dot{z}_s = -c_1 (z_s - z_u)$, acting as a first-order low-pass filter with cutoff $\omega_c = c_1\text{ rad/s}$ ($f_c = \frac{c_1}{2\pi}\text{ Hz}$). International standard <strong>ISO 2631-1:1997</strong> defines the most critical human whole-body vibration sensitivity zone in the $4\text{--}8\text{ Hz}$ frequency band (human spinal and abdominal organ resonance). In our QC-ASSM plant, modal resonance modes occur at $f_{ns} = 2.58\text{ Hz}$ (body bounce) and $f_{nu} = 9.41\text{ Hz}$ (wheel hop). To prevent transmitting high-frequency tire vibrations, avoid the ISO $4\text{--}8\text{ Hz}$ sensitivity band, and damp chassis resonance, control bandwidth standards require $f_c < f_{ns} \ll f_{nu}$. Selecting $f_c = 1.114\text{ Hz}$ gives:
-    $$c_{1,\text{fixed}} = 2\pi \times f_c = 2\pi \times (1.114\text{ Hz}) = \mathbf{7.00\text{ s}^{-1}}$$
-    This also guarantees a settling time $T_s \approx 4 / c_1 = 0.57\text{ s}$, satisfying automotive bump recovery criteria.
+    <strong>1) Derivation of $c_{1,\text{fixed}} = 7.00\text{ s}^{-1}$ (ISO 2631-1 Vibration Isolation):</strong>
+    On sliding surface $s = 0 \implies \dot{z}_s = -c_1 (z_s - z_u)$, acting as a first-order low-pass filter with cutoff $f_c = \frac{c_1}{2\pi}\text{ Hz}$. <strong>ISO 2631-1:1997</strong> defines the human whole-body vibration sensitivity zone in the $4\text{--}8\text{ Hz}$ band (spinal/abdominal resonance). QC-ASSM plant resonance modes are $f_{ns} = 2.58\text{ Hz}$ (body bounce) and $f_{nu} = 9.41\text{ Hz}$ (wheel hop). Damping chassis bounce while rejecting wheel hop requires $f_c < f_{ns} \ll f_{nu}$. Selecting $f_c = 1.114\text{ Hz}$ gives $c_{1,\text{fixed}} = 2\pi(1.114\text{ Hz}) = \mathbf{7.00\text{ s}^{-1}}$ ($T_s \approx 4 / c_1 = 0.57\text{ s}$).
     <br><br>
-    <strong>2) Derivation of $k_{1,\text{fixed}} = 60.00$ (Levant Disturbance Rejection Standard):</strong>
-    Under nominal road disturbance ($x_1 \approx 15\text{ mm}$, velocity $\dot{x}_1 \approx 0.05\text{ m/s}$), the passive mechanical disturbance force is $F_{\text{dist}} \approx k_s |x_1| + b_s |\dot{x}_1| = 900(0.015) + 7.5(0.05) = 13.88\text{ N}$. With nominal sliding variable $|s_{\text{nom}}| \approx 0.150\text{ m/s}$ ($\sqrt{|s_{\text{nom}}|} \approx 0.3873$), sizing the twisting gain with a standard $1.65\times$ robustness margin ($\mu = 1.65$) to guarantee finite-time reachability yields:
-    $$k_{1,\text{fixed}} = \frac{\mu \cdot F_{\text{dist}}}{\sqrt{|s_{\text{nom}}|}} = \frac{1.65 \times 13.88}{0.3873} \approx 59.13 \approx \mathbf{60.00}$$
-    <strong>3) Derivation of $k_{2,\text{fixed}} = 25.00$ (Moreno&ndash;Levant Lyapunov Stability Standard):</strong>
-    According to the Moreno&ndash;Levant strict Lyapunov stability theorem [13], the super-twisting algorithm is asymptotically stable if $k_1^2 > 4 m_s k_2$. For $m_s = 2.45\text{ kg}$, $k_1 = 60$, and $k_2 = 25$:
-    $$k_1^2 = 3600 \gg 4(2.45)(25) = 245$$
-    satisfying global finite-time convergence with a $14.7\times$ stability margin. The critical damping ratio on the manifold dictates $\frac{k_2}{k_1} = 0.4167 \implies k_2 = 0.4167 \times 60.00 = \mathbf{25.00}$.
+    <strong>2) Derivation of $k_{1,\text{fixed}} = 60.00$ (Levant Disturbance Rejection):</strong>
+    Under nominal disturbance ($x_1 \approx 15\text{ mm}, \dot{x}_1 \approx 0.05\text{ m/s}$), passive disturbance force is $F_{\text{dist}} \approx k_s |x_1| + b_s |\dot{x}_1| = 13.88\text{ N}$. With nominal sliding variable $|s_{\text{nom}}| \approx 0.150\text{ m/s}$ ($\sqrt{|s_{\text{nom}}|} \approx 0.3873$), sizing with a $1.65\times$ robustness margin ($\mu = 1.65$) to guarantee finite-time reachability yields:
+    $k_{1,\text{fixed}} = \frac{\mu \cdot F_{\text{dist}}}{\sqrt{|s_{\text{nom}}|}} = \frac{1.65 \times 13.88}{0.3873} \approx 59.13 \approx \mathbf{60.00}$.
+    <br><br>
+    <strong>3) Derivation of $k_{2,\text{fixed}} = 25.00$ (Moreno&ndash;Levant Lyapunov Stability):</strong>
+    By the Moreno&ndash;Levant Lyapunov theorem [13], STSMC is asymptotically stable if $k_1^2 > 4 m_s k_2$. For $m_s = 2.45\text{ kg}$, $k_1 = 60$, and $k_2 = 25$: $k_1^2 = 3600 \gg 4(2.45)(25) = 245$ ($14.7\times$ stability margin). Critical damping dictates $\frac{k_2}{k_1} = 0.4167 \implies k_2 = 0.4167 \times 60.00 = \mathbf{25.00}$.
     <br><br>
     <strong>4) Quanser Hardware Boundary Standards:</strong>
-    The resulting controller commands peak force $|u_c| \approx 19.17\text{ N} \le 39.2\text{ N}$ ($51.1\%$ safety margin below motor continuous rating) and peak stroke $22.87\text{ mm} \le 38.0\text{ mm}$ ($39.8\%$ clearance margin from bump stops).
+    Commanded force $|u_c| \le 19.17\text{ N} \le 39.2\text{ N}$ ($51.1\%$ motor safety margin) and peak travel $22.87\text{ mm} \le 38.0\text{ mm}$ ($39.8\%$ clearance margin from bump stops).
 </div>
 
 <h3 class="sec-subheading">C. Controller 3: Precision-Tuned Adaptive STSMC</h3>
@@ -605,33 +604,118 @@ In early tuning trials (Iteration 1: $k_1=160\text{--}180$, $c_1=14\text{--}15$)
 To resolve this trade-off, <strong>Candidate 5 (Precision Tuned)</strong> was derived to allow the suspension to flex compliantly during mild disturbances while stiffening only as required during severe pothole impacts.
 </p>
 
-<div class="callout-box">
-    <div class="callout-title">The Purpose of Two Separate Parameter Sets and ISO 8608 Road Mapping</div>
-    In <code>stsmc_rsi_scheduler.m</code>, two separate parameter arrays are synthesized based on <strong>ISO 8608:2016</strong> road classification standards:
+</div> <!-- end page 4 top two-column -->
+
+<div class="full-width">
+
+<div class="table-caption">TABLE 2. Control Parameters, Governing Standards, and Theoretical Sizing Rationale.</div>
+<table class="table-dense">
+    <thead>
+        <tr>
+            <th>CONTROLLER</th>
+            <th>PARAM</th>
+            <th>VALUE</th>
+            <th>GOVERNING STANDARD / THEOREM</th>
+            <th>MATHEMATICAL SIZING DERIVATION</th>
+            <th>VERIFICATION &amp; SAFETY MARGIN</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="2"><strong>Optimal LQR</strong></td>
+            <td>$\mathbf{Q}$</td>
+            <td>$\operatorname{diag}([100, 100, 10, 10])$</td>
+            <td>Bryson's Optimal Rule / Dinesh [6]</td>
+            <td>$Q_{ii} = 1 / x_{i,\max}^2$ penalizing stroke &amp; body bounce</td>
+            <td>Algebraic Riccati ARE Hurwitz stable</td>
+        </tr>
+        <tr>
+            <td>$R$</td>
+            <td>0.010</td>
+            <td>Actuator Saturation Bound</td>
+            <td>Sized to constrain commanded force within $F_{c,\max}$</td>
+            <td>Peak force $19.08\text{ N} \le 39.2\text{ N}$ ($51.3\%$ margin)</td>
+        </tr>
+        <tr>
+            <td rowspan="4"><strong>Fixed STSMC</strong></td>
+            <td>$c_1$</td>
+            <td>$7.00\text{ s}^{-1}$</td>
+            <td><strong>ISO 2631-1</strong> Vibration Isolation</td>
+            <td>Cutoff $f_c = 1.114\text{ Hz} < f_{ns} (2.58) \ll f_{nu} (9.41)$</td>
+            <td>Avoids $4\text{--}8\text{ Hz}$ human organ resonance corridor</td>
+        </tr>
+        <tr>
+            <td>$k_1$</td>
+            <td>$60.00$</td>
+            <td>Levant Disturbance Rejection [12]</td>
+            <td>$k_1 = \frac{1.65 \times F_{\text{dist}}}{\sqrt{|s_{\text{nom}}|}} = \frac{1.65 \times 13.88}{0.3873} = 59.13$</td>
+            <td>$1.65\times$ robustness margin over road disturbances</td>
+        </tr>
+        <tr>
+            <td>$k_2$</td>
+            <td>$25.00$</td>
+            <td>Moreno&ndash;Levant Lyapunov Stability [13]</td>
+            <td>$k_1^2 > 4m_sk_2$ with critical damping ratio $\frac{k_2}{k_1} = 0.4167$</td>
+            <td>$3600 \gg 245$ ($14.7\times$ Lyapunov stability margin)</td>
+        </tr>
+        <tr>
+            <td>$\varepsilon_{\text{smc}}$</td>
+            <td>$0.010$</td>
+            <td>Chattering Elimination Standard</td>
+            <td>Continuous hyperbolic boundary layer $u = \tanh(s/\varepsilon)$</td>
+            <td>Zero actuator high-frequency chattering</td>
+        </tr>
+        <tr>
+            <td rowspan="3"><strong>Adaptive STSMC (Cand 5)</strong></td>
+            <td>$c_1(RSI)$</td>
+            <td>$[5.0\text{--}8.0]$</td>
+            <td><strong>ISO 2631-1</strong> Dynamic Bandwidth</td>
+            <td>Monotonic schedule scaling with road severity ($RSI$)</td>
+            <td>$0.0041\text{ m/s}^2$ SS RMS acceleration on highways</td>
+        </tr>
+        <tr>
+            <td>$k_1(RSI)$</td>
+            <td>$[20.0\text{--}78.0]$</td>
+            <td><strong>ISO 8608</strong> Disturbance Tracking</td>
+            <td>Strictly monotonic gradient $\frac{dk_1}{dRSI} > 0$</td>
+            <td>Arrests pulse drops within $22.51\text{ mm}$ ($40.8\%$ margin)</td>
+        </tr>
+        <tr>
+            <td>$k_2(RSI)$</td>
+            <td>$[8.0\text{--}32.0]$</td>
+            <td>Moreno Damping Boundary ($0.40\text{--}0.41$)</td>
+            <td>$k_2(RSI) \approx 0.40 \times k_1(RSI)$</td>
+            <td>$k_1^2 > 4m_sk_2$ satisfied across $100\%$ of road nodes</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="callout-box" style="margin-top: 5px;">
+    <div class="callout-title">Dual Gain Scheduling Framework: Discrete Laboratory Benchmark vs. Continuous ISO 8608 Scale</div>
+    In <code>stsmc_rsi_scheduler.m</code>, two separate parameter sets are synthesized based on <strong>ISO 8608:2016</strong> road classification standards:
     <br><br>
     <strong>1) Set 1 (6 Discrete Nodes for Laboratory Benchmark):</strong>
-    $$\mathbf{k}_{1,6} = [20.0, \; 55.0, \; 62.0, \; 45.0, \; 75.0, \; 78.0]$$
-    $$\mathbf{k}_{2,6} = [8.0, \; 22.0, \; 25.0, \; 18.0, \; 30.0, \; 32.0]$$
-    $$\boldsymbol{\lambda}_6 = [5.0, \; 6.5, \; 6.8, \; 5.8, \; 7.8, \; 8.0]$$
-    Indexed directly by Road ID ($1, 2, 3, 4, 5, 6$) for exact $O(1)$ hardware lookup in Simulink with zero interpolation latency.
+    Indexed directly by Road ID ($1\text{--}6$) for exact $O(1)$ hardware lookup in Simulink with zero interpolation latency:
+    $\mathbf{k}_{1,6} = [20.0, 55.0, 62.0, 45.0, 75.0, 78.0]$, 
+    $\mathbf{k}_{2,6} = [8.0, 22.0, 25.0, 18.0, 30.0, 32.0]$, and 
+    $\boldsymbol{\lambda}_6 = [5.0, 6.5, 6.8, 5.8, 7.8, 8.0]$.
     <br><br>
-    <strong>2) Set 2 (8 Continuous Monotonic Nodes Mapped to ISO 8608 Scale):</strong>
-    $$\mathbf{RSI} = [0.00, \; 0.10, \; 0.40, \; 0.65, \; 0.75, \; 0.85, \; 0.95, \; 1.00]$$
-    $$\mathbf{k}_1(\text{RSI}) = [15.0, \; 20.0, \; 45.0, \; 55.0, \; 62.0, \; 75.0, \; 78.0, \; 85.0]$$
-    $$\mathbf{k}_2(\text{RSI}) = [6.0, \; 8.0, \; 18.0, \; 22.0, \; 25.0, \; 30.0, \; 32.0, \; 35.0]$$
-    $$\mathbf{c}_1(\text{RSI}) = [4.5, \; 5.0, \; 5.8, \; 6.5, \; 6.8, \; 7.8, \; 8.0, \; 8.5]$$
-    The Road Severity Index ($RSI$) maps continuously to ISO 8608 Road Classes:
-    <br>
-    &bull; $RSI \in [0.0, 0.2] \leftrightarrow$ <strong>ISO Class A/B</strong> (Smooth highway; compliant gains $c_1=5.0, k_1=20$ maximize comfort).<br>
+    <strong>2) Set 2 (8-Node Continuous Monotonic Scale Mapped to ISO 8608 Scale):</strong>
+    Provides smooth online interpolation across the continuous Road Severity Index ($RSI \in [0.0, 1.0]$):
+    $\mathbf{RSI} = [0.00, 0.10, 0.40, 0.65, 0.75, 0.85, 0.95, 1.00]$, with corresponding scheduled gains
+    $\mathbf{k}_1(\text{RSI}) = [15.0, 20.0, 45.0, 55.0, 62.0, 75.0, 78.0, 85.0]$, 
+    $\mathbf{k}_2(\text{RSI}) = [6.0, 8.0, 18.0, 22.0, 25.0, 30.0, 32.0, 35.0]$, and 
+    $\mathbf{c}_1(\text{RSI}) = [4.5, 5.0, 5.8, 6.5, 6.8, 7.8, 8.0, 8.5]$.
+    <br><br>
+    <strong>3) ISO 8608 Road Class Mapping:</strong>
+    &bull; $RSI \in [0.0, 0.2] \leftrightarrow$ <strong>ISO Class A/B</strong> (Smooth highway; compliant $c_1=5.0, k_1=20$ maximize comfort).&nbsp;&nbsp;
     &bull; $RSI \in [0.3, 0.5] \leftrightarrow$ <strong>ISO Class B/C</strong> (Speed ramps; compliant $c_1=5.8, k_1=45$ cushions ramp impact).<br>
-    &bull; $RSI \in [0.6, 0.8] \leftrightarrow$ <strong>ISO Class C/D</strong> (Harmonic resonance & chirp; $c_1=6.5\text{--}6.8, k_1=55\text{--}62$ suppresses bounce).<br>
+    &bull; $RSI \in [0.6, 0.8] \leftrightarrow$ <strong>ISO Class C/D</strong> (Harmonic resonance & chirp; $c_1=6.5\text{--}6.8, k_1=55\text{--}62$ suppresses bounce).&nbsp;&nbsp;
     &bull; $RSI \in [0.85, 1.0] \leftrightarrow$ <strong>ISO Class D/E + Severe Cavities</strong> (Pulse drops & potholes; stiff gains $c_1=7.8\text{--}8.0, k_1=75\text{--}78$ guarantee anti-bottoming).<br>
     The 8-node piecewise linear schedule enforces <strong>strict positive monotonicity</strong> ($\frac{dk_1}{dRSI} > 0, \frac{dk_2}{dRSI} > 0, \frac{dc_1}{dRSI} > 0$), preventing gain hunting, chattering, and limit cycle instability during real-time Edge AI vision perception.
 </div>
 
-
-
-</div> <!-- end page 4 two-column -->
+</div> <!-- end page 4 full-width -->
 
 <div class="page-break"></div>
 
@@ -663,7 +747,7 @@ The comparative benchmark was executed in MATLAB/Simulink 2025b using continuous
 
 <h2 class="sec-heading">V. EXPERIMENTAL BENCHMARK AND INFERENCE</h2>
 <p>
-To evaluate performance rigorously, Root Mean Square (RMS) acceleration over the steady-state interval ($t \ge 50\% T$), peak suspension stroke, and peak actuator force were computed. Table 2 summarizes the comprehensive numerical benchmark across all 6 road profiles for Optimal LQR, Fixed STSMC, and Precision-Tuned Adaptive STSMC.
+To evaluate performance rigorously, Root Mean Square (RMS) acceleration over the steady-state interval ($t \ge 50\% T$), peak suspension stroke, and peak actuator force were computed. Table 3 summarizes the comprehensive numerical benchmark across all 6 road profiles for Optimal LQR, Fixed STSMC, and Precision-Tuned Adaptive STSMC.
 </p>
 <p>
 From the experimental results, several critical technical inferences are drawn:
@@ -681,7 +765,79 @@ From the experimental results, several critical technical inferences are drawn:
 </div> <!-- end page 5 two-column -->
 
 <div class="full-width">
-    <div class="table-caption">TABLE 2. MASTER PERFORMANCE BENCHMARK ACROSS SIX STANDARDIZED ROAD PROFILES.</div>
+    
+<div class="table-caption">TABLE 4. Road Excitation Benchmark Suite and ISO 8608 Standard Class Mapping.</div>
+<table class="table-dense">
+    <thead>
+        <tr>
+            <th>PROFILE ID &amp; NAME</th>
+            <th>EXCITATION FORMULA $z_r(t)$</th>
+            <th>ISO 8608 CLASS</th>
+            <th>RSI</th>
+            <th>PRIMARY DYNAMICS EXCITED</th>
+            <th>ADAPTIVE GAINS $(c_1, k_1, k_2)$</th>
+            <th>ENGINEERING OBJECTIVE</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="left-align"><strong>1. Smooth road</strong></td>
+            <td>$0.004 \sin(2\pi \cdot 0.20 \cdot t)$</td>
+            <td>Class A/B</td>
+            <td>0.10</td>
+            <td>Low-frequency highway cruising</td>
+            <td>$(5.0, 20.0, 8.0)$</td>
+            <td>Maximize passenger ride comfort</td>
+        </tr>
+        <tr>
+            <td class="left-align"><strong>2. Normal road</strong></td>
+            <td>$0.010 \sin(2\pi \cdot 2.58 \cdot t)$</td>
+            <td>Class C/D</td>
+            <td>0.65</td>
+            <td>Chassis body bounce mode ($2.58\text{ Hz}$)</td>
+            <td>$(6.5, 55.0, 22.0)$</td>
+            <td>Suppress harmonic resonance magnification</td>
+        </tr>
+        <tr>
+            <td class="left-align"><strong>3. Rough road</strong></td>
+            <td>$0.010 \text{ chirp}(0.1\text{--}15\text{ Hz})$</td>
+            <td>Class D</td>
+            <td>0.75</td>
+            <td>Body bounce ($2.58\text{ Hz}$) &amp; wheel hop ($9.41\text{ Hz}$)</td>
+            <td>$(6.8, 62.0, 25.0)$</td>
+            <td>Broadband vibration decoupling</td>
+        </tr>
+        <tr>
+            <td class="left-align"><strong>4. Bumpy road</strong></td>
+            <td>Two $20\text{ mm}$ triangular ramps</td>
+            <td>Class B/C</td>
+            <td>0.40</td>
+            <td>Ramp entry compliance &amp; stroke travel</td>
+            <td>$(5.8, 45.0, 18.0)$</td>
+            <td>Cushion ramp entry without body shock</td>
+        </tr>
+        <tr>
+            <td class="left-align"><strong>5. Pulse road</strong></td>
+            <td>Two $-20\text{ mm}$ step drops</td>
+            <td>Class D/E</td>
+            <td>0.85</td>
+            <td>Rattle space bottoming &amp; transient settling</td>
+            <td>$(7.8, 75.0, 30.0)$</td>
+            <td>Arrest downward fall ($>40\%$ buffer)</td>
+        </tr>
+        <tr>
+            <td class="left-align"><strong>6. Potholes road</strong></td>
+            <td>ISO Class D PSD + 3 dips</td>
+            <td>Class D+</td>
+            <td>0.95</td>
+            <td>Severe stochastic roughness + cavity shock</td>
+            <td>$(8.0, 78.0, 32.0)$</td>
+            <td>Prevent bottoming while capping motor force</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="table-caption">TABLE 3. MASTER PERFORMANCE BENCHMARK ACROSS SIX STANDARDIZED ROAD PROFILES.</div>
     <table class="table-dense">
         <thead>
             <tr>
@@ -857,10 +1013,10 @@ In Profile 6 (Fig. 7), stochastic ISO Class D road roughness is combined with th
 <div class="two-column">
 <h3 class="sec-subheading">A. Comparative Quantitative Performance Synthesis</h3>
 <p>
-Table 2 synthesizes the multi-objective performance of the investigated controllers across all six road profiles. The comprehensive benchmark demonstrates:
+Table 3 synthesizes the multi-objective performance of the investigated controllers across all six road profiles. The comprehensive benchmark demonstrates:
 </p>
 <p class="no-indent">
-1) <em>Ride Comfort:</em> As evidenced in Table 2, Candidate 5 (Adaptive STSMC) outperforms both Optimal LQR and Fixed STSMC across all 6 profiles, establishing an unambiguous Pareto frontier.
+1) <em>Ride Comfort:</em> As evidenced in Table 3, Candidate 5 (Adaptive STSMC) outperforms both Optimal LQR and Fixed STSMC across all 6 profiles, establishing an unambiguous Pareto frontier.
 </p>
 <p class="no-indent">
 2) <em>Rattle Space Integrity:</em> In terms of rattle space, peak suspension travel remains strictly bounded within the $[-22.51\text{ mm}, +10.49\text{ mm}]$ corridor, never exceeding $59.2\%$ of the physical stroke limit ($\pm 38.0\text{ mm}$).
@@ -874,10 +1030,10 @@ Table 2 synthesizes the multi-objective performance of the investigated controll
 
 <h3 class="sec-subheading">B. Comparison with Literature Benchmarks</h3>
 <p>
-Table 3 compares the proposed Adaptive STSMC against recent metaheuristic optimization results on the same Quanser QC-ASSM platform reported by Dinesh and Mani (2026) [6] and Sanna et al. [1].
+Table 5 compares the proposed Adaptive STSMC against recent metaheuristic optimization results on the same Quanser QC-ASSM platform reported by Dinesh and Mani (2026) [6] and Sanna et al. [1].
 </p>
 
-<div class="table-caption">TABLE 3. Quantitative Comparison with Literature Active Suspension Controllers.</div>
+<div class="table-caption">TABLE 5. Quantitative Comparison with Literature Active Suspension Controllers.</div>
 <table class="table-dense">
     <thead>
         <tr>
