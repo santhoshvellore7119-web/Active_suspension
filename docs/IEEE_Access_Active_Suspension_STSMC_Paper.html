@@ -26,7 +26,7 @@ window.MathJax = {
             color: #333;
         }
         @bottom-left {
-            content: "VOLUME 14, 2026";
+            content: "Research Paper • Active Suspension Control • SELECT, VIT";
             font-size: 7pt;
             font-family: Arial, sans-serif;
             color: #555;
@@ -41,31 +41,19 @@ window.MathJax = {
         padding: 0;
         text-align: justify;
     }
-    /* Top Banner */
-    .ieee-banner {
+    /* Top Academic Header */
+    .top-header {
         display: flex;
         justify-content: space-between;
-        align-items: flex-end;
-        border-bottom: 2px solid #00629B;
+        align-items: center;
+        border-bottom: 1.5px solid #002855;
         padding-bottom: 4px;
         margin-bottom: 8px;
-    }
-    .ieee-logo {
-        font-family: 'Franklin Gothic Medium', 'Arial Black', sans-serif;
-        font-size: 19pt;
-        font-weight: 900;
-        color: #00629B;
-        letter-spacing: -0.5px;
-    }
-    .ieee-logo span {
-        color: #002855;
-        font-weight: 400;
-    }
-    .ieee-meta {
         font-family: Arial, sans-serif;
-        font-size: 6.8pt;
-        color: #555;
-        line-height: 1.2;
+        font-size: 7.2pt;
+        color: #002855;
+        font-weight: 600;
+        letter-spacing: 0.3px;
     }
     .paper-title {
         font-family: Arial, Helvetica, sans-serif;
@@ -83,11 +71,6 @@ window.MathJax = {
         font-weight: bold;
         color: #000;
         margin-bottom: 2px;
-    }
-    .authors-block span.ieee-member {
-        font-weight: normal;
-        font-size: 7.8pt;
-        color: #444;
     }
     .affiliation {
         font-family: 'Times New Roman', Times, serif;
@@ -115,23 +98,18 @@ window.MathJax = {
         margin-bottom: 8px;
         text-align: justify;
     }
-    .bullet-tag {
-        color: #00629B;
-        font-size: 8.5pt;
-        margin-right: 3px;
-    }
     .abstract-title {
         font-family: Arial, Helvetica, sans-serif;
         font-weight: bold;
         font-size: 8.2pt;
-        color: #000;
+        color: #002855;
         margin-right: 3px;
     }
     .index-title {
         font-family: Arial, Helvetica, sans-serif;
         font-weight: bold;
         font-size: 8.2pt;
-        color: #000;
+        color: #002855;
         margin-right: 3px;
     }
     .two-column {
@@ -142,19 +120,19 @@ window.MathJax = {
     .full-width {
         column-span: all;
     }
-    h2.ieee-heading {
+    h2.sec-heading {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 9.2pt;
         font-weight: bold;
-        color: #00629B;
+        color: #002855;
         text-transform: uppercase;
-        border-bottom: 1px solid #00629B;
+        border-bottom: 1px solid #002855;
         padding-bottom: 1.5px;
         margin-top: 8px;
         margin-bottom: 4px;
         break-after: avoid;
     }
-    h3.ieee-subheading {
+    h3.sec-subheading {
         font-family: 'Times New Roman', Times, serif;
         font-size: 8.8pt;
         font-weight: bold;
@@ -273,9 +251,9 @@ window.MathJax = {
         display: inline-block;
     }
     .callout-box {
-        border: 1px solid #00629B;
-        border-left: 3px solid #00629B;
-        background-color: #f0f7fc;
+        border: 1px solid #002855;
+        border-left: 3px solid #002855;
+        background-color: #f0f4f8;
         padding: 4px 6px;
         margin: 5px 0;
         font-size: 7.6pt;
@@ -284,7 +262,7 @@ window.MathJax = {
     .callout-title {
         font-family: Arial, sans-serif;
         font-weight: bold;
-        color: #00629B;
+        color: #002855;
         margin-bottom: 2px;
     }
     .ref-list {
@@ -329,14 +307,9 @@ window.MathJax = {
 <body>
 
 <!-- ================= PAGE 1 ================= -->
-<div class="ieee-banner">
-    <div class="ieee-meta">
-        Received 28 January 2026, accepted 12 March 2026. Date of publication 00 xxxx 2026, date of current version 00 xxxx 2026.<br>
-        <strong>Digital Object Identifier: 10.1109/ACCESS.2026.3674677</strong>
-    </div>
-    <div class="ieee-logo">
-        IEEE <span>Access</span>
-    </div>
+<div class="top-header">
+    <div>SCHOOL OF ELECTRICAL ENGINEERING (SELECT) &bull; VELLORE INSTITUTE OF TECHNOLOGY</div>
+    <div>CONTROL SYSTEMS RESEARCH &bull; ACTIVE SUSPENSION</div>
 </div>
 
 <div class="paper-title">
@@ -344,7 +317,7 @@ window.MathJax = {
 </div>
 
 <div class="authors-block">
-    THILANG T.V, SANTHOSH G, AND ANANTHAKRISHNAN R, <span class="ieee-member">(Student Members, IEEE)</span>
+    THILANG T.V, SANTHOSH G, AND ANANTHAKRISHNAN R
 </div>
 <div class="affiliation">
     School of Electrical Engineering (SELECT), Vellore Institute of Technology, Vellore Campus, Vellore, Tamil Nadu 632014, India
@@ -358,19 +331,17 @@ window.MathJax = {
 
 <div class="abstract-box">
     <p class="no-indent">
-        <span class="bullet-tag">&#9632;&#9632;&#9632;</span><span class="abstract-title">ABSTRACT</span>
-        This experimental research investigates the fundamental Pareto trade-off between passenger ride comfort (minimizing sprung mass vertical acceleration) and suspension rattle space limitations (constraining travel stroke strictly within mechanical hard bump stops) in vehicle active suspension systems. While classical and metaheuristic-tuned Linear Quadratic Regulators (LQR)&mdash;such as Ant Colony Optimization (ACO) and Harmony Search (HS)&mdash;perform adequately under nominal linear regimes, they exhibit performance degradation under severe non-stationary road impacts and actuator saturation constraints. To overcome these deficiencies without inducing actuator-damaging chattering, this paper synthesizes a continuous Second-Order Sliding Mode Control law utilizing the <strong>Super-Twisting Algorithm (STSMC)</strong> deployed in two distinct architectures: <strong>Fixed STSMC</strong> (constant robust gains derived from plant resonance and disturbance bounds) and <strong>Precision-Tuned Adaptive STSMC</strong> (dynamic gain scheduling driven by an online Road Severity Index, $RSI$). The mathematical derivation of the control gains is rigorously formulated using Lyapunov stability criteria, the Moreno&ndash;Levant critical damping ratio ($k_2/k_1 \approx 0.40$), and hardware boundary constraints ($\pm 38.0\text{ mm}$ stroke, $\pm 39.2\text{ N}$ actuator force). Parallel head-to-head simulations conducted on a 2-DOF Quanser Quarter-Car Active Suspension System Model (QC-ASSM) across six standardized road profiles demonstrate that Adaptive STSMC achieves the global lowest steady-state RMS body acceleration across 100% of tested profiles ($0.0041\text{ m/s}^2$ on smooth highway; $1.0869\text{ m/s}^2$ at $2.58\text{ Hz}$ resonance; $0.0979\text{ m/s}^2$ over ramps; $0.8282\text{ m/s}^2$ over $-20\text{ mm}$ pulse drops; and $1.2316\text{ m/s}^2$ over severe potholes), outperforming both Optimal LQR and Fixed STSMC while preserving a $>40\%$ safety margin from mechanical bump stops. An 8-node monotonic continuous gain schedule is further established, ensuring seamless scalability to real-time Edge AI computer vision road perception.
+        <span class="abstract-title">ABSTRACT</span>&mdash;This experimental research investigates the fundamental Pareto trade-off between passenger ride comfort (minimizing sprung mass vertical acceleration) and suspension rattle space limitations (constraining travel stroke strictly within mechanical hard bump stops) in vehicle active suspension systems. While classical and metaheuristic-tuned Linear Quadratic Regulators (LQR)&mdash;such as Ant Colony Optimization (ACO) and Harmony Search (HS)&mdash;perform adequately under nominal linear regimes, they exhibit performance degradation under severe non-stationary road impacts and actuator saturation constraints. To overcome these deficiencies without inducing actuator-damaging chattering, this paper synthesizes a continuous Second-Order Sliding Mode Control law utilizing the <strong>Super-Twisting Algorithm (STSMC)</strong> deployed in two distinct architectures: <strong>Fixed STSMC</strong> (constant robust gains derived from plant resonance and disturbance bounds) and <strong>Precision-Tuned Adaptive STSMC</strong> (dynamic gain scheduling driven by an online Road Severity Index, $RSI$). The mathematical derivation of the control gains is rigorously formulated using Lyapunov stability criteria, the Moreno&ndash;Levant critical damping ratio ($k_2/k_1 \approx 0.40$), and hardware boundary constraints ($\pm 38.0\text{ mm}$ stroke, $\pm 39.2\text{ N}$ actuator force). Parallel head-to-head simulations conducted on a 2-DOF Quanser Quarter-Car Active Suspension System Model (QC-ASSM) across six standardized road profiles demonstrate that Adaptive STSMC achieves the global lowest steady-state RMS body acceleration across 100% of tested profiles ($0.0041\text{ m/s}^2$ on smooth highway; $1.0869\text{ m/s}^2$ at $2.58\text{ Hz}$ resonance; $0.0979\text{ m/s}^2$ over ramps; $0.8282\text{ m/s}^2$ over $-20\text{ mm}$ pulse drops; and $1.2316\text{ m/s}^2$ over severe potholes), outperforming both Optimal LQR and Fixed STSMC while preserving a $>40\%$ safety margin from mechanical bump stops. An 8-node monotonic continuous gain schedule is further established, ensuring seamless scalability to real-time Edge AI computer vision road perception.
     </p>
     <div style="height: 2px;"></div>
     <p class="no-indent">
-        <span class="bullet-tag">&#9632;&#9632;&#9632;</span><span class="index-title">INDEX TERMS</span>
-        Active suspension system, Super-Twisting Sliding Mode Control (STSMC), chattering elimination, gain scheduling, Lyapunov stability, Pareto optimization, quarter-car model, ride comfort, road severity index.
+        <span class="index-title">INDEX TERMS</span>&mdash;Active suspension system, Super-Twisting Sliding Mode Control (STSMC), chattering elimination, gain scheduling, Lyapunov stability, Pareto optimization, quarter-car model, ride comfort, road severity index.
     </p>
 </div>
 
 <div class="two-column">
 
-<h2 class="ieee-heading">I. INTRODUCTION</h2>
+<h2 class="sec-heading">I. INTRODUCTION</h2>
 <p>
 The suspension system of modern automotive vehicles represents one of the most critical mechatronic subsystems, tasked with simultaneously fulfilling two conflicting performance objectives: <em>passenger ride comfort</em> and <em>road handling safety</em> [1], [2]. Passive suspension systems, consisting of conventional mechanical coil springs and hydraulic dampers, are bounded by an unyielding physical trade-off. Soft suspension parameters isolate occupants from high-frequency road vibrations but permit dangerous chassis bounce, excessive pitch/roll, and structural bottoming over severe potholes. Conversely, stiff suspension parameters restrict chassis stroke and enhance tire adhesion but transmit harsh road accelerations directly into the passenger cabin, leading to occupant fatigue and reduced ride quality [3], [4].
 </p>
@@ -378,7 +349,7 @@ The suspension system of modern automotive vehicles represents one of the most c
 To transcend the physical limits of passive suspensions, Active Suspension Systems (ASS) introduce a controlled force actuator in parallel with the passive spring and damper. Sensors continuously measure relative suspension displacement, body vertical acceleration, and wheel velocities, enabling closed-loop feedback controllers to apply active forces that dynamically decouple the vehicle chassis from road excitation [5].
 </p>
 <p>
-In the literature, optimal linear control techniques, particularly the Linear Quadratic Regulator (LQR), have been widely investigated. Recently, Dinesh and Mani (IEEE Access, 2026) [6] proposed a Harmony Search (HS) optimization method to simultaneously tune the state weighting matrix $\mathbf{Q}$ and control weighting scalar $R$ for a Quanser Quarter-Car Active Suspension System Model (QC-ASSM). By minimizing an Integral Absolute Error (IAE) cost function, the HS-tuned LQR demonstrated superior convergence speed and suspension deflection attenuation compared to Ant Colony Optimization (ACO) tuned LQR [1] and classically tuned LQR across bumpy roads, ISO Class D runways, and pulse drops.
+In the literature, optimal linear control techniques, particularly the Linear Quadratic Regulator (LQR), have been widely investigated. Recently, Dinesh and Mani (2026) [6] proposed a Harmony Search (HS) optimization method to simultaneously tune the state weighting matrix $\mathbf{Q}$ and control weighting scalar $R$ for a Quanser Quarter-Car Active Suspension System Model (QC-ASSM). By minimizing an Integral Absolute Error (IAE) cost function, the HS-tuned LQR demonstrated superior convergence speed and suspension deflection attenuation compared to Ant Colony Optimization (ACO) tuned LQR [1] and classically tuned LQR across bumpy roads, ISO Class D runways, and pulse drops.
 </p>
 <p>
 Nevertheless, linear optimal controllers operate under fundamental structural constraints:
@@ -425,7 +396,7 @@ To resolve this dilemma, this paper proposes a unified, precision-tuned <strong>
 &bull; <em>Comprehensive Head-to-Head Parallel Benchmark:</em> We execute a parallel 3-controller benchmark on identical plants with identical disturbance inputs, proving that Adaptive STSMC achieves superior ride comfort across 100% of the profiles while maintaining $>40\%$ stroke safety buffer.
 </p>
 
-<h2 class="ieee-heading">II. DYNAMIC MODELLING OF QCASS</h2>
+<h2 class="sec-heading">II. DYNAMIC MODELLING OF QCASS</h2>
 <p>
 The experimental plant investigated in this study is the Quanser 2-DOF Quarter-Car Active Suspension System Model (QC-ASSM), depicted schematically in Fig. 1. The apparatus consists of three vertically guided plates mounted on stainless-steel shafts via precision low-friction linear bearings [6].
 </p>
@@ -526,9 +497,9 @@ Substituting the physical parameters listed in Table 1 yields:
 The system's open-loop characteristic equation yields two distinct resonant modes: the chassis body bounce mode at $\omega_{ns} = 16.21\text{ rad/s}$ ($f_{ns} \approx 2.58\text{ Hz}$) and the wheel hop mode at $\omega_{nu} = 59.12\text{ rad/s}$ ($f_{nu} \approx 9.41\text{ Hz}$). The controllability matrix $\mathcal{C} = [\mathbf{B}_2, \mathbf{A}\mathbf{B}_2, \mathbf{A}^2\mathbf{B}_2, \mathbf{A}^3\mathbf{B}_2]$ has full rank ($\operatorname{rank}(\mathcal{C}) = 4$), proving the system is fully controllable via active force $F_c$.
 </p>
 
-<h2 class="ieee-heading">III. SECOND-ORDER STSMC FORMULATION AND PARAMETRIC DERIVATION</h2>
+<h2 class="sec-heading">III. SECOND-ORDER STSMC FORMULATION AND PARAMETRIC DERIVATION</h2>
 
-<h3 class="ieee-subheading">A. Controller 1: Optimal Linear Quadratic Regulator (Baseline)</h3>
+<h3 class="sec-subheading">A. Controller 1: Optimal Linear Quadratic Regulator (Baseline)</h3>
 <p>
 The LQR synthesizes an optimal full-state feedback control law $u_{\text{LQR}}(t) = -\mathbf{K}\mathbf{x}(t)$ by minimizing the infinite-horizon quadratic performance index:
 </p>
@@ -551,7 +522,7 @@ yields the optimal feedback gain vector:
     <span class="eq-num">(10)</span>
 </div>
 
-<h3 class="ieee-subheading">B. Controller 2: Fixed Super-Twisting SMC Formulation</h3>
+<h3 class="sec-subheading">B. Controller 2: Fixed Super-Twisting SMC Formulation</h3>
 <p>
 To achieve chattering-free sliding mode control, we define the linear sliding surface manifold $s(t)$ as a function of suspension deflection $x_1$ and body vertical velocity $x_2$:
 </p>
@@ -608,7 +579,7 @@ where $\varepsilon_{\text{smc}} = 0.010$ provides a continuous hyperbolic bounda
     <strong>4) Actuator Saturation Check:</strong> Peak command force is $|u_c| \approx 19.17\text{ N} \le 39.2\text{ N}$ ($51.1\%$ safety margin), and peak stroke is $22.87\text{ mm} \le 38.0\text{ mm}$ ($39.8\%$ safety margin).
 </div>
 
-<h3 class="ieee-subheading">C. Controller 3: Precision-Tuned Adaptive STSMC</h3>
+<h3 class="sec-subheading">C. Controller 3: Precision-Tuned Adaptive STSMC</h3>
 <p>
 Active suspension control is governed by Newton's acceleration equation:
 </p>
@@ -658,7 +629,7 @@ To resolve this trade-off, <strong>Candidate 5 (Precision Tuned)</strong> was de
 <!-- ================= PAGE 5 ================= -->
 <div class="two-column">
 
-<h2 class="ieee-heading">IV. SIMULATION SETUP AND MULTI-ROAD EXCITATION SUITE</h2>
+<h2 class="sec-heading">IV. SIMULATION SETUP AND MULTI-ROAD EXCITATION SUITE</h2>
 <p>
 The comparative benchmark was executed in MATLAB/Simulink 2025b using continuous fixed-step ODE45 integration ($\Delta t = 0.001\text{ s}$, simulation horizon $T = 10.0\text{ s}$). Six standardized road profiles were evaluated:
 </p>
@@ -681,7 +652,7 @@ The comparative benchmark was executed in MATLAB/Simulink 2025b using continuous
 6) <em>Potholes Road (Profile 6, $RSI=0.95$):</em> Broadband ISO 8608 Class D roughness combined with three localized severe $-20\text{ mm}$ pothole cavities.
 </p>
 
-<h2 class="ieee-heading">V. EXPERIMENTAL BENCHMARK AND INFERENCE</h2>
+<h2 class="sec-heading">V. EXPERIMENTAL BENCHMARK AND INFERENCE</h2>
 <p>
 To evaluate performance rigorously, Root Mean Square (RMS) acceleration over the steady-state interval ($t \ge 50\% T$), peak suspension stroke, and peak actuator force were computed. Table 2 summarizes the comprehensive numerical benchmark across all 6 road profiles for Optimal LQR, Fixed STSMC, and Precision-Tuned Adaptive STSMC.
 </p>
@@ -882,7 +853,7 @@ In Profile 6 (Fig. 8), stochastic ISO Class D road roughness is combined with th
 </div>
 
 <div class="two-column">
-<h3 class="ieee-subheading">A. Comparative Quantitative Performance Synthesis</h3>
+<h3 class="sec-subheading">A. Comparative Quantitative Performance Synthesis</h3>
 <p>
 Figure 9 synthesizes the multi-objective performance of the investigated controllers. Across the four quadrants, the experimental results demonstrate:
 </p>
@@ -899,9 +870,9 @@ Figure 9 synthesizes the multi-objective performance of the investigated control
 4) <em>Chattering Elimination:</em> Because the continuous hyperbolic boundary layer ($\varepsilon_{\text{smc}} = 0.010$) smooths the discontinuous signum function, control force trajectories (Figs. 3&ndash;8) exhibit zero high-frequency chattering, preventing motor overheating.
 </p>
 
-<h3 class="ieee-subheading">B. Comparison with Literature Benchmarks</h3>
+<h3 class="sec-subheading">B. Comparison with Literature Benchmarks</h3>
 <p>
-Table 3 compares the proposed Adaptive STSMC against recent metaheuristic optimization results on the same Quanser QC-ASSM platform reported by Dinesh and Mani (IEEE Access 2026) [6] and Sanna et al. [1].
+Table 3 compares the proposed Adaptive STSMC against recent metaheuristic optimization results on the same Quanser QC-ASSM platform reported by Dinesh and Mani (2026) [6] and Sanna et al. [1].
 </p>
 
 <div class="table-caption">TABLE 3. Quantitative Comparison with Literature Active Suspension Controllers.</div>
@@ -971,7 +942,7 @@ While the Harmony Search tuned LQR of Dinesh and Mani [6] achieved notable impro
 <!-- ================= PAGE 10 ================= -->
 <div class="two-column">
 
-<h2 class="ieee-heading">VI. CONCLUSION AND FUTURE SCOPE</h2>
+<h2 class="sec-heading">VI. CONCLUSION AND FUTURE SCOPE</h2>
 <p>
 This research presented the rigorous mathematical formulation, parametric derivation, and experimental validation of a Second-Order Super-Twisting Sliding Mode Controller with Adaptive Road Severity Index Gain Scheduling for a Quanser Quarter-Car Active Suspension System Model (QC-ASSM). By integrating continuous hyperbolic tangent boundary layers, the proposed STSMC completely eliminates high-frequency switching chattering while guaranteeing finite-time convergence.
 </p>
@@ -994,7 +965,7 @@ The key scientific findings and contributions of this study are:
 Future work will extend the proposed adaptive STSMC architecture to half-car and full-car active suspension platforms, incorporating pitch and roll decoupling control with real-time hardware-in-the-loop (HIL) dynamometer validation.
 </p>
 
-<h2 class="ieee-heading">REFERENCES</h2>
+<h2 class="sec-heading">REFERENCES</h2>
 <ol class="ref-list">
     <li>S. Manna, G. Mani, S. Ghildiyal, A. A. Stonier, G. Peter, V. Ganji, and S. Murugesan, "Ant colony optimization tuned closed-loop optimal control intended for vehicle active suspension system," <em>IEEE Access</em>, vol. 10, pp. 53735&ndash;53745, 2022.</li>
     <li>Y. Qin, J. J. Rath, C. Hu, C. Sentouh, and R. Wang, "Adaptive nonlinear active suspension control based on a robust road classifier with a modified super-twisting algorithm," <em>Nonlinear Dyn.</em>, vol. 97, no. 4, pp. 2425&ndash;2442, Sep. 2019.</li>
@@ -1031,26 +1002,26 @@ Future work will extend the proposed adaptive STSMC architecture to half-car and
     <li>X. Jin, Q. Wang, Z. Yan, H. Yang, and G. Yin, "Integrated robust control of path following and lateral stability for autonomous in-wheel-motor-driven electric vehicles," <em>Proc. Inst. Mech. Eng. D J. Automob. Eng.</em>, vol. 239, no. 5, pp. 1517&ndash;1535, Apr. 2025.</li>
 </ol>
 
-<h2 class="ieee-heading">AUTHOR BIOGRAPHIES</h2>
+<h2 class="sec-heading">AUTHOR BIOGRAPHIES</h2>
 
 <div class="bio-container">
     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTIwIDE1MCI+CiAgICAgICAgPHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMxZTNhOGEiLz4KICAgICAgICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjU1IiByPSIyOCIgZmlsbD0iI2ZmZmZmZiIgb3BhY2l0eT0iMC4zIi8+CiAgICAgICAgPHBhdGggZD0iTTIwIDEzNSBDMjAgOTUsIDEwMCA5NSwgMTAwIDEzNSBaIiBmaWxsPSIjZmZmZmZmIiBvcGFjaXR5PSIwLjMiLz4KICAgICAgICA8dGV4dCB4PSI2MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSInU2Vnb2UgVUknLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlRWPC90ZXh0PgogICAgPC9zdmc+" class="bio-avatar" alt="Thilang T.V">
     <div class="bio-text">
-        <strong>THILANG T.V</strong> (Student Member, IEEE) is currently pursuing the B.Tech. degree in Electrical and Computer Science Engineering with the School of Electrical Engineering (SELECT), Vellore Institute of Technology (VIT), Vellore Campus, India. His research interests include modern control theory, non-linear robust control, second-order sliding mode algorithms, and vehicle dynamics automation. He has contributed actively to experimental modeling and simulation of mechatronic quarter-car active suspension systems.
+        <strong>THILANG T.V</strong> is currently pursuing the B.Tech. degree in Electrical and Computer Science Engineering with the School of Electrical Engineering (SELECT), Vellore Institute of Technology (VIT), Vellore Campus, India. His research interests include modern control theory, non-linear robust control, second-order sliding mode algorithms, and vehicle dynamics automation. He has contributed actively to experimental modeling and simulation of mechatronic quarter-car active suspension systems.
     </div>
 </div>
 
 <div class="bio-container">
     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTIwIDE1MCI+CiAgICAgICAgPHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMwNjVmNDYiLz4KICAgICAgICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjU1IiByPSIyOCIgZmlsbD0iI2ZmZmZmZiIgb3BhY2l0eT0iMC4zIi8+CiAgICAgICAgPHBhdGggZD0iTTIwIDEzNSBDMjAgOTUsIDEwMCA5NSwgMTAwIDEzNSBaIiBmaWxsPSIjZmZmZmZmIiBvcGFjaXR5PSIwLjMiLz4KICAgICAgICA8dGV4dCB4PSI2MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSInU2Vnb2UgVUknLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNHPC90ZXh0PgogICAgPC9zdmc+" class="bio-avatar" alt="Santhosh G">
     <div class="bio-text">
-        <strong>SANTHOSH G</strong> (Student Member, IEEE) is currently pursuing the B.Tech. degree in Electrical and Computer Science Engineering with the School of Electrical Engineering (SELECT), Vellore Institute of Technology (VIT), Vellore Campus, India. His research focuses on active automotive suspension design, metaheuristic parameter optimization, Lyapunov stability of high-order systems, and real-time embedded control implementation. He serves as the primary author and repository maintainer for the Quanser Active Suspension Benchmark Suite.
+        <strong>SANTHOSH G</strong> is currently pursuing the B.Tech. degree in Electrical and Computer Science Engineering with the School of Electrical Engineering (SELECT), Vellore Institute of Technology (VIT), Vellore Campus, India. His research focuses on active automotive suspension design, metaheuristic parameter optimization, Lyapunov stability of high-order systems, and real-time embedded control implementation. He serves as the primary author and repository maintainer for the Quanser Active Suspension Benchmark Suite.
     </div>
 </div>
 
 <div class="bio-container">
     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTIwIDE1MCI+CiAgICAgICAgPHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiM3YzJkMTIiLz4KICAgICAgICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjU1IiByPSIyOCIgZmlsbD0iI2ZmZmZmZiIgb3BhY2l0eT0iMC4zIi8+CiAgICAgICAgPHBhdGggZD0iTTIwIDEzNSBDMjAgOTUsIDEwMCA5NSwgMTAwIDEzNSBaIiBmaWxsPSIjZmZmZmZmIiBvcGFjaXR5PSIwLjMiLz4KICAgICAgICA8dGV4dCB4PSI2MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSInU2Vnb2UgVUknLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkFSPC90ZXh0PgogICAgPC9zdmc+" class="bio-avatar" alt="Ananthakrishnan R">
     <div class="bio-text">
-        <strong>ANANTHAKRISHNAN R</strong> (Student Member, IEEE) is currently pursuing the B.Tech. degree in Electrical and Computer Science Engineering with the School of Electrical Engineering (SELECT), Vellore Institute of Technology (VIT), Vellore Campus, India. His research interests encompass intelligent Edge AI perception, deep learning for road surface classification, dynamic gain scheduling, and digital hardware-in-the-loop (HIL) testing for electric vehicle chassis control.
+        <strong>ANANTHAKRISHNAN R</strong> is currently pursuing the B.Tech. degree in Electrical and Computer Science Engineering with the School of Electrical Engineering (SELECT), Vellore Institute of Technology (VIT), Vellore Campus, India. His research interests encompass intelligent Edge AI perception, deep learning for road surface classification, dynamic gain scheduling, and digital hardware-in-the-loop (HIL) testing for electric vehicle chassis control.
     </div>
 </div>
 
