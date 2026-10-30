@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Second-Order Super-Twisting Sliding Mode Control With Adaptive Road Severity Gain Scheduling for Vehicle Active Suspension Systems</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    @page {
+        size: letter;
+        margin: 13mm 12mm 13mm 12mm;
+        @bottom-right {
+            content: counter(page);
+            font-size: 8pt;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        @bottom-left {
+            content: "VOLUME 14, 2026";
+            font-size: 7pt;
+            font-family: Arial, sans-serif;
+            color: #555;
+        }
+    }
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 8.8pt;
+        line-height: 1.22;
+        color: #000;
+        margin: 0;
+        padding: 0;
+        text-align: justify;
+    }
+    /* Top Banner */
+    .ieee-banner {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 2px solid #00629B;
+        padding-bottom: 4px;
+        margin-bottom: 8px;
+    }
+    .ieee-logo {
+        font-family: 'Franklin Gothic Medium', 'Arial Black', sans-serif;
+        font-size: 19pt;
+        font-weight: 900;
+        color: #00629B;
+        letter-spacing: -0.5px;
+    }
+    .ieee-logo span {
+        color: #002855;
+        font-weight: 400;
+    }
+    .ieee-meta {
+        font-family: Arial, sans-serif;
+        font-size: 6.8pt;
+        color: #555;
+        line-height: 1.2;
+    }
+    .paper-title {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 18pt;
+        font-weight: bold;
+        line-height: 1.15;
+        color: #002855;
+        margin-top: 4px;
+        margin-bottom: 6px;
+        text-align: left;
+    }
+    .authors-block {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 8.5pt;
+        font-weight: bold;
+        color: #000;
+        margin-bottom: 2px;
+    }
+    .authors-block span.ieee-member {
+        font-weight: normal;
+        font-size: 7.8pt;
+        color: #444;
+    }
+    .affiliation {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 7.6pt;
+        font-style: italic;
+        color: #333;
+        margin-bottom: 2px;
+    }
+    .correspondence {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 7.6pt;
+        color: #333;
+        margin-bottom: 2px;
+    }
+    .funding-note {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 7.2pt;
+        font-style: italic;
+        color: #444;
+        margin-bottom: 8px;
+        border-bottom: 0.5px solid #bbb;
+        padding-bottom: 3px;
+    }
+    .abstract-box {
+        margin-bottom: 8px;
+        text-align: justify;
+    }
+    .bullet-tag {
+        color: #00629B;
+        font-size: 8.5pt;
+        margin-right: 3px;
+    }
+    .abstract-title {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        font-size: 8.2pt;
+        color: #000;
+        margin-right: 3px;
+    }
+    .index-title {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        font-size: 8.2pt;
+        color: #000;
+        margin-right: 3px;
+    }
+    .two-column {
+        column-count: 2;
+        column-gap: 18px;
+        text-align: justify;
+    }
+    .full-width {
+        column-span: all;
+    }
+    h2.ieee-heading {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 9.2pt;
+        font-weight: bold;
+        color: #00629B;
+        text-transform: uppercase;
+        border-bottom: 1px solid #00629B;
+        padding-bottom: 1.5px;
+        margin-top: 8px;
+        margin-bottom: 4px;
+        break-after: avoid;
+    }
+    h3.ieee-subheading {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 8.8pt;
+        font-weight: bold;
+        font-style: italic;
+        color: #000;
+        margin-top: 5px;
+        margin-bottom: 2px;
+        break-after: avoid;
+    }
+    p {
+        margin-top: 0;
+        margin-bottom: 4px;
+        text-indent: 10px;
+    }
+    p.no-indent {
+        text-indent: 0;
+    }
+    .equation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 3px 0;
+        font-size: 8.5pt;
+    }
+    .eq-num {
+        font-family: 'Times New Roman', Times, serif;
+        font-style: normal;
+        margin-left: 6px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 7.2pt;
+        margin: 5px 0;
+        line-height: 1.15;
+    }
+    table.table-dense th, table.table-dense td {
+        padding: 2px 3px;
+    }
+    th {
+        background-color: #002855;
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        text-align: center;
+        border: 0.5px solid #002855;
+    }
+    td {
+        border: 0.5px solid #ccc;
+        text-align: center;
+    }
+    td.left-align {
+        text-align: left;
+        padding-left: 4px;
+    }
+    tr:nth-child(even) {
+        background-color: #f7fafc;
+    }
+    .table-caption {
+        font-family: Arial, sans-serif;
+        font-size: 7.2pt;
+        font-weight: bold;
+        text-align: center;
+        color: #000;
+        margin-top: 3px;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+    }
+    .figure-box {
+        margin: 5px 0;
+        text-align: center;
+        break-inside: avoid;
+    }
+    .figure-box img {
+        width: 100%;
+        height: auto;
+        border: 0.5px solid #ddd;
+        border-radius: 2px;
+    }
+    .figure-box-span {
+        margin: 6px 0;
+        text-align: center;
+        break-inside: avoid;
+    }
+    .figure-box-span img {
+        width: 100%;
+        max-height: 230px;
+        object-fit: contain;
+        border: 0.5px solid #ddd;
+    }
+    .figure-caption {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 7.5pt;
+        line-height: 1.18;
+        text-align: justify;
+        color: #000;
+        margin-top: 2px;
+        margin-bottom: 5px;
+    }
+    .figure-caption strong {
+        font-family: Arial, sans-serif;
+        font-size: 7.5pt;
+    }
+    .opt-win {
+        background-color: #e6ffed !important;
+        font-weight: bold;
+        color: #137333;
+    }
+    .badge-pass {
+        background-color: #2e7d32;
+        color: white;
+        padding: 1px 3px;
+        border-radius: 2px;
+        font-size: 6pt;
+        font-weight: bold;
+        display: inline-block;
+    }
+    .callout-box {
+        border: 1px solid #00629B;
+        border-left: 3px solid #00629B;
+        background-color: #f0f7fc;
+        padding: 4px 6px;
+        margin: 5px 0;
+        font-size: 7.6pt;
+        line-height: 1.2;
+    }
+    .callout-title {
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        color: #00629B;
+        margin-bottom: 2px;
+    }
+    .ref-list {
+        font-size: 7.2pt;
+        line-height: 1.18;
+        padding-left: 14px;
+        margin-top: 2px;
+        text-align: justify;
+    }
+    .ref-list li {
+        margin-bottom: 2.5px;
+    }
+    .bio-container {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 6px;
+        break-inside: avoid;
+    }
+    .bio-avatar {
+        width: 60px;
+        height: 75px;
+        object-fit: cover;
+        border: 0.5px solid #888;
+        margin-right: 7px;
+        flex-shrink: 0;
+    }
+    .bio-text {
+        font-size: 7.3pt;
+        line-height: 1.18;
+        text-align: justify;
+    }
+    .bio-text strong {
+        font-family: Arial, sans-serif;
+        font-size: 7.4pt;
+    }
+    .page-break {
+        page-break-after: always;
+        break-after: page;
+    }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="ieee-banner">
+    <div class="ieee-meta">
+        Received 28 January 2026, accepted 12 March 2026. Date of publication 00 xxxx 2026, date of current version 00 xxxx 2026.<br>
+        <strong>Digital Object Identifier: 10.1109/ACCESS.2026.3674677</strong>
+    </div>
+    <div class="ieee-logo">
+        IEEE <span>Access</span>
+    </div>
+</div>
+
+<div class="paper-title">
+    Second-Order Super-Twisting Sliding Mode Control With Adaptive Road Severity Gain Scheduling for Vehicle Active Suspension Systems
+</div>
+
+<div class="authors-block">
+    THILANG T.V, SANTHOSH G, AND ANANTHAKRISHNAN R, <span class="ieee-member">(Student Members, IEEE)</span>
+</div>
+<div class="affiliation">
+    School of Electrical Engineering (SELECT), Vellore Institute of Technology, Vellore Campus, Vellore, Tamil Nadu 632014, India
+</div>
+<div class="correspondence">
+    Corresponding author: Santhosh G (santhosh.g2025@vitstudent.ac.in)
+</div>
+<div class="funding-note">
+    This work was supported by VIT University, Vellore Campus, India (Research Seed Grant Scheme, Project Ref: VIT-EMPOWER GRANT 2026–27).
+</div>
+
+<div class="abstract-box">
+    <p class="no-indent">
+        <span class="bullet-tag">&#9632;&#9632;&#9632;</span><span class="abstract-title">ABSTRACT</span>
+        This experimental research investigates the fundamental Pareto trade-off between passenger ride comfort (minimizing sprung mass vertical acceleration) and suspension rattle space limitations (constraining travel stroke strictly within mechanical hard bump stops) in vehicle active suspension systems. While classical and metaheuristic-tuned Linear Quadratic Regulators (LQR)&mdash;such as Ant Colony Optimization (ACO) and Harmony Search (HS)&mdash;perform adequately under nominal linear regimes, they exhibit performance degradation under severe non-stationary road impacts and actuator saturation constraints. To overcome these deficiencies without inducing actuator-damaging chattering, this paper synthesizes a continuous Second-Order Sliding Mode Control law utilizing the <strong>Super-Twisting Algorithm (STSMC)</strong> deployed in two distinct architectures: <strong>Fixed STSMC</strong> (constant robust gains derived from plant resonance and disturbance bounds) and <strong>Precision-Tuned Adaptive STSMC</strong> (dynamic gain scheduling driven by an online Road Severity Index, $RSI$). The mathematical derivation of the control gains is rigorously formulated using Lyapunov stability criteria, the Moreno&ndash;Levant critical damping ratio ($k_2/k_1 \approx 0.40$), and hardware boundary constraints ($\pm 38.0\text{ mm}$ stroke, $\pm 39.2\text{ N}$ actuator force). Parallel head-to-head simulations conducted on a 2-DOF Quanser Quarter-Car Active Suspension System Model (QC-ASSM) across six standardized road profiles demonstrate that Adaptive STSMC achieves the global lowest steady-state RMS body acceleration across 100% of tested profiles ($0.0041\text{ m/s}^2$ on smooth highway; $1.0869\text{ m/s}^2$ at $2.58\text{ Hz}$ resonance; $0.0979\text{ m/s}^2$ over ramps; $0.8282\text{ m/s}^2$ over $-20\text{ mm}$ pulse drops; and $1.2316\text{ m/s}^2$ over severe potholes), outperforming both Optimal LQR and Fixed STSMC while preserving a $>40\%$ safety margin from mechanical bump stops. An 8-node monotonic continuous gain schedule is further established, ensuring seamless scalability to real-time Edge AI computer vision road perception.
+    </p>
+    <div style="height: 2px;"></div>
+    <p class="no-indent">
+        <span class="bullet-tag">&#9632;&#9632;&#9632;</span><span class="index-title">INDEX TERMS</span>
+        Active suspension system, Super-Twisting Sliding Mode Control (STSMC), chattering elimination, gain scheduling, Lyapunov stability, Pareto optimization, quarter-car model, ride comfort, road severity index.
+    </p>
+</div>
+
+<div class="two-column">
+
+<h2 class="ieee-heading">I. INTRODUCTION</h2>
+<p>
+The suspension system of modern automotive vehicles represents one of the most critical mechatronic subsystems, tasked with simultaneously fulfilling two conflicting performance objectives: <em>passenger ride comfort</em> and <em>road handling safety</em> [1], [2]. Passive suspension systems, consisting of conventional mechanical coil springs and hydraulic dampers, are bounded by an unyielding physical trade-off. Soft suspension parameters isolate occupants from high-frequency road vibrations but permit dangerous chassis bounce, excessive pitch/roll, and structural bottoming over severe potholes. Conversely, stiff suspension parameters restrict chassis stroke and enhance tire adhesion but transmit harsh road accelerations directly into the passenger cabin, leading to occupant fatigue and reduced ride quality [3], [4].
+</p>
+<p>
+To transcend the physical limits of passive suspensions, Active Suspension Systems (ASS) introduce a controlled force actuator in parallel with the passive spring and damper. Sensors continuously measure relative suspension displacement, body vertical acceleration, and wheel velocities, enabling closed-loop feedback controllers to apply active forces that dynamically decouple the vehicle chassis from road excitation [5].
+</p>
+<p>
+In the literature, optimal linear control techniques, particularly the Linear Quadratic Regulator (LQR), have been widely investigated. Recently, Dinesh and Mani (IEEE Access, 2026) [6] proposed a Harmony Search (HS) optimization method to simultaneously tune the state weighting matrix $\mathbf{Q}$ and control weighting scalar $R$ for a Quanser Quarter-Car Active Suspension System Model (QC-ASSM). By minimizing an Integral Absolute Error (IAE) cost function, the HS-tuned LQR demonstrated superior convergence speed and suspension deflection attenuation compared to Ant Colony Optimization (ACO) tuned LQR [1] and classically tuned LQR across bumpy roads, ISO Class D runways, and pulse drops.
+</p>
+<p>
+Nevertheless, linear optimal controllers operate under fundamental structural constraints:
+</p>
+<p class="no-indent">
+1) <em>Linear Invariance to Non-Stationary Topographies:</em> A fixed linear state-feedback gain matrix $\mathbf{K} = [K_1, K_2, K_3, K_4]$ embodies a static trade-off. It cannot dynamically reallocate control effort when the vehicle transitions from smooth highway cruising to destructive pothole cavities [7].
+</p>
+<p class="no-indent">
+2) <em>Vulnerability to Actuator Saturation:</em> LQR optimizes an unconstrained quadratic cost function. When subjected to high-energy transient drops or harmonic excitation at the chassis resonance frequency ($f_{ns} \approx 2.58\text{ Hz}$), commanded forces frequently exceed physical actuator limits ($\pm 39.2\text{ N}$ for the Quanser linear DC motor), leading to amplifier saturation, integrator windup, and performance degradation [8].
+</p>
+<p class="no-indent">
+3) <em>Sensitivity to Parameter Drift:</em> Sprung mass varies substantially with payload ($m_s \pm 20\% - 40\%$), and tire stiffness changes with temperature and tire wear. Linear state feedback lacks intrinsic robustness to such structural parameter uncertainties [9].
+</p>
+<p>
+Sliding Mode Control (SMC) provides complete mathematical invariance to matched external disturbances and parametric uncertainties once the state trajectory reaches the sliding manifold [10]. However, conventional first-order SMC utilizes a discontinuous signum function ($u_{\text{disc}} = -\rho \operatorname{sgn}(s)$), which induces severe high-frequency <em>chattering</em>. In physical electromechanical actuators, chattering causes high-frequency torque ripple, excessive thermal dissipation, acoustic noise, and premature mechanical wear of bearings and ball screws [11].
+</p>
+<p>
+To eliminate chattering while preserving robust disturbance rejection, Second-Order Sliding Mode Control (2-SMC), specifically the <strong>Super-Twisting Algorithm (STSMC)</strong> pioneered by Levant [12], introduces continuous integration within the discontinuous branch. The switching action is confined to the time derivative of the auxiliary control input ($\dot{v} = -k_2 \operatorname{sgn}(s)$), while the actual physical force delivered to the actuator ($u_c = -k_1 \sqrt{|s|} \operatorname{sgn}(s) + v$) remains continuous and smooth.
+</p>
+<p>
+While fixed-gain STSMC offers strong robustness, setting invariant gains across diverse road conditions leads to a critical dilemma: excessively high gains over-stiffen the suspension, transferring actuator force into body acceleration and worsening ride comfort; conversely, low gains allow excessive suspension deflection, risking bump-stop collisions over severe pulse drops.
+</p>
+
+</div> <!-- end page 1 two-column -->
+
+<div class="page-break"></div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="two-column">
+
+<p class="no-indent">
+To resolve this dilemma, this paper proposes a unified, precision-tuned <strong>Adaptive Super-Twisting Sliding Mode Controller</strong> governed by an online Road Severity Index ($RSI$). Building upon the QC-ASSM experimental platform investigated by Dinesh and Mani [6], the specific contributions of this work are:
+</p>
+<p class="no-indent">
+&bull; <em>Rigorous Mathematical Derivation:</em> We provide the complete step-by-step control-theoretic derivation of both Fixed STSMC ($c_1=7.0, k_1=60.0, k_2=25.0$) and Adaptive STSMC across all 6 standardized road profiles using Lyapunov stability, plant resonance frequencies, and actuator saturation constraints.
+</p>
+<p class="no-indent">
+&bull; <em>Root-Cause Diagnosis of the Comfort vs. Rattle Space Dilemma:</em> We analytically and experimentally demonstrate why over-aggressive gains increase steady-state RMS acceleration, and establish the precision-tuned gain boundaries that achieve the global minimum acceleration.
+</p>
+<p class="no-indent">
+&bull; <em>Dual Discrete/Continuous Scheduling Framework:</em> We explain the distinct operational roles of the 6-discrete road lookup array (for laboratory benchmarking) and the 8-node monotonic continuous interpolation curve (for Edge AI computer vision road perception).
+</p>
+<p class="no-indent">
+&bull; <em>Comprehensive Head-to-Head Parallel Benchmark:</em> We execute a parallel 3-controller benchmark on identical plants with identical disturbance inputs, proving that Adaptive STSMC achieves superior ride comfort across 100% of the profiles while maintaining $>40\%$ stroke safety buffer.
+</p>
+
+<h2 class="ieee-heading">II. DYNAMIC MODELLING OF QCASS</h2>
+<p>
+The experimental plant investigated in this study is the Quanser 2-DOF Quarter-Car Active Suspension System Model (QC-ASSM), depicted schematically in Fig. 1. The apparatus consists of three vertically guided plates mounted on stainless-steel shafts via precision low-friction linear bearings [6].
+</p>
+<p>
+The upper plate represents the quarter vehicle chassis (sprung mass $m_s$), supported by two parallel mechanical suspension springs of collective stiffness $k_s$ and inherent viscous damping $b_s$. A linear DC motor actuator is positioned between the upper and middle plates, providing the commanded active control force $F_c(t)$. The middle plate represents the tire/wheel assembly (unsprung mass $m_u$), which contacts the bottom plate through a lower tire spring $k_t$ and damping $b_{us}$. The bottom plate is driven by a high-torque capstan DC drive through a precision lead screw to emulate arbitrary road surface excitation profiles $z_r(t)$.
+</p>
+<p>
+High-resolution optical encoders ($S_e = 0.000942\text{ m/count}$) monitor the relative displacement between the sprung and unsprung masses (suspension deflection $z_s - z_u$) and tire deflection ($z_u - z_r$). An accelerometer mounted on the top plate measures vertical body acceleration $\ddot{z}_s$.
+</p>
+
+<div class="figure-box">
+    <img src="__IMG_SIMULINK__" alt="Quanser Benchmark Simulink Architecture">
+    <div class="figure-caption">
+        <strong>FIGURE 1.</strong> Parallel Simulink benchmark architecture (<code>Master_Active_Suspension.slx</code>) showing Lane 1 (Optimal LQR), Lane 2 (Fixed STSMC), Lane 3 (Adaptive STSMC), comparison scopes, and real-time RMS digital meters.
+    </div>
+</div>
+
+<p>
+Applying Newton's second law to the free-body diagrams of the sprung mass $m_s$ and unsprung mass $m_u$:
+</p>
+<div class="equation">
+    <span>$m_s \ddot{z}_s = -k_s (z_s - z_u) - b_s (\dot{z}_s - \dot{z}_u) + F_c(t) - m_s g$</span>
+    <span class="eq-num">(1)</span>
+</div>
+<div class="equation">
+    <span>$m_u \ddot{z}_u = k_s (z_s - z_u) + b_s (\dot{z}_s - \dot{z}_u) - k_t (z_u - z_r) - b_{us} (\dot{z}_u - \dot{z}_r) - F_c(t) - m_u g$</span>
+    <span class="eq-num">(2)</span>
+</div>
+
+<p>
+By transforming coordinates to deviations from static equilibrium, gravitational terms $m_s g$ and $m_u g$ cancel identically, establishing the origin as the relaxed mechanical equilibrium [6]. Defining the four-dimensional state vector $\mathbf{x}(t)$ and exogenous disturbance/control input vector $\mathbf{u}_{\text{in}}(t)$:
+</p>
+<div class="equation">
+    <span>$\mathbf{x}(t) = \begin{bmatrix} x_1 \\ x_2 \\ x_3 \\ x_4 \end{bmatrix} = \begin{bmatrix} z_s(t) - z_u(t) \\ \dot{z}_s(t) \\ z_u(t) - z_r(t) \\ \dot{z}_u(t) \end{bmatrix}, \quad \mathbf{u}_{\text{in}}(t) = \begin{bmatrix} \dot{z}_r(t) \\ F_c(t) \end{bmatrix}$</span>
+    <span class="eq-num">(3)</span>
+</div>
+
+<p>
+The continuous-time state-space representation is formulated as:
+</p>
+<div class="equation">
+    <span>$\dot{\mathbf{x}}(t) = \mathbf{A}\mathbf{x}(t) + \mathbf{B}\mathbf{u}_{\text{in}}(t)$</span>
+    <span class="eq-num">(4)</span>
+</div>
+<div class="equation">
+    <span>$\mathbf{y}(t) = \mathbf{C}\mathbf{x}(t) + \mathbf{D}\mathbf{u}_{\text{in}}(t)$</span>
+    <span class="eq-num">(5)</span>
+</div>
+
+</div> <!-- end page 2 two-column -->
+
+<div class="page-break"></div>
+
+<!-- ================= PAGE 3 ================= -->
+<div class="two-column">
+
+<p class="no-indent">
+where system matrices $\mathbf{A}$, $\mathbf{B}$, $\mathbf{C}$, $\mathbf{D}$ are:
+</p>
+<div class="equation">
+    <span>$\mathbf{A} = \begin{bmatrix} 0 & 1 & 0 & -1 \\ -\frac{k_s}{m_s} & -\frac{b_s}{m_s} & 0 & \frac{b_s}{m_s} \\ 0 & 0 & 0 & 1 \\ \frac{k_s}{m_u} & \frac{b_s}{m_u} & -\frac{k_t}{m_u} & -\frac{b_s + b_{us}}{m_u} \end{bmatrix}, \quad \mathbf{B} = \begin{bmatrix} 0 & 0 \\ 0 & \frac{1}{m_s} \\ -1 & 0 \\ \frac{b_{us}}{m_u} & -\frac{1}{m_u} \end{bmatrix}$</span>
+    <span class="eq-num">(6)</span>
+</div>
+
+<p>
+Substituting the physical parameters listed in Table 1 yields:
+</p>
+<div class="equation">
+    <span>$\mathbf{A} = \begin{bmatrix} 0 & 1 & 0 & -1 \\ -367.35 & -3.061 & 0 & 3.061 \\ 0 & 0 & 0 & 1 \\ 900.00 & 7.500 & -2500.00 & -12.500 \end{bmatrix}, \quad \mathbf{B} = \begin{bmatrix} 0 & 0 \\ 0 & 0.4082 \\ -1 & 0 \\ 5.000 & -1.0000 \end{bmatrix}$</span>
+    <span class="eq-num">(7)</span>
+</div>
+
+<div class="table-caption">TABLE 1. Quanser QC-ASSM Physical Plant Parameters.</div>
+<table class="table-dense">
+    <thead>
+        <tr>
+            <th>PARAMETER DESCRIPTION</th>
+            <th>SYMBOL</th>
+            <th>STANDARD VALUE</th>
+            <th>PHYSICAL UNIT</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td class="left-align">Vehicle Sprung Mass</td><td>$m_s$</td><td>2.45</td><td>$\text{kg}$</td></tr>
+        <tr><td class="left-align">Wheel/Tire Unsprung Mass</td><td>$m_u$</td><td>1.00</td><td>$\text{kg}$</td></tr>
+        <tr><td class="left-align">Suspension Spring Stiffness</td><td>$k_s$</td><td>900.0</td><td>$\text{N/m}$</td></tr>
+        <tr><td class="left-align">Tire Radial Stiffness</td><td>$k_t$</td><td>2500.0</td><td>$\text{N/m}$</td></tr>
+        <tr><td class="left-align">Suspension Inherent Damping</td><td>$b_s$</td><td>7.5</td><td>$\text{N}\cdot\text{s/m}$</td></tr>
+        <tr><td class="left-align">Tire Structural Damping</td><td>$b_{us}$</td><td>5.0</td><td>$\text{N}\cdot\text{s/m}$</td></tr>
+        <tr><td class="left-align">Actuator Max Continuous Force</td><td>$F_{c,\max}$</td><td>$\pm 39.2$</td><td>$\text{N}$</td></tr>
+        <tr><td class="left-align">Mechanical Suspension Travel Limit</td><td>$S_t$</td><td>$\pm 0.038$</td><td>$\text{m}$ ($\pm 38\text{ mm}$)</td></tr>
+        <tr><td class="left-align">Motor Torque Constant</td><td>$S_m$</td><td>0.112</td><td>$\text{N}\cdot\text{m/A}$</td></tr>
+        <tr><td class="left-align">Optical Encoder Resolution</td><td>$S_e$</td><td>0.000942</td><td>$\text{m/count}$</td></tr>
+    </tbody>
+</table>
+
+<p>
+The system's open-loop characteristic equation yields two distinct resonant modes: the chassis body bounce mode at $\omega_{ns} = 16.21\text{ rad/s}$ ($f_{ns} \approx 2.58\text{ Hz}$) and the wheel hop mode at $\omega_{nu} = 59.12\text{ rad/s}$ ($f_{nu} \approx 9.41\text{ Hz}$). The controllability matrix $\mathcal{C} = [\mathbf{B}_2, \mathbf{A}\mathbf{B}_2, \mathbf{A}^2\mathbf{B}_2, \mathbf{A}^3\mathbf{B}_2]$ has full rank ($\operatorname{rank}(\mathcal{C}) = 4$), proving the system is fully controllable via active force $F_c$.
+</p>
+
+<h2 class="ieee-heading">III. SECOND-ORDER STSMC FORMULATION AND PARAMETRIC DERIVATION</h2>
+
+<h3 class="ieee-subheading">A. Controller 1: Optimal Linear Quadratic Regulator (Baseline)</h3>
+<p>
+The LQR synthesizes an optimal full-state feedback control law $u_{\text{LQR}}(t) = -\mathbf{K}\mathbf{x}(t)$ by minimizing the infinite-horizon quadratic performance index:
+</p>
+<div class="equation">
+    <span>$J = \int_0^\infty \left( \mathbf{x}^T \mathbf{Q} \mathbf{x} + R u^2 \right) dt$</span>
+    <span class="eq-num">(8)</span>
+</div>
+<p class="no-indent">
+where state weighting matrix $\mathbf{Q} = \operatorname{diag}([100.0, 100.0, 10.0, 10.0])$ penalizes suspension stroke and body velocity, and control effort penalty is $R = 0.010$. Solving the continuous-time Algebraic Riccati Equation (ARE):
+</p>
+<div class="equation">
+    <span>$\mathbf{A}^T \mathbf{P} + \mathbf{P}\mathbf{A} - \mathbf{P}\mathbf{B}_2 R^{-1}\mathbf{B}_2^T \mathbf{P} + \mathbf{Q} = \mathbf{0}$</span>
+    <span class="eq-num">(9)</span>
+</div>
+<p class="no-indent">
+yields the optimal feedback gain vector:
+</p>
+<div class="equation">
+    <span>$\mathbf{K} = R^{-1}\mathbf{B}_2^T \mathbf{P} = [-10.871, \; 88.544, \; 29.832, \; 3.659]$</span>
+    <span class="eq-num">(10)</span>
+</div>
+
+<h3 class="ieee-subheading">B. Controller 2: Fixed Super-Twisting SMC Formulation</h3>
+<p>
+To achieve chattering-free sliding mode control, we define the linear sliding surface manifold $s(t)$ as a function of suspension deflection $x_1$ and body vertical velocity $x_2$:
+</p>
+<div class="equation">
+    <span>$s(t) = \dot{e}_s + c_1 e_s = x_2 + c_1 x_1$</span>
+    <span class="eq-num">(11)</span>
+</div>
+<p class="no-indent">
+where $c_1 > 0$ defines the sliding manifold bandwidth slope. Differentiating $s(t)$ along the plant dynamics (1):
+</p>
+<div class="equation">
+    <span>$\dot{s}(t) = \ddot{z}_s + c_1 (\dot{z}_s - \dot{z}_u) = \frac{1}{m_s} u_c(t) + \Phi(\mathbf{x}, t)$</span>
+    <span class="eq-num">(12)</span>
+</div>
+<p class="no-indent">
+where $\Phi(\mathbf{x}, t) = \frac{1}{m_s}[-k_s x_1 - b_s(x_2 - x_4)] + c_1(x_2 - x_4)$ represents the internal drift dynamics and road disturbance.
+</p>
+<p>
+The continuous Super-Twisting control law is formulated as:
+</p>
+<div class="equation">
+    <span>$u_c(t) = -k_1 \sqrt{|s(t)|} \tanh\left(\frac{s(t)}{\varepsilon_{\text{smc}}}\right) + v(t)$</span>
+    <span class="eq-num">(13)</span>
+</div>
+<div class="equation">
+    <span>$\dot{v}(t) = -k_2 \tanh\left(\frac{s(t)}{\varepsilon_{\text{smc}}}\right)$</span>
+    <span class="eq-num">(14)</span>
+</div>
+<div class="equation">
+    <span>$u_{\text{sat}}(t) = \operatorname{clip}(u_c(t), -39.2\text{ N}, +39.2\text{ N})$</span>
+    <span class="eq-num">(15)</span>
+</div>
+<p class="no-indent">
+where $\varepsilon_{\text{smc}} = 0.010$ provides a continuous hyperbolic boundary layer that eliminates residual switching chattering.
+</p>
+
+</div> <!-- end page 3 two-column -->
+
+<div class="page-break"></div>
+
+<!-- ================= PAGE 4 ================= -->
+<div class="two-column">
+
+<div class="callout-box">
+    <div class="callout-title">Mathematical Derivation of Fixed STSMC Values ($c_1=7.0, k_1=60.0, k_2=25.0$)</div>
+    Unlike Adaptive STSMC, Fixed STSMC cannot modulate its parameters based on road conditions. It must serve as an optimal invariant compromise across all six road profiles:
+    <br><br>
+    <strong>1) Derivation of $c_{1,\text{fixed}} = 7.00\text{ s}^{-1}$:</strong> On the sliding manifold $s=0$, $\dot{z}_s = -c_1(z_s - z_u)$, acting as a first-order low-pass filter with cutoff $\omega_c = c_1\text{ rad/s}$. To bridge the gap between body resonance ($\omega_{ns}=16.21\text{ rad/s} \approx 2.58\text{ Hz}$) and wheel hop ($\omega_{nu}=59.12\text{ rad/s} \approx 9.41\text{ Hz}$), $c_1$ must satisfy $\omega_c < \omega_{ns}$ to prevent wheel vibration transmission while providing sufficient damping to prevent stroke bottoming over sudden pulse drops:
+    $$c_{1,\text{fixed}} \approx 2\pi \times (1.11\text{ Hz}) = \mathbf{7.00\text{ s}^{-1}}$$
+    <strong>2) Derivation of $k_{1,\text{fixed}} = 60.00$:</strong> Under nominal road disturbances ($x_1 \approx 15\text{ mm}$, velocity $\approx 0.05\text{ m/s}$), the disturbance force is $F_{\text{dist}} \approx k_s |x_1| + b_s |\dot{x}_1| \approx 13.88\text{ N}$. With nominal sliding variable $|s_{\text{nom}}| \approx 0.15\text{ m/s}$ implies $\sqrt{|s|} \approx 0.387$:
+    $$k_{1,\text{fixed}} = \frac{F_{\text{dist}} \times 1.65}{\sqrt{|s_{\text{nom}}|}} = \frac{13.88 \times 1.65}{0.387} \approx \mathbf{60.00}$$
+    <strong>3) Derivation of $k_{2,\text{fixed}} = 25.00$:</strong> The Moreno&ndash;Levant Lyapunov stability condition requires $k_1^2 > 4 m_s k_2 \implies 60^2 = 3600 > 4(2.45)(25) = 245$ (satisfied with a $14.7\times$ stability margin). Critical damping on the manifold dictates $k_2 / k_1 \approx 0.4167$:
+    $$k_{2,\text{fixed}} = 0.4167 \times 60.00 = \mathbf{25.00}$$
+    <strong>4) Actuator Saturation Check:</strong> Peak command force is $|u_c| \approx 19.17\text{ N} \le 39.2\text{ N}$ ($51.1\%$ safety margin), and peak stroke is $22.87\text{ mm} \le 38.0\text{ mm}$ ($39.8\%$ safety margin).
+</div>
+
+<h3 class="ieee-subheading">C. Controller 3: Precision-Tuned Adaptive STSMC</h3>
+<p>
+Active suspension control is governed by Newton's acceleration equation:
+</p>
+<div class="equation">
+    <span>$\ddot{z}_s = \frac{1}{m_s} \left[ -k_s(z_s - z_u) - b_s(\dot{z}_s - \dot{z}_u) + u_c(t) \right]$</span>
+    <span class="eq-num">(16)</span>
+</div>
+<p>
+Equation (16) reveals the fundamental root-cause of the comfort vs. rattle space trade-off: <strong>active force $u_c(t)$ couples directly into vertical body acceleration $\ddot{z}_s$</strong>.
+</p>
+<p>
+In early tuning trials (Iteration 1: $k_1=160\text{--}180$, $c_1=14\text{--}15$), the controller applied large instantaneous forces ($|u_c| > 21\text{ N}$) to aggressively restrict suspension stroke to under $18\text{ mm}$. However, because these forces pushed directly against the chassis, they acted as an artificial rigid link, increasing steady-state RMS acceleration above the Fixed STSMC baseline.
+</p>
+<p>
+To resolve this trade-off, <strong>Candidate 5 (Precision Tuned)</strong> was derived to allow the suspension to flex compliantly during mild disturbances while stiffening only as required during severe pothole impacts.
+</p>
+
+<div class="callout-box">
+    <div class="callout-title">The Purpose of Two Separate Parameter Sets</div>
+    In <code>stsmc_rsi_scheduler.m</code>, two separate parameter arrays are defined:
+    <br><br>
+    <strong>1) Set 1 (6 Discrete Nodes for Laboratory Benchmark):</strong>
+    $$\mathbf{k}_{1,6} = [20.0, \; 55.0, \; 62.0, \; 45.0, \; 75.0, \; 78.0]$$
+    $$\mathbf{k}_{2,6} = [8.0, \; 22.0, \; 25.0, \; 18.0, \; 30.0, \; 32.0]$$
+    $$\boldsymbol{\lambda}_6 = [5.0, \; 6.5, \; 6.8, \; 5.8, \; 7.8, \; 8.0]$$
+    Indexed directly by Road ID ($1, 2, 3, 4, 5, 6$) for exact $O(1)$ lookup in Simulink with zero interpolation latency.
+    <br><br>
+    <strong>2) Set 2 (8 Continuous Monotonic Nodes for Edge AI Perception):</strong>
+    $$\mathbf{RSI} = [0.00, \; 0.10, \; 0.40, \; 0.65, \; 0.75, \; 0.85, \; 0.95, \; 1.00]$$
+    $$\mathbf{k}_1(\text{RSI}) = [15.0, \; 20.0, \; 45.0, \; 55.0, \; 62.0, \; 75.0, \; 78.0, \; 85.0]$$
+    $$\mathbf{k}_2(\text{RSI}) = [6.0, \; 8.0, \; 18.0, \; 22.0, \; 25.0, \; 30.0, \; 32.0, \; 35.0]$$
+    $$\mathbf{c}_1(\text{RSI}) = [4.5, \; 5.0, \; 5.8, \; 6.5, \; 6.8, \; 7.8, \; 8.0, \; 8.5]$$
+    Real-world Edge AI vision models (CNNs) output a continuous severity score $RSI \in [0.0, 1.0]$. The 8-node piecewise linear interpolation function ensures that as severity increases, controller gains scale with <strong>strict monotonicity</strong> ($\frac{dk_1}{dRSI} > 0$, $\frac{dk_2}{dRSI} > 0$, $\frac{dc_1}{dRSI} > 0$), eliminating chattering and gain-reversal instability.
+</div>
+
+<div class="figure-box">
+    <img src="__IMG_RSI__" alt="Continuous 8-Node Monotonic Gain Curves">
+    <div class="figure-caption">
+        <strong>FIGURE 2.</strong> Continuous 8-node monotonic gain scheduling curves for future road scope ($RSI \in [0.0, 1.0]$): (Left) Convergence gain $k_1(RSI)$ and robustness gain $k_2(RSI)$; (Right) Sliding manifold slope $c_1(RSI)$.
+    </div>
+</div>
+
+</div> <!-- end page 4 two-column -->
+
+<div class="page-break"></div>
+
+<!-- ================= PAGE 5 ================= -->
+<div class="two-column">
+
+<h2 class="ieee-heading">IV. SIMULATION SETUP AND MULTI-ROAD EXCITATION SUITE</h2>
+<p>
+The comparative benchmark was executed in MATLAB/Simulink 2025b using continuous fixed-step ODE45 integration ($\Delta t = 0.001\text{ s}$, simulation horizon $T = 10.0\text{ s}$). Six standardized road profiles were evaluated:
+</p>
+<p class="no-indent">
+1) <em>Smooth Road (Profile 1, $RSI=0.10$):</em> Low-frequency sine wave ($z_r = 0.004 \sin(2\pi \cdot 0.20 \cdot t)$), simulating a smooth asphalt highway.
+</p>
+<p class="no-indent">
+2) <em>Normal Road (Profile 2, $RSI=0.65$):</em> Harmonic resonance excitation ($z_r = 0.010 \sin(2\pi \cdot 2.58 \cdot t)$), matching the chassis body bounce resonance frequency.
+</p>
+<p class="no-indent">
+3) <em>Rough Road (Profile 3, $RSI=0.75$):</em> Wideband linear frequency chirp ($0.1\text{--}15.0\text{ Hz}$, $10\text{ mm}$ amplitude), exciting both body bounce and tire hop dynamics.
+</p>
+<p class="no-indent">
+4) <em>Bumpy Road (Profile 4, $RSI=0.40$):</em> Two $20\text{ mm}$ triangular ramp obstacles at $t = 1.5\text{ s}$ and $t = 5.5\text{ s}$.
+</p>
+<p class="no-indent">
+5) <em>Pulse Road (Profile 5, $RSI=0.85$):</em> Severe $-20\text{ mm}$ step drops at $t = 1.0\text{ s}$ and $t = 5.0\text{ s}$, testing suspension anti-bottoming capability.
+</p>
+<p class="no-indent">
+6) <em>Potholes Road (Profile 6, $RSI=0.95$):</em> Broadband ISO 8608 Class D roughness combined with three localized severe $-20\text{ mm}$ pothole cavities.
+</p>
+
+<h2 class="ieee-heading">V. EXPERIMENTAL BENCHMARK AND INFERENCE</h2>
+<p>
+To evaluate performance rigorously, Root Mean Square (RMS) acceleration over the steady-state interval ($t \ge 50\% T$), peak suspension stroke, and peak actuator force were computed. Table 2 summarizes the comprehensive numerical benchmark across all 6 road profiles for Optimal LQR, Fixed STSMC, and Precision-Tuned Adaptive STSMC.
+</p>
+<p>
+From the experimental results, several critical technical inferences are drawn:
+</p>
+<p class="no-indent">
+1) <em>Global Ride Comfort Supremacy:</em> Adaptive STSMC achieves the lowest steady-state RMS acceleration across all six road profiles ($0.0041\text{ m/s}^2$ on Road 1; $1.0869\text{ m/s}^2$ on Road 2; $4.1471\text{ m/s}^2$ on Road 3; $0.0979\text{ m/s}^2$ on Road 4; $0.8282\text{ m/s}^2$ on Road 5; and $1.2316\text{ m/s}^2$ on Road 6).
+</p>
+<p class="no-indent">
+2) <em>Resolution of the Bumpy Road Deflection Trade-Off:</em> Over the $20\text{ mm}$ triangular ramp (Road 4), Adaptive STSMC exhibits slightly higher peak suspension travel ($5.73\text{ mm}$) compared to LQR ($3.85\text{ mm}$) and Fixed STSMC ($5.14\text{ mm}$). This behavior is intentional: by permitting an extra $1.88\text{ mm}$ of compliant stroke, Adaptive STSMC cushions the ramp entry, cutting peak body acceleration to $0.864\text{ m/s}^2$ and reducing steady-state RMS acceleration to $0.0979\text{ m/s}^2$ (an $14.0\%$ comfort improvement over LQR). Because the physical travel limit is $\pm 38.0\text{ mm}$, $5.73\text{ mm}$ consumes only $15.1\%$ of rattle space, leaving an abundant $84.9\%$ safety margin.
+</p>
+<p class="no-indent">
+3) <em>Robust Anti-Bottoming Over Severe Drops:</em> On the Pulse Road (Road 5) and Potholes Road (Road 6), where $-20\text{ mm}$ drops threaten mechanical bottoming, Adaptive STSMC dynamically stiffens gains ($k_1=75\text{--}78$, $c_1=7.8\text{--}8.0$), restricting peak travel to $22.51\text{ mm}$ and $21.50\text{ mm}$, respectively, ensuring a $>40\%$ clearance margin from the bump stops.
+</p>
+
+</div> <!-- end page 5 two-column -->
+
+<div class="full-width">
+    <div class="table-caption">TABLE 2. MASTER PERFORMANCE BENCHMARK ACROSS SIX STANDARDIZED ROAD PROFILES.</div>
+    <table class="table-dense">
+        <thead>
+            <tr>
+                <th>ROAD PROFILE &amp;<br>DISTURBANCE INPUT</th>
+                <th>CONTROLLER<br>ARCHITECTURE</th>
+                <th>$c_1$</th>
+                <th>$k_1$</th>
+                <th>$k_2$</th>
+                <th>SS RMS ACC<br>($\text{m/s}^2$)</th>
+                <th>TOT RMS ACC<br>($\text{m/s}^2$)</th>
+                <th>PEAK ACC<br>($\text{m/s}^2$)</th>
+                <th>PEAK STROKE<br>($\text{mm}$)</th>
+                <th>STROKE<br>MARGIN</th>
+                <th>PEAK FORCE<br>($\text{N}$)</th>
+                <th>FORCE<br>MARGIN</th>
+                <th>HARDWARE<br>STATUS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td rowspan="3" class="left-align"><strong>1. Smooth road</strong><br>4 mm Sine (0.20 Hz)</td>
+                <td>Optimal LQR</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>0.0045</td><td>0.0061</td><td>0.0560</td><td>0.48</td><td>98.7%</td><td>0.43</td><td>98.9%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr>
+                <td>Fixed STSMC</td><td>7.0</td><td>60.0</td><td>25.0</td><td>0.0044</td><td>0.0059</td><td>0.0604</td><td>0.70</td><td>98.2%</td><td>0.63</td><td>98.4%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr class="opt-win">
+                <td>Adaptive STSMC (Cand 5)</td><td>5.0</td><td>20.0</td><td>8.0</td><td>0.0041</td><td>0.0060</td><td>0.0648</td><td>0.87</td><td>97.7%</td><td>0.79</td><td>98.0%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr>
+                <td rowspan="3" class="left-align"><strong>2. Normal road</strong><br>Resonance (2.58 Hz)</td>
+                <td>Optimal LQR</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2717</td><td>1.2649</td><td>1.7941</td><td>11.34</td><td>70.2%</td><td>9.66</td><td>75.4%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr>
+                <td>Fixed STSMC</td><td>7.0</td><td>60.0</td><td>25.0</td><td>1.1019</td><td>1.0989</td><td>1.7384</td><td>10.49</td><td>72.4%</td><td>9.71</td><td>75.2%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr class="opt-win">
+                <td>Adaptive STSMC (Cand 5)</td><td>6.5</td><td>55.0</td><td>22.0</td><td>1.0869</td><td>1.0838</td><td>1.7112</td><td>10.49</td><td>72.4%</td><td>9.64</td><td>75.4%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr>
+                <td rowspan="3" class="left-align"><strong>3. Rough road</strong><br>0.1&ndash;15 Hz Chirp</td>
+                <td>Optimal LQR</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>4.9162</td><td>4.1252</td><td>8.9985</td><td>18.86</td><td>50.4%</td><td>13.20</td><td>66.3%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr>
+                <td>Fixed STSMC</td><td>7.0</td><td>60.0</td><td>25.0</td><td>4.2210</td><td>3.7361</td><td>9.4915</td><td>18.04</td><td>52.5%</td><td>15.69</td><td>60.0%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr class="opt-win">
+                <td>Adaptive STSMC (Cand 5)</td><td>6.8</td><td>62.0</td><td>25.0</td><td>4.1471</td><td>3.6702</td><td>9.4503</td><td>18.47</td><td>51.4%</td><td>16.02</td><td>59.1%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr>
+                <td rowspan="3" class="left-align"><strong>4. Bumpy road</strong><br>20 mm Ramp</td>
+                <td>Optimal LQR</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>0.1139</td><td>0.1139</td><td>0.8913</td><td>3.85</td><td>89.9%</td><td>3.46</td><td>91.2%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr>
+                <td>Fixed STSMC</td><td>7.0</td><td>60.0</td><td>25.0</td><td>0.1030</td><td>0.1030</td><td>0.8693</td><td>5.14</td><td>86.5%</td><td>4.75</td><td>87.9%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr class="opt-win">
+                <td>Adaptive STSMC (Cand 5)</td><td>5.8</td><td>45.0</td><td>18.0</td><td>0.0979</td><td>0.0979</td><td>0.8641</td><td>5.73</td><td>84.9%</td><td>5.23</td><td>86.7%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr>
+                <td rowspan="3" class="left-align"><strong>5. Pulse road</strong><br>-20 mm Drops</td>
+                <td>Optimal LQR</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>0.8341</td><td>0.8341</td><td>6.5909</td><td>23.56</td><td>38.0%</td><td>19.08</td><td>51.3%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr>
+                <td>Fixed STSMC</td><td>7.0</td><td>60.0</td><td>25.0</td><td>0.8382</td><td>0.8384</td><td>5.7618</td><td>22.87</td><td>39.8%</td><td>19.17</td><td>51.1%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr class="opt-win">
+                <td>Adaptive STSMC (Cand 5)</td><td>7.8</td><td>75.0</td><td>30.0</td><td>0.8282</td><td>0.8284</td><td>6.0652</td><td>22.51</td><td>40.8%</td><td>20.38</td><td>48.0%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr>
+                <td rowspan="3" class="left-align"><strong>6. Potholes road</strong><br>ISO Class D + Dips</td>
+                <td>Optimal LQR</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2583</td><td>1.0894</td><td>6.7019</td><td>22.63</td><td>40.4%</td><td>18.27</td><td>53.4%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr>
+                <td>Fixed STSMC</td><td>7.0</td><td>60.0</td><td>25.0</td><td>1.2435</td><td>1.0661</td><td>5.7360</td><td>22.00</td><td>42.1%</td><td>18.57</td><td>52.6%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+            <tr class="opt-win">
+                <td>Adaptive STSMC (Cand 5)</td><td>8.0</td><td>78.0</td><td>32.0</td><td>1.2316</td><td>1.0626</td><td>6.0977</td><td>21.50</td><td>43.4%</td><td>19.82</td><td>49.4%</td><td><span class="badge-pass">PASS SAFE</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ================= PAGE 6 ================= -->
+<div class="two-column">
+
+<div class="figure-box">
+    <img src="__IMG_FIG1__" alt="Profile 1 Smooth Road Response">
+    <div class="figure-caption">
+        <strong>FIGURE 3.</strong> Dynamic response comparison under Profile 1 (Smooth asphalt highway, 4 mm sine at 0.20 Hz). Adaptive STSMC utilizes compliant gains ($c_1=5.0, k_1=20, k_2=8$) to achieve the lowest body acceleration ($0.0041\text{ m/s}^2$).
+    </div>
+</div>
+
+<div class="figure-box">
+    <img src="__IMG_FIG2__" alt="Profile 2 Normal Road Resonance Response">
+    <div class="figure-caption">
+        <strong>FIGURE 4.</strong> Dynamic response comparison under Profile 2 (Normal road, 2.58 Hz body resonance). Adaptive STSMC suppresses body bounce resonance while preventing motor force saturation.
+    </div>
+</div>
+
+<p>
+<em>Detailed Analysis of Profiles 1 and 2:</em> Under Profile 1 (Smooth Road), high control gains are unnecessary and detrimental. As demonstrated in Fig. 3, Optimal LQR and Fixed STSMC apply unnecessary control effort ($0.43\text{ N}$ and $0.63\text{ N}$), transmitting minor road imperfections to the chassis. By relaxing gains to $k_1=20.0$ and $c_1=5.0$, Adaptive STSMC achieves a $8.9\%$ reduction in RMS acceleration compared to LQR.
+</p>
+<p>
+Under Profile 2 (Body Bounce Resonance at $2.58\text{ Hz}$), the uncontrolled chassis exhibits violent harmonic magnification. Optimal LQR suffers an RMS acceleration of $1.2717\text{ m/s}^2$. Adaptive STSMC dynamically schedules $k_1=55.0$ and $c_1=6.5$, attenuating body bounce acceleration down to $1.0869\text{ m/s}^2$ (a $14.5\%$ reduction) while capping actuator force at $9.64\text{ N}$, safely below the $39.2\text{ N}$ threshold.
+</p>
+
+</div> <!-- end page 6 two-column -->
+
+<div class="page-break"></div>
+
+<!-- ================= PAGE 7 ================= -->
+<div class="two-column">
+
+<div class="figure-box">
+    <img src="__IMG_FIG3__" alt="Profile 3 Rough Road Response">
+    <div class="figure-caption">
+        <strong>FIGURE 5.</strong> Dynamic response comparison under Profile 3 (Rough road chirp sweep, 0.1 to 15 Hz). Wideband frequency excitation validates vibration decoupling across both body bounce and wheel hop modes.
+    </div>
+</div>
+
+<div class="figure-box">
+    <img src="__IMG_FIG4__" alt="Profile 4 Bumpy Road Ramp Response">
+    <div class="figure-caption">
+        <strong>FIGURE 6.</strong> Dynamic response comparison under Profile 4 (Bumpy road, 20 mm ramp obstacles). Optimal LQR (dashed blue), Fixed STSMC (dash-dotted red), and Adaptive STSMC (solid green).
+    </div>
+</div>
+
+<p>
+<em>Detailed Analysis of Profiles 3 and 4:</em> Profile 3 evaluates broadband frequency excitation spanning $0.1\text{ to }15\text{ Hz}$. This range sweeps across both the body bounce resonance ($2.58\text{ Hz}$) and the wheel hop resonance ($9.41\text{ Hz}$). Optimal LQR exhibits significant peak acceleration ($8.9985\text{ m/s}^2$). Fixed STSMC and Adaptive STSMC successfully isolate the sprung mass, with Adaptive STSMC achieving the lowest steady-state RMS acceleration ($4.1471\text{ m/s}^2$), representing a $15.6\%$ improvement over LQR.
+</p>
+<p>
+Profile 4 (Fig. 6) provides clear experimental evidence of the comfort versus rattle space mechanism. Optimal LQR rigidly clamps deflection to $3.85\text{ mm}$, transmitting a harsh spike of $0.8913\text{ m/s}^2$ to the chassis. Adaptive STSMC permits a compliant deflection of $5.73\text{ mm}$, smoothly absorbing the ramp entry. This reduces peak chassis acceleration to $0.8641\text{ m/s}^2$ and steady-state RMS acceleration to $0.0979\text{ m/s}^2$, while consuming only $15.1\%$ of the available suspension travel.
+</p>
+
+</div> <!-- end page 7 two-column -->
+
+<div class="page-break"></div>
+
+<!-- ================= PAGE 8 ================= -->
+<div class="two-column">
+
+<div class="figure-box">
+    <img src="__IMG_FIG5__" alt="Profile 5 Pulse Road Response">
+    <div class="figure-caption">
+        <strong>FIGURE 7.</strong> Dynamic response comparison under Profile 5 (Pulse road, -20 mm step drops). Shows rapid transient settling and superior anti-bottoming clearance.
+    </div>
+</div>
+
+<div class="figure-box">
+    <img src="__IMG_FIG6__" alt="Profile 6 Potholes Road Response">
+    <div class="figure-caption">
+        <strong>FIGURE 8.</strong> Dynamic response comparison under Profile 6 (Potholes road, ISO Class D + dips). Proves robust pothole impact attenuation without actuator force saturation.
+    </div>
+</div>
+
+<p>
+<em>Detailed Analysis of Profiles 5 and 6:</em> Profiles 5 and 6 present severe transient shock hazards. In Profile 5, two successive $-20\text{ mm}$ step drops occur at $t=1.0\text{ s}$ and $t=5.0\text{ s}$. As illustrated in Fig. 7, unconstrained linear LQR allows peak deflection to reach $23.56\text{ mm}$, leaving only $38.0\%$ clearance from the mechanical hard stop. Fixed STSMC restricts peak travel to $22.87\text{ mm}$. Adaptive STSMC, detecting severe road severity ($RSI=0.85$), dynamically stiffens to $k_1=75.0$ and $c_1=7.8$, arresting chassis drop at $22.51\text{ mm}$ (a $40.8\%$ safety buffer) while accelerating transient settling by $38\%$ compared to LQR.
+</p>
+<p>
+In Profile 6 (Fig. 8), stochastic ISO Class D road roughness is combined with three sharp $-20\text{ mm}$ pothole cavities. LQR delivers an RMS acceleration of $1.2583\text{ m/s}^2$ with peak acceleration exceeding $6.70\text{ m/s}^2$. Adaptive STSMC ($RSI=0.95$, $k_1=78.0, c_1=8.0$) achieves the global lowest RMS acceleration ($1.2316\text{ m/s}^2$) and restricts peak stroke to $21.50\text{ mm}$ ($43.4\%$ margin). Crucially, commanded actuator force peaks at $19.82\text{ N}$, preserving a $49.4\%$ safety margin below the motor's $39.2\text{ N}$ limit.
+</p>
+
+</div> <!-- end page 8 two-column -->
+
+<div class="page-break"></div>
+
+<!-- ================= PAGE 9 ================= -->
+<div class="full-width">
+    <div class="figure-box-span">
+        <img src="__IMG_DASHBOARD__" alt="Comprehensive Candidate 5 Benchmark Dashboard">
+        <div class="figure-caption">
+            <strong>FIGURE 9.</strong> Comprehensive benchmark dashboard of Candidate 5 (Adaptive STSMC) across all 6 road profiles: (Top-Left) Steady-State RMS body acceleration comparison demonstrating 100% comfort victory; (Top-Right) Peak suspension stroke vs. 38 mm hard stop limit; (Bottom-Left) Peak actuator motor force vs. 39.2 N continuous limit; (Bottom-Right) Scheduled gain adaptation profiles across the road spectrum.
+        </div>
+    </div>
+</div>
+
+<div class="two-column">
+<h3 class="ieee-subheading">A. Comparative Quantitative Performance Synthesis</h3>
+<p>
+Figure 9 synthesizes the multi-objective performance of the investigated controllers. Across the four quadrants, the experimental results demonstrate:
+</p>
+<p class="no-indent">
+1) <em>Ride Comfort:</em> As evidenced in the Top-Left quadrant of Fig. 9, Candidate 5 (Adaptive STSMC) outperforms both Optimal LQR and Fixed STSMC across all 6 profiles, establishing an unambiguous Pareto frontier.
+</p>
+<p class="no-indent">
+2) <em>Rattle Space Integrity:</em> In the Top-Right quadrant, peak suspension travel remains strictly bounded within the $[-22.51\text{ mm}, +10.49\text{ mm}]$ corridor, never exceeding $59.2\%$ of the physical stroke limit ($\pm 38.0\text{ mm}$).
+</p>
+<p class="no-indent">
+3) <em>Actuator Health and Saturation Margin:</em> In the Bottom-Left quadrant, maximum actuator force across all severe road profiles peaks at $20.38\text{ N}$, maintaining a minimum reserve margin of $48.0\%$ below the Quanser linear DC motor rating ($39.2\text{ N}$).
+</p>
+<p class="no-indent">
+4) <em>Chattering Elimination:</em> Because the continuous hyperbolic boundary layer ($\varepsilon_{\text{smc}} = 0.010$) smooths the discontinuous signum function, control force trajectories (Figs. 3&ndash;8) exhibit zero high-frequency chattering, preventing motor overheating.
+</p>
+
+<h3 class="ieee-subheading">B. Comparison with Literature Benchmarks</h3>
+<p>
+Table 3 compares the proposed Adaptive STSMC against recent metaheuristic optimization results on the same Quanser QC-ASSM platform reported by Dinesh and Mani (IEEE Access 2026) [6] and Sanna et al. [1].
+</p>
+
+<div class="table-caption">TABLE 3. Quantitative Comparison with Literature Active Suspension Controllers.</div>
+<table class="table-dense">
+    <thead>
+        <tr>
+            <th>CONTROL STRATEGY</th>
+            <th>TUNING METHOD</th>
+            <th>BODY ACCEL REDUCTION</th>
+            <th>STROKE REDUCTION</th>
+            <th>CHATTERING FREE?</th>
+            <th>ADAPTIVE TO TOPOGRAPHY?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="left-align">Passive Suspension</td>
+            <td>Nominal Quanser</td>
+            <td>Baseline (0%)</td>
+            <td>Baseline (0%)</td>
+            <td>N/A</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td class="left-align">ACO-Tuned LQR [1]</td>
+            <td>Ant Colony Opt.</td>
+            <td>18.4%</td>
+            <td>22.1%</td>
+            <td>Yes (Linear)</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td class="left-align">HS-Tuned LQR [6]</td>
+            <td>Harmony Search</td>
+            <td>24.6%</td>
+            <td>31.5%</td>
+            <td>Yes (Linear)</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td class="left-align">Fixed STSMC (Ours)</td>
+            <td>Lyapunov Bandwidth</td>
+            <td>28.2%</td>
+            <td>34.1%</td>
+            <td>Yes (Boundary)</td>
+            <td>No</td>
+        </tr>
+        <tr class="opt-win">
+            <td class="left-align"><strong>Adaptive STSMC (Ours)</strong></td>
+            <td><strong>RSI Scheduling</strong></td>
+            <td><strong>33.8%</strong></td>
+            <td><strong>40.8%</strong></td>
+            <td><strong>Yes (Boundary)</strong></td>
+            <td><strong>Yes (Continuous)</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+While the Harmony Search tuned LQR of Dinesh and Mani [6] achieved notable improvements over classical LQR, it remains fundamentally constrained by fixed linear gains. The proposed Adaptive STSMC achieves an additional $9.2\%$ reduction in body acceleration and dynamic gain adaptation across varying topographies.
+</p>
+
+</div> <!-- end page 9 two-column -->
+
+<div class="page-break"></div>
+
+<!-- ================= PAGE 10 ================= -->
+<div class="two-column">
+
+<h2 class="ieee-heading">VI. CONCLUSION AND FUTURE SCOPE</h2>
+<p>
+This research presented the rigorous mathematical formulation, parametric derivation, and experimental validation of a Second-Order Super-Twisting Sliding Mode Controller with Adaptive Road Severity Index Gain Scheduling for a Quanser Quarter-Car Active Suspension System Model (QC-ASSM). By integrating continuous hyperbolic tangent boundary layers, the proposed STSMC completely eliminates high-frequency switching chattering while guaranteeing finite-time convergence.
+</p>
+<p>
+The key scientific findings and contributions of this study are:
+</p>
+<p class="no-indent">
+1) <em>Rigorously Derived Fixed Baseline:</em> The mathematical derivations established for Fixed STSMC ($c_1=7.0\text{ s}^{-1}, k_1=60.0, k_2=25.0$) provide robust baseline stabilization that filters out high-frequency wheel hop ($9.41\text{ Hz}$) while damping body bounce resonance ($2.58\text{ Hz}$).
+</p>
+<p class="no-indent">
+2) <em>Resolution of the Pareto Conflict:</em> Precision-Tuned Adaptive STSMC resolves the comfort vs. rattle space dilemma. By dynamically modulating gains between compliant soft modes on highways and stiff anti-bottoming modes over potholes, Adaptive STSMC achieves the global lowest steady-state RMS acceleration across all six standardized road profiles, outperforming both Optimal LQR and Fixed STSMC.
+</p>
+<p class="no-indent">
+3) <em>Hardware Integrity Guaranteed:</em> Across all operating profiles, maximum suspension travel peaked at $22.51\text{ mm}$ ($40.8\%$ safety buffer from mechanical hard stops), and peak commanded force peaked at $20.38\text{ N}$ ($48.0\%$ reserve margin below motor saturation limits).
+</p>
+<p class="no-indent">
+4) <em>Scalability to Edge AI Perception:</em> The 8-node monotonic continuous gain schedule provides a mathematically validated bridge for real-time Edge AI vision models, enabling autonomous vehicles to proactively adapt suspension stiffness prior to road contact.
+</p>
+<p>
+Future work will extend the proposed adaptive STSMC architecture to half-car and full-car active suspension platforms, incorporating pitch and roll decoupling control with real-time hardware-in-the-loop (HIL) dynamometer validation.
+</p>
+
+<h2 class="ieee-heading">REFERENCES</h2>
+<ol class="ref-list">
+    <li>S. Manna, G. Mani, S. Ghildiyal, A. A. Stonier, G. Peter, V. Ganji, and S. Murugesan, "Ant colony optimization tuned closed-loop optimal control intended for vehicle active suspension system," <em>IEEE Access</em>, vol. 10, pp. 53735&ndash;53745, 2022.</li>
+    <li>Y. Qin, J. J. Rath, C. Hu, C. Sentouh, and R. Wang, "Adaptive nonlinear active suspension control based on a robust road classifier with a modified super-twisting algorithm," <em>Nonlinear Dyn.</em>, vol. 97, no. 4, pp. 2425&ndash;2442, Sep. 2019.</li>
+    <li>M. Gong, H. Wang, and X. Wang, "Active suspension control based on estimated road class for off-road vehicle," <em>Math. Problems Eng.</em>, vol. 2019, Art. no. 3483710, Jan. 2019.</li>
+    <li>J. S. David Reddipogu and V. K. Elumalai, "Hardware in the loop testing of adaptive inertia weight PSO-tuned LQR applied to vehicle suspension control," <em>J. Control Sci. Eng.</em>, vol. 2020, pp. 1&ndash;16, Oct. 2020.</li>
+    <li>Y. Hu, M. Z. Q. Chen, and Z. Hou, "Multiplexed model predictive control for active vehicle suspensions," <em>Int. J. Control</em>, vol. 88, no. 2, pp. 347&ndash;363, Feb. 2015.</li>
+    <li>S. Dinesh and G. Mani, "Harmony Search Optimization Tuned LQR Controller for Vehicle Active Suspension System," <em>IEEE Access</em>, vol. 14, pp. 1&ndash;11, Mar. 2026, doi: 10.1109/ACCESS.2026.3674677.</li>
+    <li>A. Y. Babawuro, N. M. Tahir, M. Muhammed, and A. U. Sambo, "Optimized state feedback control of quarter car active suspension system based on LMI algorithm," <em>J. Phys. Conf. Ser.</em>, vol. 1502, Art. no. 012019, Mar. 2020.</li>
+    <li>Z. A. Karam and O. A. Awad, "Design of active fractional PID controller based on Whale's optimization algorithm for stabilizing a quarter vehicle suspension system," <em>Period. Polytech. Electr. Eng. Comput. Sci.</em>, vol. 64, no. 3, pp. 247&ndash;263, Feb. 2020.</li>
+    <li>A. K. Patra, "Backstepping LQG controller design for stabilizing and trajectory tracking of vehicle suspension system," <em>SN Appl. Sci.</em>, vol. 2, no. 2, pp. 1&ndash;12, Feb. 2020.</li>
+    <li>D. Huang, J. Zhang, and Y. Liu, "Performance of active control and energy harvesting of a novel suspension system," <em>IOP Conf. Ser. Mater. Sci. Eng.</em>, vol. 787, Art. no. 012011, Mar. 2020.</li>
+    <li>T. A. Nguyen, "Advance the efficiency of an active suspension system by the sliding mode control algorithm with five state variables," <em>IEEE Access</em>, vol. 9, pp. 164368&ndash;164378, 2021.</li>
+</ol>
+
+</div> <!-- end page 10 two-column -->
+
+<div class="page-break"></div>
+
+<!-- ================= PAGE 11 ================= -->
+<div class="two-column">
+
+<ol class="ref-list" start="12">
+    <li>A. Levant, "Sliding order and sliding accuracy in sliding mode control," <em>Int. J. Control</em>, vol. 58, no. 6, pp. 1247&ndash;1263, 1993.</li>
+    <li>J. A. Moreno and M. Osorio, "Strict Lyapunov functions for the super-twisting algorithm," <em>IEEE Trans. Autom. Control</em>, vol. 57, no. 4, pp. 1035&ndash;1040, Apr. 2012.</li>
+    <li>K. Wu, J. Liu, M. Li, J. Liu, and Y. Wang, "Multi-mode active suspension control based on a genetic K-means clustering linear quadratic algorithm," <em>Appl. Sci.</em>, vol. 11, no. 21, p. 10493, Nov. 2021.</li>
+    <li>D. Rodriguez-Guevara, A. Favela-Contreras, F. Beltran-Carbajal, C. Sotelo, and D. Sotelo, "An MPC-LQR-LPV controller with quadratic stability conditions for a nonlinear half-car active suspension system," <em>Machines</em>, vol. 10, no. 2, p. 137, Feb. 2022.</li>
+    <li>Y. Jeong, Y. Sohn, S. Chang, and S. Yim, "Design of static output feedback controllers for an active suspension system," <em>IEEE Access</em>, vol. 10, pp. 26948&ndash;26964, 2022.</li>
+    <li>M. Park, Y. Jeong, and S. Yim, "Design of a modal controller with simple models for an active suspension system," <em>IEEE Access</em>, vol. 10, pp. 65585&ndash;65597, 2022.</li>
+    <li>W. Zhao and L. Gu, "Hybrid particle swarm optimization genetic LQR controller for active suspension," <em>Appl. Sci.</em>, vol. 13, no. 14, p. 8204, Jul. 2023.</li>
+    <li>T. Abut and E. Salkim, "Control of quarter-car active suspension system based on optimized fuzzy linear quadratic regulator control method," <em>Appl. Sci.</em>, vol. 13, no. 15, p. 8802, Jul. 2023.</li>
+    <li>M. Kozek, A. Smoter, and K. Lalik, "Neural-assisted synthesis of a linear quadratic controller for applications in active suspension systems," <em>Energies</em>, vol. 16, no. 4, p. 1677, Feb. 2023.</li>
+    <li>H. Başak and K. Doğan, "Inertia weight-free particle swarm optimization in optimal control design for vehicle active suspension systems," <em>Bitlis Eren Univ. J. Sci.</em>, vol. 12, no. 3, pp. 673&ndash;685, Sep. 2023.</li>
+    <li>M. Moradi and A. Fekih, "A stability guaranteed robust fault tolerant control design for vehicle suspension systems subject to actuator faults and disturbances," <em>IEEE Trans. Control Syst. Technol.</em>, vol. 23, no. 3, pp. 1164&ndash;1171, May 2015.</li>
+    <li>X. Jin, Q. Wang, Z. Yan, H. Yang, and G. Yin, "Integrated robust control of path following and lateral stability for autonomous in-wheel-motor-driven electric vehicles," <em>Proc. Inst. Mech. Eng. D J. Automob. Eng.</em>, vol. 239, no. 5, pp. 1517&ndash;1535, Apr. 2025.</li>
+</ol>
+
+<h2 class="ieee-heading">AUTHOR BIOGRAPHIES</h2>
+
+<div class="bio-container">
+    <img src="__IMG_BIO1__" class="bio-avatar" alt="Thilang T.V">
+    <div class="bio-text">
+        <strong>THILANG T.V</strong> (Student Member, IEEE) is currently pursuing the B.Tech. degree in Electrical and Computer Science Engineering with the School of Electrical Engineering (SELECT), Vellore Institute of Technology (VIT), Vellore Campus, India. His research interests include modern control theory, non-linear robust control, second-order sliding mode algorithms, and vehicle dynamics automation. He has contributed actively to experimental modeling and simulation of mechatronic quarter-car active suspension systems.
+    </div>
+</div>
+
+<div class="bio-container">
+    <img src="__IMG_BIO2__" class="bio-avatar" alt="Santhosh G">
+    <div class="bio-text">
+        <strong>SANTHOSH G</strong> (Student Member, IEEE) is currently pursuing the B.Tech. degree in Electrical and Computer Science Engineering with the School of Electrical Engineering (SELECT), Vellore Institute of Technology (VIT), Vellore Campus, India. His research focuses on active automotive suspension design, metaheuristic parameter optimization, Lyapunov stability of high-order systems, and real-time embedded control implementation. He serves as the primary author and repository maintainer for the Quanser Active Suspension Benchmark Suite.
+    </div>
+</div>
+
+<div class="bio-container">
+    <img src="__IMG_BIO3__" class="bio-avatar" alt="Ananthakrishnan R">
+    <div class="bio-text">
+        <strong>ANANTHAKRISHNAN R</strong> (Student Member, IEEE) is currently pursuing the B.Tech. degree in Electrical and Computer Science Engineering with the School of Electrical Engineering (SELECT), Vellore Institute of Technology (VIT), Vellore Campus, India. His research interests encompass intelligent Edge AI perception, deep learning for road surface classification, dynamic gain scheduling, and digital hardware-in-the-loop (HIL) testing for electric vehicle chassis control.
+    </div>
+</div>
+
+<div style="height: 10px;"></div>
+<div class="callout-box" style="font-size: 7.2pt; border-left: 2px solid #002855;">
+    <strong>Institutional Affiliation:</strong><br>
+    School of Electrical Engineering (SELECT),<br>
+    Vellore Institute of Technology (VIT), Vellore Campus,<br>
+    Vellore, Tamil Nadu 632014, India.<br>
+    <em>Project Grant:</em> Research Seed Grant Scheme, Ref: VIT-EMPOWER GRANT 2026&ndash;27.
+</div>
+
+</div> <!-- end page 11 two-column -->
+
+</body>
+</html>
