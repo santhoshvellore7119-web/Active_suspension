@@ -44,25 +44,13 @@ fprintf('>>> STEP 4/6: Executing 54-Scenario Parameter Sweep (Roads x Masses x S
 run_parameter_sweep;
 fprintf('    [OK] Multi-parameter sensitivity sweep exported to results/sweep_results.csv\n\n');
 
-% 6. Publication Figures & IEEE Paper PDF Build
-fprintf('>>> STEP 5/6: Generating 300 DPI Publication Figures (3 Active Controllers)...\n');
-[stat_fig, out_fig] = system('python generate_repository_plots.py');
-if stat_fig == 0
-    fprintf('    [OK] All 7 publication figures generated in figures/ directory.\n\n');
-else
-    fprintf('    [Notice] Python figure output: %s\n', strtrim(out_fig));
-end
-
-fprintf('>>> STEP 6/6: Rebuilding 17-Page IEEE Access Research Paper Report PDF...\n');
-[stat_pdf, out_pdf] = system('python build_ieee_paper_pdf.py');
-if stat_pdf == 0
-    fprintf('    [OK] Publication PDF compiled: docs/IEEE_ACCESS_Paper_Active_Suspension_STSMC.pdf\n\n');
-else
-    fprintf('    [Notice] Python PDF output: %s\n', strtrim(out_pdf));
-end
+% 6. Precision-Tuned Candidate 5 Benchmark
+fprintf('>>> STEP 5/6: Executing Candidate 5 (Adaptive STSMC) Benchmark Across All 6 Roads...\n');
+run_candidate5('all', false);
+fprintf('    [OK] Candidate 5 benchmark verified across all 6 standardized road profiles.\n\n');
 
 % 7. Open Simulink Model Architecture & Display Interactive Dynamic Benchmark
-fprintf('>>> STEP 7/7: Opening Simulink Model Canvas & Displaying Dynamic Benchmark Plot...\n');
+fprintf('>>> STEP 6/6: Opening Simulink Model Canvas & Displaying Dynamic Benchmark Plot...\n');
 if exist('Master_Active_Suspension_Clean.slx', 'file')
     try
         copyfile('Master_Active_Suspension_Clean.slx', 'Master_Active_Suspension.slx');
@@ -87,5 +75,5 @@ fprintf('    - Simulink Model:     Master_Active_Suspension.slx / Master_Active_
 fprintf('    - Sweep Data Table:   results/sweep_results.csv (54 multi-parameter scenarios)\n');
 fprintf('    - Simulation Data:    results/simulation_trajectories.mat (6 road profiles)\n');
 fprintf('    - Publication Plots:  figures/ (Figure 1 to 6 + Dashboard)\n');
-fprintf('    - Research Paper PDF: docs/IEEE_ACCESS_Paper_Active_Suspension_STSMC.pdf\n');
+fprintf('    - Research Paper PDF: docs/IEEE_Access_Active_Suspension_STSMC_Paper.pdf\n');
 fprintf('========================================================================================\n');

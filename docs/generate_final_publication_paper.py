@@ -77,7 +77,9 @@ def main():
     }
 
     # Load HTML template from separate file to completely avoid python escaping issues
-    template_path = os.path.join(root_dir, "paper_template.html")
+    template_path = os.path.join(docs_dir, "paper_template.html")
+    if not os.path.exists(template_path):
+        template_path = os.path.join(root_dir, "paper_template.html")
     if not os.path.exists(template_path):
         print(f"Error: {template_path} does not exist!")
         return
