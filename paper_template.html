@@ -615,12 +615,7 @@ To resolve this trade-off, <strong>Candidate 5 (Precision Tuned)</strong> was de
     Real-world Edge AI vision models (CNNs) output a continuous severity score $RSI \in [0.0, 1.0]$. The 8-node piecewise linear interpolation function ensures that as severity increases, controller gains scale with <strong>strict monotonicity</strong> ($\frac{dk_1}{dRSI} > 0$, $\frac{dk_2}{dRSI} > 0$, $\frac{dc_1}{dRSI} > 0$), eliminating chattering and gain-reversal instability.
 </div>
 
-<div class="figure-box">
-    <img src="__IMG_RSI__" alt="Continuous 8-Node Monotonic Gain Curves">
-    <div class="figure-caption">
-        <strong>FIGURE 2.</strong> Continuous 8-node monotonic gain scheduling curves for future road scope ($RSI \in [0.0, 1.0]$): (Left) Convergence gain $k_1(RSI)$ and robustness gain $k_2(RSI)$; (Right) Sliding manifold slope $c_1(RSI)$.
-    </div>
-</div>
+
 
 </div> <!-- end page 4 two-column -->
 
@@ -764,19 +759,19 @@ From the experimental results, several critical technical inferences are drawn:
 <div class="figure-box">
     <img src="__IMG_FIG1__" alt="Profile 1 Smooth Road Response">
     <div class="figure-caption">
-        <strong>FIGURE 3.</strong> Dynamic response comparison under Profile 1 (Smooth asphalt highway, 4 mm sine at 0.20 Hz). Adaptive STSMC utilizes compliant gains ($c_1=5.0, k_1=20, k_2=8$) to achieve the lowest body acceleration ($0.0041\text{ m/s}^2$).
+        <strong>FIGURE 2.</strong> Dynamic response comparison under Profile 1 (Smooth asphalt highway, 4 mm sine at 0.20 Hz). Adaptive STSMC utilizes compliant gains ($c_1=5.0, k_1=20, k_2=8$) to achieve the lowest body acceleration ($0.0041\text{ m/s}^2$).
     </div>
 </div>
 
 <div class="figure-box">
     <img src="__IMG_FIG2__" alt="Profile 2 Normal Road Resonance Response">
     <div class="figure-caption">
-        <strong>FIGURE 4.</strong> Dynamic response comparison under Profile 2 (Normal road, 2.58 Hz body resonance). Adaptive STSMC suppresses body bounce resonance while preventing motor force saturation.
+        <strong>FIGURE 3.</strong> Dynamic response comparison under Profile 2 (Normal road, 2.58 Hz body resonance). Adaptive STSMC suppresses body bounce resonance while preventing motor force saturation.
     </div>
 </div>
 
 <p>
-<em>Detailed Analysis of Profiles 1 and 2:</em> Under Profile 1 (Smooth Road), high control gains are unnecessary and detrimental. As demonstrated in Fig. 3, Optimal LQR and Fixed STSMC apply unnecessary control effort ($0.43\text{ N}$ and $0.63\text{ N}$), transmitting minor road imperfections to the chassis. By relaxing gains to $k_1=20.0$ and $c_1=5.0$, Adaptive STSMC achieves a $8.9\%$ reduction in RMS acceleration compared to LQR.
+<em>Detailed Analysis of Profiles 1 and 2:</em> Under Profile 1 (Smooth Road), high control gains are unnecessary and detrimental. As demonstrated in Fig. 2, Optimal LQR and Fixed STSMC apply unnecessary control effort ($0.43\text{ N}$ and $0.63\text{ N}$), transmitting minor road imperfections to the chassis. By relaxing gains to $k_1=20.0$ and $c_1=5.0$, Adaptive STSMC achieves a $8.9\%$ reduction in RMS acceleration compared to LQR.
 </p>
 <p>
 Under Profile 2 (Body Bounce Resonance at $2.58\text{ Hz}$), the uncontrolled chassis exhibits violent harmonic magnification. Optimal LQR suffers an RMS acceleration of $1.2717\text{ m/s}^2$. Adaptive STSMC dynamically schedules $k_1=55.0$ and $c_1=6.5$, attenuating body bounce acceleration down to $1.0869\text{ m/s}^2$ (a $14.5\%$ reduction) while capping actuator force at $9.64\text{ N}$, safely below the $39.2\text{ N}$ threshold.
@@ -792,14 +787,14 @@ Under Profile 2 (Body Bounce Resonance at $2.58\text{ Hz}$), the uncontrolled ch
 <div class="figure-box">
     <img src="__IMG_FIG3__" alt="Profile 3 Rough Road Response">
     <div class="figure-caption">
-        <strong>FIGURE 5.</strong> Dynamic response comparison under Profile 3 (Rough road chirp sweep, 0.1 to 15 Hz). Wideband frequency excitation validates vibration decoupling across both body bounce and wheel hop modes.
+        <strong>FIGURE 4.</strong> Dynamic response comparison under Profile 3 (Rough road chirp sweep, 0.1 to 15 Hz). Wideband frequency excitation validates vibration decoupling across both body bounce and wheel hop modes.
     </div>
 </div>
 
 <div class="figure-box">
     <img src="__IMG_FIG4__" alt="Profile 4 Bumpy Road Ramp Response">
     <div class="figure-caption">
-        <strong>FIGURE 6.</strong> Dynamic response comparison under Profile 4 (Bumpy road, 20 mm ramp obstacles). Optimal LQR (dashed blue), Fixed STSMC (dash-dotted red), and Adaptive STSMC (solid green).
+        <strong>FIGURE 5.</strong> Dynamic response comparison under Profile 4 (Bumpy road, 20 mm ramp obstacles). Optimal LQR (dashed blue), Fixed STSMC (dash-dotted red), and Adaptive STSMC (solid green).
     </div>
 </div>
 
@@ -807,7 +802,7 @@ Under Profile 2 (Body Bounce Resonance at $2.58\text{ Hz}$), the uncontrolled ch
 <em>Detailed Analysis of Profiles 3 and 4:</em> Profile 3 evaluates broadband frequency excitation spanning $0.1\text{ to }15\text{ Hz}$. This range sweeps across both the body bounce resonance ($2.58\text{ Hz}$) and the wheel hop resonance ($9.41\text{ Hz}$). Optimal LQR exhibits significant peak acceleration ($8.9985\text{ m/s}^2$). Fixed STSMC and Adaptive STSMC successfully isolate the sprung mass, with Adaptive STSMC achieving the lowest steady-state RMS acceleration ($4.1471\text{ m/s}^2$), representing a $15.6\%$ improvement over LQR.
 </p>
 <p>
-Profile 4 (Fig. 6) provides clear experimental evidence of the comfort versus rattle space mechanism. Optimal LQR rigidly clamps deflection to $3.85\text{ mm}$, transmitting a harsh spike of $0.8913\text{ m/s}^2$ to the chassis. Adaptive STSMC permits a compliant deflection of $5.73\text{ mm}$, smoothly absorbing the ramp entry. This reduces peak chassis acceleration to $0.8641\text{ m/s}^2$ and steady-state RMS acceleration to $0.0979\text{ m/s}^2$, while consuming only $15.1\%$ of the available suspension travel.
+Profile 4 (Fig. 5) provides clear experimental evidence of the comfort versus rattle space mechanism. Optimal LQR rigidly clamps deflection to $3.85\text{ mm}$, transmitting a harsh spike of $0.8913\text{ m/s}^2$ to the chassis. Adaptive STSMC permits a compliant deflection of $5.73\text{ mm}$, smoothly absorbing the ramp entry. This reduces peak chassis acceleration to $0.8641\text{ m/s}^2$ and steady-state RMS acceleration to $0.0979\text{ m/s}^2$, while consuming only $15.1\%$ of the available suspension travel.
 </p>
 
 </div> <!-- end page 7 two-column -->
@@ -820,22 +815,22 @@ Profile 4 (Fig. 6) provides clear experimental evidence of the comfort versus ra
 <div class="figure-box">
     <img src="__IMG_FIG5__" alt="Profile 5 Pulse Road Response">
     <div class="figure-caption">
-        <strong>FIGURE 7.</strong> Dynamic response comparison under Profile 5 (Pulse road, -20 mm step drops). Shows rapid transient settling and superior anti-bottoming clearance.
+        <strong>FIGURE 6.</strong> Dynamic response comparison under Profile 5 (Pulse road, -20 mm step drops). Shows rapid transient settling and superior anti-bottoming clearance.
     </div>
 </div>
 
 <div class="figure-box">
     <img src="__IMG_FIG6__" alt="Profile 6 Potholes Road Response">
     <div class="figure-caption">
-        <strong>FIGURE 8.</strong> Dynamic response comparison under Profile 6 (Potholes road, ISO Class D + dips). Proves robust pothole impact attenuation without actuator force saturation.
+        <strong>FIGURE 7.</strong> Dynamic response comparison under Profile 6 (Potholes road, ISO Class D + dips). Proves robust pothole impact attenuation without actuator force saturation.
     </div>
 </div>
 
 <p>
-<em>Detailed Analysis of Profiles 5 and 6:</em> Profiles 5 and 6 present severe transient shock hazards. In Profile 5, two successive $-20\text{ mm}$ step drops occur at $t=1.0\text{ s}$ and $t=5.0\text{ s}$. As illustrated in Fig. 7, unconstrained linear LQR allows peak deflection to reach $23.56\text{ mm}$, leaving only $38.0\%$ clearance from the mechanical hard stop. Fixed STSMC restricts peak travel to $22.87\text{ mm}$. Adaptive STSMC, detecting severe road severity ($RSI=0.85$), dynamically stiffens to $k_1=75.0$ and $c_1=7.8$, arresting chassis drop at $22.51\text{ mm}$ (a $40.8\%$ safety buffer) while accelerating transient settling by $38\%$ compared to LQR.
+<em>Detailed Analysis of Profiles 5 and 6:</em> Profiles 5 and 6 present severe transient shock hazards. In Profile 5, two successive $-20\text{ mm}$ step drops occur at $t=1.0\text{ s}$ and $t=5.0\text{ s}$. As illustrated in Fig. 6, unconstrained linear LQR allows peak deflection to reach $23.56\text{ mm}$, leaving only $38.0\%$ clearance from the mechanical hard stop. Fixed STSMC restricts peak travel to $22.87\text{ mm}$. Adaptive STSMC, detecting severe road severity ($RSI=0.85$), dynamically stiffens to $k_1=75.0$ and $c_1=7.8$, arresting chassis drop at $22.51\text{ mm}$ (a $40.8\%$ safety buffer) while accelerating transient settling by $38\%$ compared to LQR.
 </p>
 <p>
-In Profile 6 (Fig. 8), stochastic ISO Class D road roughness is combined with three sharp $-20\text{ mm}$ pothole cavities. LQR delivers an RMS acceleration of $1.2583\text{ m/s}^2$ with peak acceleration exceeding $6.70\text{ m/s}^2$. Adaptive STSMC ($RSI=0.95$, $k_1=78.0, c_1=8.0$) achieves the global lowest RMS acceleration ($1.2316\text{ m/s}^2$) and restricts peak stroke to $21.50\text{ mm}$ ($43.4\%$ margin). Crucially, commanded actuator force peaks at $19.82\text{ N}$, preserving a $49.4\%$ safety margin below the motor's $39.2\text{ N}$ limit.
+In Profile 6 (Fig. 7), stochastic ISO Class D road roughness is combined with three sharp $-20\text{ mm}$ pothole cavities. LQR delivers an RMS acceleration of $1.2583\text{ m/s}^2$ with peak acceleration exceeding $6.70\text{ m/s}^2$. Adaptive STSMC ($RSI=0.95$, $k_1=78.0, c_1=8.0$) achieves the global lowest RMS acceleration ($1.2316\text{ m/s}^2$) and restricts peak stroke to $21.50\text{ mm}$ ($43.4\%$ margin). Crucially, commanded actuator force peaks at $19.82\text{ N}$, preserving a $49.4\%$ safety margin below the motor's $39.2\text{ N}$ limit.
 </p>
 
 </div> <!-- end page 8 two-column -->
@@ -843,31 +838,24 @@ In Profile 6 (Fig. 8), stochastic ISO Class D road roughness is combined with th
 <div class="page-break"></div>
 
 <!-- ================= PAGE 9 ================= -->
-<div class="full-width">
-    <div class="figure-box-span">
-        <img src="__IMG_DASHBOARD__" alt="Comprehensive Candidate 5 Benchmark Dashboard">
-        <div class="figure-caption">
-            <strong>FIGURE 9.</strong> Comprehensive benchmark dashboard of Candidate 5 (Adaptive STSMC) across all 6 road profiles: (Top-Left) Steady-State RMS body acceleration comparison demonstrating 100% comfort victory; (Top-Right) Peak suspension stroke vs. 38 mm hard stop limit; (Bottom-Left) Peak actuator motor force vs. 39.2 N continuous limit; (Bottom-Right) Scheduled gain adaptation profiles across the road spectrum.
-        </div>
-    </div>
-</div>
+
 
 <div class="two-column">
 <h3 class="sec-subheading">A. Comparative Quantitative Performance Synthesis</h3>
 <p>
-Figure 9 synthesizes the multi-objective performance of the investigated controllers. Across the four quadrants, the experimental results demonstrate:
+Table 2 synthesizes the multi-objective performance of the investigated controllers across all six road profiles. The comprehensive benchmark demonstrates:
 </p>
 <p class="no-indent">
-1) <em>Ride Comfort:</em> As evidenced in the Top-Left quadrant of Fig. 9, Candidate 5 (Adaptive STSMC) outperforms both Optimal LQR and Fixed STSMC across all 6 profiles, establishing an unambiguous Pareto frontier.
+1) <em>Ride Comfort:</em> As evidenced in Table 2, Candidate 5 (Adaptive STSMC) outperforms both Optimal LQR and Fixed STSMC across all 6 profiles, establishing an unambiguous Pareto frontier.
 </p>
 <p class="no-indent">
-2) <em>Rattle Space Integrity:</em> In the Top-Right quadrant, peak suspension travel remains strictly bounded within the $[-22.51\text{ mm}, +10.49\text{ mm}]$ corridor, never exceeding $59.2\%$ of the physical stroke limit ($\pm 38.0\text{ mm}$).
+2) <em>Rattle Space Integrity:</em> In terms of rattle space, peak suspension travel remains strictly bounded within the $[-22.51\text{ mm}, +10.49\text{ mm}]$ corridor, never exceeding $59.2\%$ of the physical stroke limit ($\pm 38.0\text{ mm}$).
 </p>
 <p class="no-indent">
-3) <em>Actuator Health and Saturation Margin:</em> In the Bottom-Left quadrant, maximum actuator force across all severe road profiles peaks at $20.38\text{ N}$, maintaining a minimum reserve margin of $48.0\%$ below the Quanser linear DC motor rating ($39.2\text{ N}$).
+3) <em>Actuator Health and Saturation Margin:</em> In terms of actuator demand, maximum actuator force across all severe road profiles peaks at $20.38\text{ N}$, maintaining a minimum reserve margin of $48.0\%$ below the Quanser linear DC motor rating ($39.2\text{ N}$).
 </p>
 <p class="no-indent">
-4) <em>Chattering Elimination:</em> Because the continuous hyperbolic boundary layer ($\varepsilon_{\text{smc}} = 0.010$) smooths the discontinuous signum function, control force trajectories (Figs. 3&ndash;8) exhibit zero high-frequency chattering, preventing motor overheating.
+4) <em>Chattering Elimination:</em> Because the continuous hyperbolic boundary layer ($\varepsilon_{\text{smc}} = 0.010$) smooths the discontinuous signum function, control force trajectories (Figs. 2&ndash;7) exhibit zero high-frequency chattering, preventing motor overheating.
 </p>
 
 <h3 class="sec-subheading">B. Comparison with Literature Benchmarks</h3>
