@@ -125,4 +125,6 @@ k1_fixed = 60.00;   % Proportional sliding gain
 k2_fixed = 25.00;   % Integral sliding gain
 
 %% 8. Controller 3: Adaptive Super-Twisting SMC (Adaptive STSMC)
-[k1_adap, k2_adap, c1_adap, rsi_val, mode_name] = stsmc_rsi_scheduler(ROAD_ID, 'scaled');
+if ~exist('OVERRIDE_ADAP_GAINS', 'var') || ~OVERRIDE_ADAP_GAINS
+    [k1_adap, k2_adap, c1_adap, rsi_val, mode_name] = stsmc_rsi_scheduler(ROAD_ID, 'scaled');
+end

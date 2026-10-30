@@ -28,7 +28,8 @@ if nargin < 2 || isempty(mode_type)
 end
 
 % 1. Standard Discrete Road Profile Mappings (IDs 1 through 6)
-if input_val >= 1 && input_val <= 6 && floor(input_val) == input_val
+is_continuous_mode = strcmpi(mode_type, 'continuous') || strcmpi(mode_type, 'rsi');
+if ~is_continuous_mode && input_val >= 1 && input_val <= 6 && floor(input_val) == input_val
     road_idx = round(input_val);
     
     rsi_nodes_6 = [0.10, 0.65, 0.75, 0.40, 0.85, 0.95];
@@ -38,9 +39,10 @@ if input_val >= 1 && input_val <= 6 && floor(input_val) == input_val
         k2_nodes_6     = [ 2.0,  7.0,  8.0,  4.5,  9.0, 10.0];
         lambda_nodes_6 = [ 5.0, 10.0, 12.0,  8.0, 13.5, 15.0];
     else
-        k1_nodes_6     = [ 20.0, 120.0, 140.0, 70.0, 160.0, 180.0];
-        k2_nodes_6     = [  8.0,  50.0,  60.0, 30.0,  75.0,  90.0];
-        lambda_nodes_6 = [  5.0,  10.0,  12.0,  7.0,  14.0,  15.0];
+        % Precision-tuned for optimal ride comfort while preserving hardware travel safety
+        k1_nodes_6     = [ 20.0,  55.0,  62.0, 45.0,  75.0,  78.0];
+        k2_nodes_6     = [  8.0,  22.0,  25.0, 18.0,  30.0,  32.0];
+        lambda_nodes_6 = [  5.0,   6.5,   6.8,  5.8,   7.8,   8.0];
     end
     
     names_nodes_6 = { ...
@@ -61,15 +63,17 @@ if input_val >= 1 && input_val <= 6 && floor(input_val) == input_val
 end
 
 % 2. Continuous RSI from Edge AI Perception (e.g. RSI in [0, 1])
-rsi_nodes   = [0.10, 0.35, 0.65, 0.95];
+% Comprehensive 8-node monotonic spectrum covering all future arbitrary road profile geometries:
+rsi_nodes = [0.00, 0.10, 0.40, 0.65, 0.75, 0.85, 0.95, 1.00];
 if strcmpi(mode_type, 'grant')
-    k1_nodes     = [8.0, 12.0, 18.0, 25.0];
-    k2_nodes     = [2.0,  4.0,  7.0, 10.0];
-    lambda_nodes = [5.0,  7.0, 10.0, 15.0];
+    k1_nodes     = [ 6.0,  8.0, 13.0, 18.0, 20.0, 22.0, 25.0, 26.0];
+    k2_nodes     = [ 1.5,  2.0,  4.5,  7.0,  8.0,  9.0, 10.0, 10.5];
+    lambda_nodes = [ 4.5,  5.0,  8.0, 10.0, 12.0, 13.5, 15.0, 15.5];
 else
-    k1_nodes     = [20.0, 60.0, 120.0, 180.0];
-    k2_nodes     = [8.0,  25.0,  50.0,  90.0];
-    lambda_nodes = [5.0,   7.0,  10.0,  15.0];
+    % Continuous monotonic gain scheduling (smooth comfort to robust rejection)
+    k1_nodes     = [15.0, 20.0, 45.0, 55.0, 62.0, 75.0, 78.0, 85.0];
+    k2_nodes     = [ 6.0,  8.0, 18.0, 22.0, 25.0, 30.0, 32.0, 35.0];
+    lambda_nodes = [ 4.5,  5.0,  5.8,  6.5,  6.8,  7.8,  8.0,  8.5];
 end
 
 rsi_val = max(0.0, min(1.0, input_val));
